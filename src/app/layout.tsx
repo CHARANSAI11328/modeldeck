@@ -15,9 +15,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Chatbot Testing Playground | Multi-Provider BYOK",
+  title: "ModelDeck | Multi-Provider BYOK AI Testing Playground",
   description:
-    "Production-quality multi-provider AI testing playground with encrypted BYOK key vault, streaming SSE responses, reasoning traces, and zero-storage privacy.",
+    "Test frontier AI models (OpenAI, Claude 3.7, Gemini 2.5, DeepSeek R1, Groq, OpenRouter) with your own API keys. Features live SSE streaming, thinking traces, and multi-device key synchronization.",
   keywords: [
     "AI playground",
     "BYOK",

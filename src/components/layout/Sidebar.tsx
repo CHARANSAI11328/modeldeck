@@ -40,11 +40,14 @@ export function Sidebar() {
       <aside className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-800 bg-[#0c0d0f] md:static md:z-auto shadow-2xl transition-all animate-in slide-in-from-left duration-200">
         {/* Header with New Chat & Collapse */}
         <div className="flex h-14 items-center justify-between border-b border-zinc-800 px-3.5">
-          <div className="flex items-center gap-2 font-semibold text-sm text-zinc-100 tracking-tight">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-white font-bold text-xs shadow-md">
-              AI
+          <div className="flex items-center gap-2.5 font-semibold text-sm text-zinc-100 tracking-tight">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-xs shadow-md">
+              MD
             </div>
-            <span>Testing Playground</span>
+            <div className="flex flex-col">
+              <span className="font-bold tracking-tight text-zinc-50 leading-none">ModelDeck</span>
+              <span className="text-[10px] text-zinc-400 font-mono tracking-tight leading-none mt-1">BYOK Playground</span>
+            </div>
           </div>
 
           <button
