@@ -5,6 +5,7 @@ import { usePlaygroundStore } from "@/lib/store";
 import { MessageItem } from "./MessageItem";
 import { EmptyChatState } from "./EmptyChatState";
 import { ErrorBanner } from "./ErrorBanner";
+import { TypingIndicator } from "./TypingIndicator";
 import { ChatMessage } from "@/lib/types";
 
 export function ChatContainer() {
@@ -88,6 +89,11 @@ export function ChatContainer() {
             modelId={modelId}
             isStreaming={true}
           />
+        )}
+
+        {/* Texting animation when waiting for first token or when reply is delayed */}
+        {isStreaming && !activeStreamingMessage && (
+          <TypingIndicator providerId={providerId} modelId={modelId} />
         )}
 
         <div ref={messagesEndRef} className="h-4" />

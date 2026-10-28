@@ -116,10 +116,35 @@ export function MessageItem({
           <ReasoningAccordion reasoning={message.reasoningContent} isStreaming={isStreaming} />
         )}
 
+        {/* Texting animation if streaming has started but main response text is still pending */}
+        {isStreaming && !message.content.trim() && (
+          <div className="flex items-center gap-2 py-2 px-1 text-xs text-zinc-400 animate-in fade-in">
+            <div className="flex items-center gap-1.5">
+              <span
+                className="h-2 w-2 rounded-full animate-bounce [animation-delay:-0.32s]"
+                style={{ backgroundColor: provider.color }}
+              />
+              <span
+                className="h-2 w-2 rounded-full animate-bounce [animation-delay:-0.16s]"
+                style={{ backgroundColor: `${provider.color}cc` }}
+              />
+              <span
+                className="h-2 w-2 rounded-full animate-bounce"
+                style={{ backgroundColor: `${provider.color}88` }}
+              />
+            </div>
+            <span className="font-mono text-[11px] text-zinc-400">
+              Generating response tokens...
+            </span>
+          </div>
+        )}
+
         {/* Markdown Rendered Content */}
-        <div className="text-zinc-200 selection:bg-blue-600/30 selection:text-white">
-          <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
-        </div>
+        {message.content.trim() ? (
+          <div className="text-zinc-200 selection:bg-blue-600/30 selection:text-white">
+            <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
+          </div>
+        ) : null}
 
         {/* Turn actions (copy, retry) */}
         {!isStreaming && (
