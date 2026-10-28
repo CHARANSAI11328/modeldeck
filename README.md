@@ -1,5 +1,7 @@
 # ⚡ ModelDeck — Multi-Provider BYOK AI Testing Playground
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FCHARANSAI11328%2Fmodeldeck&env=GROQ_API_KEY,GEMINI_API_KEY,OPENROUTER_API_KEY)
+
 A production-quality AI model testing & benchmarking playground built with **Next.js 15 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Zustand**, featuring a central multi-device synchronized **Bring-Your-Own-Key (BYOK)** vault, real-time SSE token streaming, thinking/reasoning traces, instant model search, mobile responsiveness, and zero-storage privacy.
 
 Deploy with 1-click to **Vercel**, **Railway**, **Render**, or **Docker** and test frontier models (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Groq, OpenRouter, Mistral, Together AI, and local Ollama) in one unified interface.
