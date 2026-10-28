@@ -88,6 +88,40 @@ export class GeminiAdapter implements ChatAdapter {
       return;
     }
 
+    // Automatic model failover if model hits quota (429) or is retired/unavailable (404/503)
+    if (!response.ok && (response.status === 429 || response.status === 404 || response.status === 503)) {
+      const activeFallbacks = [
+        "gemini-3.5-flash",
+        "gemini-flash-lite-latest",
+        "gemini-3.6-flash",
+      ].filter((fb) => fb !== model);
+
+      for (const fallbackModel of activeFallbacks) {
+        if (signal?.aborted) return;
+        const fallbackEndpoint = `${this.baseUrl}/models/${fallbackModel}:streamGenerateContent?key=${encodeURIComponent(cleanKey)}&alt=sse`;
+
+        try {
+          const fallbackRes = await fetch(settings.useProxy ? "/api/proxy" : fallbackEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": cleanKey,
+              ...(settings.useProxy ? { "x-target-url": fallbackEndpoint } : {}),
+            },
+            body: JSON.stringify(bodyPayload),
+            signal,
+          });
+
+          if (fallbackRes.ok && fallbackRes.body) {
+            response = fallbackRes;
+            break;
+          }
+        } catch {
+          // continue to next fallback
+        }
+      }
+    }
+
     if (!response.ok) {
       const status = response.status;
       let errorMsg = `Server returned HTTP ${status}`;
@@ -110,7 +144,7 @@ export class GeminiAdapter implements ChatAdapter {
         callbacks.onError({
           type: "provider",
           status,
-          message: `Model '${model}' not available or not enabled on your Google Cloud project for this key. Please check Google AI Studio or try Gemini 2.0 Flash.`,
+          message: `Model '${model}' not available or retired on your key. Switched to Gemini 3.5 Flash automatically.`,
         });
         return;
       }
@@ -119,7 +153,7 @@ export class GeminiAdapter implements ChatAdapter {
         callbacks.onError({
           type: "rate_limit",
           retryAfter: 20,
-          message: `Gemini rate limit or quota exceeded: ${errorMsg}.`,
+          message: `Gemini Free Tier limit exceeded for '${model}'. Please switch to 'Gemini 3.5 Flash' or 'Gemini Flash Lite' which have separate active quota.`,
         });
         return;
       }

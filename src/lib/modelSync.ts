@@ -62,7 +62,17 @@ export async function syncModelsForProvider(
         );
       });
 
-      return validModels.map((m) => {
+      const priorityOrder = [
+        "gemini-3.5-flash",
+        "gemini-flash-lite-latest",
+        "gemini-3.6-flash",
+        "gemini-flash-latest",
+        "gemini-3.8-flash",
+        "gemini-3.1-pro-preview",
+        "gemini-pro-latest",
+      ];
+
+      const mapped = validModels.map((m) => {
         const cleanId = m.name.replace(/^models\//, "");
         const isReasoning =
           cleanId.includes("pro") ||
@@ -72,10 +82,11 @@ export async function syncModelsForProvider(
           cleanId.includes("deep-research");
 
         let displayName = m.displayName || cleanId;
-        if (cleanId === "gemini-3.8-flash") displayName = "Gemini 3.8 Flash (Flagship)";
-        if (cleanId === "gemini-3.5-flash") displayName = "Gemini 3.5 Flash";
+        if (cleanId === "gemini-3.5-flash") displayName = "Gemini 3.5 Flash (Recommended)";
+        if (cleanId === "gemini-flash-lite-latest") displayName = "Gemini Flash Lite (Ultra Speed)";
+        if (cleanId === "gemini-3.6-flash") displayName = "Gemini 3.6 Flash";
+        if (cleanId === "gemini-3.8-flash") displayName = "Gemini 3.8 Flash (Preview)";
         if (cleanId === "gemini-flash-latest") displayName = "Gemini Flash (Latest Stable)";
-        if (cleanId === "gemini-3.7-flash") displayName = "Gemini 3.7 Flash";
         if (cleanId === "gemini-3.1-pro-preview") displayName = "Gemini 3.1 Pro Preview";
         if (cleanId === "gemini-pro-latest") displayName = "Gemini Pro (Latest Stable)";
 
@@ -86,13 +97,25 @@ export async function syncModelsForProvider(
           contextWindow: m.inputTokenLimit ? `${m.inputTokenLimit.toLocaleString()} tokens` : "1,048,576 tokens",
           isReasoning,
           recommended:
-            cleanId === "gemini-3.8-flash" ||
             cleanId === "gemini-3.5-flash" ||
-            cleanId === "gemini-flash-latest" ||
-            cleanId === "gemini-3.1-pro-preview",
-          category: cleanId.includes("flash") ? "fast" : cleanId.includes("pro") ? "reasoning" : "general",
+            cleanId === "gemini-flash-lite-latest" ||
+            cleanId === "gemini-3.6-flash",
+          category: (cleanId.includes("flash")
+            ? "fast"
+            : cleanId.includes("pro")
+            ? "reasoning"
+            : "general") as ModelInfo["category"],
           isAccountModel: true,
         };
+      });
+
+      return mapped.sort((a, b) => {
+        const aIndex = priorityOrder.indexOf(a.id);
+        const bIndex = priorityOrder.indexOf(b.id);
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        if (aIndex !== -1) return -1;
+        if (bIndex !== -1) return 1;
+        return a.name.localeCompare(b.name);
       });
     } catch {
       return [];

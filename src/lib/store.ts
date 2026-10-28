@@ -75,8 +75,9 @@ const SETTINGS_STORAGE_KEY = "byok_user_settings_v1";
 
 const RETIRED_MODELS_MAP: Record<string, string> = {
   "deepseek/deepseek-r1": "deepseek/deepseek-v4.1-flash",
-  "gemini-1.5-flash": "gemini-3.8-flash",
-  "gemini-2.5-flash": "gemini-3.8-flash",
+  "gemini-1.5-flash": "gemini-3.5-flash",
+  "gemini-2.5-flash": "gemini-3.5-flash",
+  "gemini-3.8-flash": "gemini-3.5-flash",
   "llama-3.3-70b-versatile": "openai/gpt-oss-120b",
   "llama-3.1-8b-instant": "openai/gpt-oss-20b",
   "google/gemini-2.5-flash": "google/gemini-3.8-flash",
