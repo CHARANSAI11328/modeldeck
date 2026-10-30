@@ -21,6 +21,7 @@ function getEnvKeys(): Record<string, string> {
     groq: process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY,
     gemini: process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY,
     openrouter: process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY,
+    demonroute: process.env.DEMONROUTE_API_KEY || process.env.NEXT_PUBLIC_DEMONROUTE_API_KEY,
     openai: process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     anthropic: process.env.ANTHROPIC_API_KEY || process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY,
     deepseek: process.env.DEEPSEEK_API_KEY || process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY,

@@ -206,6 +206,7 @@ export function Navbar() {
                     { id: "deepseek", label: "DeepSeek" },
                     { id: "groq", label: "Groq" },
                     { id: "openrouter", label: "OpenRouter" },
+                    { id: "demonroute", label: "Demon Route" },
                     { id: "together", label: "Together" },
                     { id: "mistral", label: "Mistral" },
                   ].map((tab) => (
