@@ -43,6 +43,11 @@ const PROVIDER_GUIDES: Record<string, ProviderGuide> = {
     signupTip: "Visit OpenRouter > Keys > Create Key. Single key accesses 300+ AI models across all providers.",
     freeTier: "Includes access to free-tier open models (:free suffix) with 0 balance.",
   },
+  demonroute: {
+    id: "demonroute",
+    signupTip: "Visit demonroute.com, sign in, and create a key. Standard OpenAI-compatible Bearer key; one key reaches 1,300+ open-weight models.",
+    freeTier: "Prepaid (crypto or card) with a hard stop at $0. Some models are free, e.g. Dolphin 3.0 8B and Hermes 3 8B.",
+  },
   together: {
     id: "together",
     signupTip: "Visit Together AI Settings > API Keys > Generate Key. Dedicated clusters for open models.",
