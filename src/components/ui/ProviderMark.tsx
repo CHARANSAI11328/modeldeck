@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ProviderId } from "@/lib/types";
 
 const PROVIDER_SLUG: Record<ProviderId, string> = {
-  openai: "openai", anthropic: "anthropic", gemini: "googlegemini", deepseek: "deepseek", groq: "groq", openrouter: "openrouter", together: "together", mistral: "mistral", "custom-openai-compatible": "ollama",
+  openai: "openai", anthropic: "anthropic", gemini: "googlegemini", deepseek: "deepseek", groq: "groq", openrouter: "openrouter", together: "together", mistral: "mistral", demonroute: "openai", "custom-openai-compatible": "ollama",
 };
 
 function slugForModel(providerId: ProviderId, modelId?: string) {
