@@ -8,6 +8,7 @@ import { ChatInput } from "@/components/chat/ChatInput";
 import { KeyVaultModal } from "@/components/modals/KeyVaultModal";
 import { ParametersDrawer } from "@/components/modals/ParametersDrawer";
 import { ApiKeyDirectoryModal } from "@/components/modals/ApiKeyDirectoryModal";
+import { ExperienceLayer } from "@/components/layout/ExperienceLayer";
 import { usePlaygroundStore } from "@/lib/store";
 
 export default function Home() {
@@ -18,7 +19,8 @@ export default function Home() {
   }, [refreshKeyStatus]);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#09090b]">
+    <ExperienceLayer>
+    <div className="app-shell flex min-h-[100dvh] w-screen overflow-hidden">
       {/* Sessions Sidebar */}
       <Sidebar />
 
@@ -34,5 +36,6 @@ export default function Home() {
       <ParametersDrawer />
       <ApiKeyDirectoryModal />
     </div>
+    </ExperienceLayer>
   );
 }

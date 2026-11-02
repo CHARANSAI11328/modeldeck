@@ -128,6 +128,7 @@ export function Navbar() {
         {/* Model Selector Dropdown */}
         <div className="relative min-w-0" ref={selectorRef}>
           <button
+            data-model-trigger
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
             className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/90 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-800 hover:border-zinc-700 transition-all shadow-sm max-w-[200px] sm:max-w-[320px] truncate"
           >
