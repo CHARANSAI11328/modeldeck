@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import { getProvider } from "@/lib/providers";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 export function Sidebar() {
   const {
@@ -123,10 +124,7 @@ export function Sidebar() {
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <span
-                    className="h-2 w-2 rounded-full shrink-0"
-                    style={{ backgroundColor: provider.color }}
-                  />
+                  <ProviderMark providerId={session.providerId} modelId={session.modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px]">{session.title}</p>
                     <p className="text-[10px] text-zinc-500 font-mono truncate">

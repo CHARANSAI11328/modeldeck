@@ -22,6 +22,7 @@ import { ProviderId } from "@/lib/types";
 import { vault } from "@/lib/vault";
 import { getAdapterForProvider } from "@/lib/adapters";
 import { syncModelsForProvider } from "@/lib/modelSync";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 export function KeyVaultModal() {
   const {
@@ -354,10 +355,7 @@ export function KeyVaultModal() {
               >
                 <div className="flex flex-wrap items-center justify-between gap-1 mb-2">
                   <div className="flex items-center gap-2">
-                    <span
-                      className="h-2.5 w-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: provider.color }}
-                    />
+                    <ProviderMark providerId={provider.id as ProviderId} label={provider.shortLabel} className="h-5 w-5 shrink-0" />
                     <span className="font-semibold text-sm text-zinc-100">
                       {provider.label}
                     </span>

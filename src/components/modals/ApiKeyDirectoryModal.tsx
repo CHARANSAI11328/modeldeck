@@ -5,6 +5,7 @@ import { X, ExternalLink, KeyRound, Sparkles, ShieldCheck, ArrowRight, Search } 
 import { usePlaygroundStore } from "@/lib/store";
 import { PROVIDER_LIST } from "@/lib/providers";
 import { ProviderId } from "@/lib/types";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 interface ProviderGuide {
   id: ProviderId;
@@ -161,10 +162,7 @@ export function ApiKeyDirectoryModal() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span
-                          className="h-2.5 w-2.5 rounded-full shrink-0"
-                          style={{ backgroundColor: provider.color }}
-                        />
+                        <ProviderMark providerId={provider.id as ProviderId} label={provider.shortLabel} className="h-5 w-5 shrink-0" />
                         <span className="font-semibold text-sm text-zinc-100">
                           {provider.label}
                         </span>

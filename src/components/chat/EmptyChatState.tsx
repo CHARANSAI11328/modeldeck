@@ -17,6 +17,7 @@ import {
 import { ProviderId } from "@/lib/types";
 import { getProvider, getModel } from "@/lib/providers";
 import { usePlaygroundStore } from "@/lib/store";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 interface EmptyChatStateProps {
   providerId: ProviderId;
@@ -52,10 +53,7 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
       {/* Provider & Model Header Badge */}
       <div className="space-y-3 max-w-full">
         <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border text-xs font-mono text-zinc-300 shadow-sm">
-          <span
-            className="h-2 w-2 rounded-full shrink-0 animate-pulse-subtle"
-            style={{ backgroundColor: provider.color }}
-          />
+          <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
           <span className="font-semibold text-foreground">{provider.label}</span>
           <span className="text-zinc-600">/</span>
           <span className="text-zinc-300 font-medium truncate max-w-[180px] sm:max-w-none">{model.name}</span>
