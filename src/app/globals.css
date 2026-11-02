@@ -130,7 +130,8 @@
   color: var(--ink);
   height: 100vh;
   height: 100dvh;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
 }
 
@@ -201,7 +202,7 @@ pre code {
   right: 1rem;
   bottom: 1rem;
   z-index: 40;
-  display: grid;
+  display: none;
   place-items: center;
   width: 2.25rem;
   height: 2.25rem;
@@ -211,6 +212,11 @@ pre code {
   background: var(--surface-1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.15s ease;
+}
+@media (min-width: 640px) {
+  .experience-trigger {
+    display: grid;
+  }
 }
 .experience-trigger:hover {
   transform: translateY(-1px);

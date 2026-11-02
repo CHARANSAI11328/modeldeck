@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <ExperienceLayer>
-      <div className="app-shell flex h-[100dvh] h-screen w-screen overflow-hidden bg-background text-foreground">
+      <div className="app-shell flex h-[100dvh] h-screen w-full max-w-full overflow-hidden bg-background text-foreground">
         {/* Sessions Sidebar */}
         <Sidebar />
 

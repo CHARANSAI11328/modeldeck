@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Plus,
   Trash2,
@@ -27,6 +27,13 @@ export function Sidebar() {
     setApiDirectoryOpen,
   } = usePlaygroundStore();
 
+  // On initial mobile load, default sidebar to closed so the chat is visible
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
+  }, [setSidebarOpen]);
+
   if (!isSidebarOpen) return null;
 
   return (
@@ -34,10 +41,11 @@ export function Sidebar() {
       {/* Mobile Backdrop overlay */}
       <div
         onClick={() => setSidebarOpen(false)}
-        className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden animate-in fade-in"
+        className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
+        aria-hidden="true"
       />
 
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border bg-[#0c0d0f] md:static md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-all animate-in slide-in-from-left duration-200">
+      <aside className="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-[300px] flex-col border-r border-border bg-[#0c0d0f] md:static md:w-72 md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-transform animate-in slide-in-from-left duration-200 ease-out">
         {/* Header with New Chat & Collapse */}
         <div className="flex h-14 items-center justify-between border-b border-zinc-800 px-3.5">
           <div className="flex items-center gap-2.5 font-semibold text-sm text-zinc-100 tracking-tight">

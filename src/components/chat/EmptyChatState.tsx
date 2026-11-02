@@ -50,15 +50,15 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-6 sm:py-10 px-3 sm:px-4 text-center max-w-2xl mx-auto space-y-6 animate-in fade-in duration-200">
       {/* Provider & Model Header Badge */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-2 border border-border text-xs font-mono text-zinc-300 shadow-sm">
+      <div className="space-y-3 max-w-full">
+        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border text-xs font-mono text-zinc-300 shadow-sm">
           <span
             className="h-2 w-2 rounded-full shrink-0 animate-pulse-subtle"
             style={{ backgroundColor: provider.color }}
           />
           <span className="font-semibold text-foreground">{provider.label}</span>
           <span className="text-zinc-600">/</span>
-          <span className="text-zinc-300 font-medium">{model.name}</span>
+          <span className="text-zinc-300 font-medium truncate max-w-[180px] sm:max-w-none">{model.name}</span>
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
@@ -182,16 +182,16 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
           </div>
         </div>
       ) : (
-        <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-300 shadow-sm">
-          <Zap className="h-3.5 w-3.5 text-emerald-400" />
-          <span>{provider.label} Key Configured • Ready to test below</span>
+        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-300 shadow-sm text-center">
+          <Zap className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+          <span>{provider.label} Key Ready</span>
         </div>
       )}
 
       {/* Security Assurance Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-1 border border-border/80 text-[11px] text-zinc-400 shadow-sm">
+      <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-1 border border-border/80 text-[11px] text-zinc-400 shadow-sm text-center">
         <ShieldCheck className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-        <span>100% Client-Side BYOK Security • Encrypted with AES-GCM-256 • Zero token logging</span>
+        <span>Client-Side BYOK Security • AES-GCM-256 Encrypted</span>
       </div>
 
       {/* Starter Prompts */}

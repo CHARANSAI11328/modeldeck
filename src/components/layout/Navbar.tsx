@@ -131,7 +131,7 @@ export function Navbar() {
           <button
             data-model-trigger
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-            className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/90 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-800 hover:border-zinc-700 transition-all shadow-sm max-w-[200px] sm:max-w-[320px] truncate"
+            className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border bg-surface-2 px-2 sm:px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-3 hover:border-zinc-700 transition-all shadow-sm max-w-[135px] sm:max-w-[320px] truncate"
           >
             <span
               className="h-2 w-2 rounded-full shrink-0"
@@ -335,7 +335,7 @@ export function Navbar() {
       </div>
 
       {/* Right side controls */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         {/* Proxy Active Indicator */}
         {settings.useProxy && (
           <Tooltip
@@ -399,8 +399,9 @@ export function Navbar() {
         {/* Parameters & Prompt Trigger */}
         <button
           onClick={() => setSettingsOpen(true)}
-          className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-2 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-700 transition-colors"
+          className="rounded-lg border border-border bg-surface-2 p-1.5 sm:p-2 text-zinc-300 hover:bg-surface-3 hover:border-zinc-700 transition-colors"
           title="Model Parameters & System Prompt"
+          aria-label="Parameters and system prompt"
         >
           <Sliders className="h-3.5 w-3.5" />
         </button>
@@ -408,8 +409,9 @@ export function Navbar() {
         {/* Export Chat */}
         <button
           onClick={() => exportCurrentSession("markdown")}
-          className="hidden md:flex rounded-xl border border-zinc-800 bg-zinc-900/80 p-2 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-700 transition-colors"
+          className="hidden md:flex rounded-lg border border-border bg-surface-2 p-2 text-zinc-300 hover:bg-surface-3 hover:border-zinc-700 transition-colors"
           title="Export chat as Markdown"
+          aria-label="Export chat"
         >
           <Download className="h-3.5 w-3.5" />
         </button>
@@ -421,8 +423,9 @@ export function Navbar() {
               clearCurrentSession();
             }
           }}
-          className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 hover:border-red-900/40 transition-colors"
+          className="rounded-lg border border-border bg-surface-2 p-1.5 sm:p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/20 hover:border-red-900/40 transition-colors"
           title="Clear current session messages"
+          aria-label="Clear chat session"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
