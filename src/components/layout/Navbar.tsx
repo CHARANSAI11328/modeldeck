@@ -26,6 +26,7 @@ import {
   subscribeToDynamicModels,
 } from "@/lib/providers";
 import { ProviderId, ModelInfo } from "@/lib/types";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 export function Navbar() {
   const {
@@ -337,31 +338,63 @@ export function Navbar() {
       <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Proxy Active Indicator */}
         {settings.useProxy && (
-          <span
-            title="Stateless Proxy mode active for CORS resilience"
-            className="hidden lg:inline-flex items-center gap-1 rounded-full bg-blue-950/60 border border-blue-800/40 px-2 py-0.5 text-[10px] font-mono text-blue-400"
+          <Tooltip
+            side="bottom"
+            content={
+              <div className="space-y-1 text-left">
+                <div className="font-semibold text-foreground flex items-center gap-1">
+                  <Zap className="h-3 w-3 text-blue-400 fill-current" />
+                  <span>Stateless Edge Proxy</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Active for CORS resilience. Requests route via stateless Next.js edge proxy with zero key storage or logging.
+                </p>
+              </div>
+            }
           >
-            <Zap className="h-2.5 w-2.5 fill-current" />
-            Proxy On
-          </span>
+            <span
+              tabIndex={0}
+              role="status"
+              aria-label="Stateless Edge Proxy Active"
+              className="hidden lg:inline-flex items-center gap-1 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono text-blue-400 cursor-help"
+            >
+              <Zap className="h-2.5 w-2.5 fill-current" />
+              Proxy On
+            </span>
+          </Tooltip>
         )}
 
         {/* API Keys Vault Trigger */}
-        <button
-          onClick={() => setKeyVaultOpen(true)}
-          className={`flex items-center gap-1.5 rounded-xl border px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-all shadow-sm ${
-            hasKey
-              ? "border-zinc-800 bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:border-zinc-700"
-              : "border-amber-500/50 bg-amber-950/30 text-amber-300 hover:bg-amber-950/50 animate-pulse"
-          }`}
-          title="BYOK Vault - Manage encrypted API keys"
+        <Tooltip
+          side="bottom"
+          content={
+            <div className="space-y-1 text-left">
+              <div className="font-semibold text-foreground flex items-center gap-1">
+                <KeyRound className="h-3 w-3 text-amber-400" />
+                <span>BYOK Vault</span>
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-normal">
+                {configuredKeysCount} of 8 provider keys configured. Keys are encrypted with AES-GCM-256 in local storage.
+              </p>
+            </div>
+          }
         >
-          <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-          <span className="hidden sm:inline">Keys</span>
-          <span className="rounded-full bg-zinc-800 px-1.5 py-0.2 text-[10px] font-mono text-zinc-300">
-            {configuredKeysCount}/8
-          </span>
-        </button>
+          <button
+            onClick={() => setKeyVaultOpen(true)}
+            aria-label={`BYOK Key Vault: ${configuredKeysCount} of 8 keys configured`}
+            className={`flex items-center gap-1.5 rounded-lg border px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-all shadow-sm ${
+              hasKey
+                ? "border-border bg-surface-2 text-zinc-200 hover:bg-surface-3 hover:border-zinc-700"
+                : "border-amber-500/50 bg-amber-950/20 text-amber-300 hover:bg-amber-950/40"
+            }`}
+          >
+            <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+            <span className="hidden sm:inline">Keys</span>
+            <span className="rounded-md bg-surface-1 border border-border/80 px-1.5 py-0.5 text-[10px] font-mono text-zinc-300">
+              {configuredKeysCount}/8
+            </span>
+          </button>
+        </Tooltip>
 
         {/* Parameters & Prompt Trigger */}
         <button
