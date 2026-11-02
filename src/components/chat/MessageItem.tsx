@@ -42,21 +42,22 @@ export function MessageItem({
     // User message bubble
     return (
       <div className="flex justify-end py-2">
-        <div className="max-w-[85%] sm:max-w-[75%] rounded-2xl bg-zinc-800/90 border border-zinc-700/60 px-4 py-3 text-zinc-100 shadow-sm">
-          <div className="flex items-center justify-between gap-3 mb-1 text-[11px] text-zinc-400 font-medium">
+        <div className="max-w-[85%] sm:max-w-[75%] rounded-xl bg-surface-2 border border-border px-4 py-3 text-foreground shadow-sm">
+          <div className="flex items-center justify-between gap-3 mb-1.5 text-[11px] text-muted-foreground font-medium">
             <div className="flex items-center gap-1.5">
               <User className="h-3 w-3 text-zinc-400" />
               <span>You</span>
             </div>
             <button
               onClick={copyContent}
-              className="text-zinc-500 hover:text-zinc-300 transition-colors"
+              className="text-zinc-500 hover:text-zinc-300 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 rounded p-0.5"
               title="Copy prompt"
+              aria-label="Copy prompt"
             >
               {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
             </button>
           </div>
-          <div className="whitespace-pre-wrap text-[14.5px] leading-relaxed select-text">
+          <div className="whitespace-pre-wrap text-[14.5px] leading-relaxed select-text text-zinc-100">
             {message.content}
           </div>
         </div>
@@ -69,7 +70,7 @@ export function MessageItem({
     <div className="flex gap-3 py-3 group">
       {/* Provider avatar */}
       <div
-        className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border border-zinc-800 shadow-inner"
+        className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border border-border shadow-sm"
         style={{ backgroundColor: `${provider.color}15`, borderColor: `${provider.color}40` }}
       >
         {provider.id === "gemini" ? (
