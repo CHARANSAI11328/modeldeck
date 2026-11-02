@@ -65,6 +65,17 @@ export function KeyVaultModal() {
     };
   }, [isKeyVaultOpen]);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isKeyVaultOpen) {
+        setKeyVaultOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isKeyVaultOpen, setKeyVaultOpen]);
+
   if (!isKeyVaultOpen) return null;
 
   const handleKeyChange = (providerId: string, val: string) => {
@@ -244,7 +255,15 @@ export function KeyVaultModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="vault-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setKeyVaultOpen(false);
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
+    >
       <div className="relative w-full max-w-2xl rounded-2xl border border-zinc-800 bg-[#121215] shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-zinc-800/80 px-4 sm:px-6 py-4">
@@ -253,7 +272,7 @@ export function KeyVaultModal() {
               <KeyRound className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-base sm:text-lg text-zinc-100 flex items-center gap-2 flex-wrap">
+              <h3 id="vault-modal-title" className="font-semibold text-base sm:text-lg text-zinc-100 flex items-center gap-2 flex-wrap">
                 <span>BYOK Multi-Device Key Vault</span>
                 <span className="rounded-full bg-blue-950/80 border border-blue-800/60 px-2 py-0.5 text-[10px] font-mono text-blue-400">
                   Multi-Device Sync
@@ -270,7 +289,8 @@ export function KeyVaultModal() {
 
           <button
             onClick={() => setKeyVaultOpen(false)}
-            className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+            aria-label="Close API Key Vault"
+            className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <X className="h-5 w-5" />
           </button>

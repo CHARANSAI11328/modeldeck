@@ -70,15 +70,24 @@ export function Navbar() {
     ([k, v]) => v && k !== "custom-openai-compatible"
   ).length;
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectorRef.current && !selectorRef.current.contains(event.target as Node)) {
         setIsModelSelectorOpen(false);
       }
     }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsModelSelectorOpen(false);
+      }
+    }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   // Filter models dynamically based on all providers (including synced models)
@@ -120,8 +129,9 @@ export function Navbar() {
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
           onClick={() => setSidebarOpen(!isSidebarOpen)}
-          className="rounded-xl p-2 text-zinc-400 hover:bg-zinc-800/70 hover:text-zinc-200 transition-colors shrink-0"
+          className="rounded-lg p-2 text-zinc-400 hover:bg-surface-2 hover:text-zinc-200 transition-colors shrink-0 focus-visible:ring-2 focus-visible:ring-blue-500"
           title="Toggle sidebar"
+          aria-label="Toggle sidebar"
         >
           <Menu className="h-4 w-4" />
         </button>
@@ -130,8 +140,12 @@ export function Navbar() {
         <div className="relative min-w-0" ref={selectorRef}>
           <button
             data-model-trigger
+            role="combobox"
+            aria-expanded={isModelSelectorOpen}
+            aria-haspopup="listbox"
+            aria-label="Select AI provider and model"
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-            className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border bg-surface-2 px-2 sm:px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-3 hover:border-zinc-700 transition-all shadow-sm max-w-[135px] sm:max-w-[320px] truncate"
+            className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border bg-surface-2 px-2 sm:px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-3 hover:border-zinc-700 transition-all shadow-sm max-w-[135px] sm:max-w-[320px] truncate focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <span
               className="h-2 w-2 rounded-full shrink-0"

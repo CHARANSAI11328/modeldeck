@@ -91,6 +91,7 @@ export function ChatInput() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={`Message ${model.name} (${provider.shortLabel})...`}
+            aria-label={`Message ${model.name}`}
             rows={1}
             className="w-full resize-none bg-transparent px-3 py-2 text-base sm:text-sm leading-relaxed text-foreground placeholder-zinc-500 focus:outline-none max-h-40"
           />
@@ -118,7 +119,8 @@ export function ChatInput() {
             {isStreaming ? (
               <button
                 onClick={stopStreaming}
-                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-red-600 text-white shadow-md hover:bg-red-500 transition-colors"
+                aria-label="Stop generation"
+                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-red-600 text-white shadow-md hover:bg-red-500 transition-colors focus-visible:ring-2 focus-visible:ring-red-400"
                 title="Stop generation"
               >
                 <Square className="h-3.5 w-3.5 fill-current" />
@@ -127,7 +129,8 @@ export function ChatInput() {
               <button
                 disabled={!input.trim()}
                 onClick={handleSend}
-                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md hover:bg-blue-500 disabled:opacity-40 disabled:hover:bg-blue-600 transition-colors"
+                aria-label="Send message"
+                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary text-white shadow-md hover:bg-blue-600 disabled:opacity-40 disabled:hover:bg-primary transition-colors focus-visible:ring-2 focus-visible:ring-blue-400"
                 title="Send message"
               >
                 <ArrowUp className="h-4 w-4" />
