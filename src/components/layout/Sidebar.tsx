@@ -37,7 +37,7 @@ export function Sidebar() {
         className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden animate-in fade-in"
       />
 
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-800 bg-[#0c0d0f] md:static md:z-auto shadow-2xl transition-all animate-in slide-in-from-left duration-200">
+      <aside className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border bg-[#0c0d0f] md:static md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-all animate-in slide-in-from-left duration-200">
         {/* Header with New Chat & Collapse */}
         <div className="flex h-14 items-center justify-between border-b border-zinc-800 px-3.5">
           <div className="flex items-center gap-2.5 font-semibold text-sm text-zinc-100 tracking-tight">

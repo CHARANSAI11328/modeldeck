@@ -20,22 +20,22 @@ export default function Home() {
 
   return (
     <ExperienceLayer>
-    <div className="app-shell flex min-h-[100dvh] w-screen overflow-hidden">
-      {/* Sessions Sidebar */}
-      <Sidebar />
+      <div className="app-shell flex h-[100dvh] h-screen w-screen overflow-hidden bg-background text-foreground">
+        {/* Sessions Sidebar */}
+        <Sidebar />
 
-      {/* Main Chat Content Area */}
-      <div className="flex flex-1 flex-col min-w-0 h-full relative">
-        <Navbar />
-        <ChatContainer />
-        <ChatInput />
+        {/* Main Chat Content Area */}
+        <div className="flex flex-1 flex-col min-w-0 h-full relative overflow-hidden bg-background">
+          <Navbar />
+          <ChatContainer />
+          <ChatInput />
+        </div>
+
+        {/* Global Modals */}
+        <KeyVaultModal />
+        <ParametersDrawer />
+        <ApiKeyDirectoryModal />
       </div>
-
-      {/* Global Modals */}
-      <KeyVaultModal />
-      <ParametersDrawer />
-      <ApiKeyDirectoryModal />
-    </div>
     </ExperienceLayer>
   );
 }

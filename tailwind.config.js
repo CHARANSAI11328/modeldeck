@@ -39,13 +39,23 @@ module.exports = {
           DEFAULT: "var(--destructive)",
           foreground: "var(--destructive-foreground)",
         },
-        border: "var(--border)",
+        border: {
+          DEFAULT: "var(--border)",
+          subtle: "var(--border-subtle)",
+          focus: "var(--border-focus)",
+        },
         input: "var(--input)",
         ring: "var(--ring)",
+        surface: {
+          0: "var(--surface-0)",
+          1: "var(--surface-1)",
+          2: "var(--surface-2)",
+          3: "var(--surface-3)",
+        },
       },
       fontFamily: {
-        sans: ["var(--font-geist)", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
+        sans: ["var(--font-geist)", "Inter", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "JetBrains Mono", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -57,15 +67,19 @@ module.exports = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.5" },
         },
-        shimmer: {
-          "100%": {
-            transform: "translateX(100%)",
-          },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(8px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
       },
       animation: {
         "pulse-subtle": "pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        shimmer: "shimmer 2s infinite",
+        "fade-in": "fadeIn 150ms ease-out",
+        "slide-up": "slideUp 180ms ease-out",
       },
     },
   },
