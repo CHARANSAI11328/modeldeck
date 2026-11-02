@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check, RefreshCw, Bot, User, Sparkles, AlertTriangle } from "lucide-react";
+import { Copy, Check, RefreshCw, User, AlertTriangle } from "lucide-react";
 import { ChatMessage, ProviderId } from "@/lib/types";
 import { getProvider, getModel } from "@/lib/providers";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { ReasoningAccordion } from "./ReasoningAccordion";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 interface MessageItemProps {
   message: ChatMessage;
@@ -69,15 +70,8 @@ export function MessageItem({
   return (
     <div className="flex gap-3 py-3 group">
       {/* Provider avatar */}
-      <div
-        className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border border-border shadow-sm"
-        style={{ backgroundColor: `${provider.color}15`, borderColor: `${provider.color}40` }}
-      >
-        {provider.id === "gemini" ? (
-          <Sparkles className="h-4 w-4" style={{ color: provider.color }} />
-        ) : (
-          <Bot className="h-4 w-4" style={{ color: provider.color }} />
-        )}
+      <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border border-border bg-surface-1 shadow-sm">
+        <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4" />
       </div>
 
       {/* Main message content container */}

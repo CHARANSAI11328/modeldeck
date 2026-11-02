@@ -27,6 +27,7 @@ import {
 } from "@/lib/providers";
 import { ProviderId, ModelInfo } from "@/lib/types";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 export function Navbar() {
   const {
@@ -147,10 +148,7 @@ export function Navbar() {
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
             className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border bg-surface-2 px-2 sm:px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-3 hover:border-zinc-700 transition-all shadow-sm max-w-[135px] sm:max-w-[320px] truncate focus-visible:ring-2 focus-visible:ring-blue-500"
           >
-            <span
-              className="h-2 w-2 rounded-full shrink-0"
-              style={{ backgroundColor: provider.color }}
-            />
+            <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-3.5 w-3.5 shrink-0" />
             <span className="font-semibold text-zinc-100 shrink-0">{provider.shortLabel}</span>
             <span className="text-zinc-500 font-normal shrink-0">/</span>
             <span className="font-mono text-zinc-300 truncate">
@@ -255,10 +253,7 @@ export function Navbar() {
                       <div key={prov.id} className="space-y-1">
                         <div className="flex items-center justify-between px-2 py-1 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
                           <div className="flex items-center gap-1.5">
-                            <span
-                              className="h-2 w-2 rounded-full"
-                              style={{ backgroundColor: prov.color }}
-                            />
+                            <ProviderMark providerId={prov.id as ProviderId} label={prov.shortLabel} className="h-3.5 w-3.5" />
                             <span>{prov.label}</span>
                           </div>
                           {provKeyActive ? (
@@ -305,6 +300,7 @@ export function Navbar() {
                               >
                                 <div className="space-y-0.5 min-w-0 pr-2">
                                   <div className="flex items-center gap-1.5 font-medium flex-wrap">
+                                    <ProviderMark providerId={prov.id as ProviderId} modelId={m.id} label={m.name} className="h-3.5 w-3.5 shrink-0" />
                                     <span className="text-zinc-100">{m.name}</span>
                                     {m.isAccountModel && (
                                       <span className="rounded bg-blue-950/80 border border-blue-800/60 px-1 py-0.2 text-[9px] font-mono text-blue-300 flex items-center gap-0.5">

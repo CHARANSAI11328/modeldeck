@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sparkles, Bot, Square, Clock } from "lucide-react";
+import { Square, Clock } from "lucide-react";
 import { ProviderId } from "@/lib/types";
 import { getProvider, getModel } from "@/lib/providers";
 import { usePlaygroundStore } from "@/lib/store";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 interface TypingIndicatorProps {
   providerId: ProviderId;
@@ -36,18 +37,8 @@ export function TypingIndicator({
     <div className="flex gap-3 py-3 animate-in fade-in duration-200">
       {/* Animated Provider Avatar */}
       <div className="relative shrink-0">
-        <div
-          className="h-8 w-8 rounded-lg flex items-center justify-center border shadow-sm relative z-10 transition-all"
-          style={{
-            backgroundColor: `${provider.color}15`,
-            borderColor: `${provider.color}40`,
-          }}
-        >
-          {provider.id === "gemini" ? (
-            <Sparkles className="h-4 w-4" style={{ color: provider.color }} />
-          ) : (
-            <Bot className="h-4 w-4" style={{ color: provider.color }} />
-          )}
+        <div className="h-8 w-8 rounded-lg flex items-center justify-center border border-border bg-surface-1 shadow-sm relative z-10">
+          <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4" />
         </div>
       </div>
 

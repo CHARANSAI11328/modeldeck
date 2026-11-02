@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ArrowUp, Square, KeyRound, Sparkles } from "lucide-react";
+import { ArrowUp, Square, KeyRound } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import { getProvider, getModel } from "@/lib/providers";
+import { ProviderMark } from "@/components/ui/ProviderMark";
 
 export function ChatInput() {
   const [input, setInput] = useState("");
@@ -100,7 +101,7 @@ export function ChatInput() {
           <div className="flex items-center justify-between px-2 pt-1 border-t border-border/40 text-xs text-zinc-500">
           <div className="flex items-center gap-2 min-w-0 pr-2">
             <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-400 truncate">
-              <Sparkles className="h-3 w-3 text-blue-400 shrink-0" />
+              <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-3 w-3 shrink-0" />
               <span className="truncate">{model.name}</span>
             </span>
             {charCount > 0 && (
