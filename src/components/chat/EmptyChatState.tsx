@@ -1,7 +1,19 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Terminal, Code, Cpu, ExternalLink, ShieldCheck, KeyRound, ArrowRight, Zap } from "lucide-react";
+import {
+  Sparkles,
+  Terminal,
+  Code2,
+  BrainCircuit,
+  ExternalLink,
+  ShieldCheck,
+  KeyRound,
+  ArrowRight,
+  Zap,
+  Lock,
+  Layers,
+} from "lucide-react";
 import { ProviderId } from "@/lib/types";
 import { getProvider, getModel } from "@/lib/providers";
 import { usePlaygroundStore } from "@/lib/store";
@@ -19,14 +31,14 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
 
   const starterPrompts = [
     {
-      title: "Full-Stack Coding",
+      title: "Full-Stack TypeScript",
       prompt: "Write a high-performance TypeScript WebSocket worker with exponential backoff and connection pooling.",
-      icon: Code,
+      icon: Code2,
     },
     {
       title: "Reasoning & Logic",
       prompt: "Solve this riddle step by step: A farmer needs to take a wolf, goat, and cabbage across a river...",
-      icon: Cpu,
+      icon: BrainCircuit,
     },
     {
       title: "System Architecture",
@@ -36,130 +48,161 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center py-8 sm:py-12 px-2 sm:px-4 text-center max-w-xl mx-auto space-y-5 animate-in fade-in duration-300">
-      {/* Brand Icon Badge */}
-      <div
-        className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl flex items-center justify-center border shadow-xl transition-transform hover:scale-105"
-        style={{
-          backgroundColor: `${provider.color}15`,
-          borderColor: `${provider.color}40`,
-        }}
-      >
-        <Sparkles className="h-7 w-7 sm:h-8 sm:w-8" style={{ color: provider.color }} />
-      </div>
-
-      {/* Model Title & Description */}
-      <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">
-          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: provider.color }}></span>
-          <span className="font-semibold">{provider.label}</span>
-          <span className="text-zinc-500">•</span>
-          <span>{model.name}</span>
+    <div className="flex flex-col items-center justify-center py-6 sm:py-10 px-3 sm:px-4 text-center max-w-2xl mx-auto space-y-6 animate-in fade-in duration-200">
+      {/* Provider & Model Header Badge */}
+      <div className="space-y-3 max-w-full">
+        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border text-xs font-mono text-zinc-300 shadow-sm">
+          <span
+            className="h-2 w-2 rounded-full shrink-0 animate-pulse-subtle"
+            style={{ backgroundColor: provider.color }}
+          />
+          <span className="font-semibold text-foreground">{provider.label}</span>
+          <span className="text-zinc-600">/</span>
+          <span className="text-zinc-300 font-medium truncate max-w-[180px] sm:max-w-none">{model.name}</span>
         </div>
 
-        <h2 className="text-xl sm:text-2xl font-bold text-zinc-100 tracking-tight">
-          AI Testing Playground
-        </h2>
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+          ModelDeck Playground
+        </h1>
 
-        <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
           {model.description}
         </p>
 
         {model.contextWindow && (
-          <div className="flex items-center justify-center gap-2 pt-1 text-[11px] text-zinc-500 font-mono">
-            <span>Context Window: {model.contextWindow}</span>
+          <div className="flex items-center justify-center gap-2 pt-0.5 text-[11px] text-zinc-500 font-mono">
+            <span>Context: {model.contextWindow}</span>
             {model.isReasoning && (
               <>
-                <span>•</span>
-                <span className="text-purple-400 font-medium">Chain-of-Thought Supported</span>
+                <span className="text-zinc-700">•</span>
+                <span className="text-purple-400 font-medium flex items-center gap-1">
+                  <BrainCircuit className="h-3 w-3" />
+                  Reasoning Traces
+                </span>
               </>
             )}
           </div>
         )}
       </div>
 
-      {/* Simple 3-Step Guide when key is missing */}
+      {/* 3-Step Quick Setup Card */}
       {!hasKey ? (
-        <div className="w-full rounded-2xl border border-amber-500/30 bg-amber-950/20 p-4 text-left shadow-lg space-y-3">
-          <div className="flex items-center gap-2 text-amber-300 font-semibold text-xs sm:text-sm">
-            <KeyRound className="h-4 w-4 text-amber-400 shrink-0" />
-            <span>Quick Setup: 3 Easy Steps to Test {provider.label}</span>
+        <div className="w-full rounded-xl border border-border bg-surface-1 p-4 sm:p-5 text-left shadow-lg space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                <KeyRound className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm text-foreground">
+                  Quick Setup: 3 Easy Steps to Test {provider.shortLabel}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Bring your own API key to test frontier models at direct provider rates.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setKeyVaultOpen(true, providerId)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary hover:bg-blue-600 text-white font-medium text-xs px-3.5 py-1.5 transition-colors shadow-sm shrink-0"
+            >
+              <span>Setup Key</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-            <div className="rounded-xl bg-black/40 border border-amber-500/20 p-2.5 space-y-1">
-              <div className="font-medium text-amber-200 flex items-center gap-1.5">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-black font-bold text-[10px]">1</span>
-                <span>Get API Key</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Step 1 */}
+            <div className="group rounded-lg border border-border/80 bg-surface-2 p-3.5 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition-colors">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 font-mono font-semibold text-[11px] border border-blue-500/20">
+                    1
+                  </span>
+                  <KeyRound className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
+                </div>
+                <h4 className="font-medium text-xs text-foreground">Get API Key</h4>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Create or copy your key from the official {provider.shortLabel} developer console.
+                </p>
               </div>
-              <p className="text-[11px] text-zinc-400 leading-tight">
-                Click below to open {provider.shortLabel} developer console.
-              </p>
               <a
                 href={provider.getKeyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-amber-300 hover:text-amber-100 underline underline-offset-2 pt-1"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-400 hover:text-blue-300 pt-1 transition-colors"
               >
-                <span>Get Key ↗</span>
+                <span>Console link</span>
+                <ExternalLink className="h-3 w-3" />
               </a>
             </div>
 
-            <div className="rounded-xl bg-black/40 border border-amber-500/20 p-2.5 space-y-1">
-              <div className="font-medium text-amber-200 flex items-center gap-1.5">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-black font-bold text-[10px]">2</span>
-                <span>Paste in Vault</span>
+            {/* Step 2 */}
+            <div className="group rounded-lg border border-border/80 bg-surface-2 p-3.5 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition-colors">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 font-mono font-semibold text-[11px] border border-blue-500/20">
+                    2
+                  </span>
+                  <Lock className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
+                </div>
+                <h4 className="font-medium text-xs text-foreground">Paste into Vault</h4>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Encrypted at rest in browser memory with AES-GCM-256. Never stored on our servers.
+                </p>
               </div>
-              <p className="text-[11px] text-zinc-400 leading-tight">
-                Protected locally in browser with AES-GCM-256 encryption.
-              </p>
               <button
                 onClick={() => setKeyVaultOpen(true, providerId)}
-                className="inline-flex items-center gap-1 text-[11px] text-amber-300 hover:text-amber-100 underline underline-offset-2 pt-1"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-400 hover:text-blue-300 pt-1 transition-colors"
               >
-                <span>Open Vault ↗</span>
+                <span>Open Vault</span>
+                <ArrowRight className="h-3 w-3" />
               </button>
             </div>
 
-            <div className="rounded-xl bg-black/40 border border-amber-500/20 p-2.5 space-y-1">
-              <div className="font-medium text-amber-200 flex items-center gap-1.5">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-black font-bold text-[10px]">3</span>
-                <span>Test &amp; Chat</span>
+            {/* Step 3 */}
+            <div className="group rounded-lg border border-border/80 bg-surface-2 p-3.5 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition-colors">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 font-mono font-semibold text-[11px] border border-blue-500/20">
+                    3
+                  </span>
+                  <Zap className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
+                </div>
+                <h4 className="font-medium text-xs text-foreground">Test &amp; Stream</h4>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Verify key connectivity and stream tokens with live TTFT and speed metrics.
+                </p>
               </div>
-              <p className="text-[11px] text-zinc-400 leading-tight">
-                Click &quot;Test Key&quot; to verify and start streaming responses!
-              </p>
+              <span className="text-[11px] text-emerald-400/90 font-medium pt-1 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Zero markup
+              </span>
             </div>
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-1">
-            <button
-              onClick={() => setKeyVaultOpen(true, providerId)}
-              className="flex items-center gap-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs px-4 py-2 transition-colors shadow-md"
-            >
-              <span>Setup API Key Now</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
           </div>
         </div>
       ) : (
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/40 border border-emerald-800/40 text-xs text-emerald-300">
-          <Zap className="h-3.5 w-3.5 text-emerald-400" />
-          <span>{provider.label} Key Ready • Send a prompt or choose a starter below</span>
+        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-300 shadow-sm text-center">
+          <Zap className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+          <span>{provider.label} Key Ready</span>
         </div>
       )}
 
       {/* Security Assurance Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 text-[11px] text-zinc-400">
-        <ShieldCheck className="h-3.5 w-3.5 text-blue-400" />
-        <span>100% BYOK Security: Encrypted at rest (AES-GCM + PBKDF2), zero-storage backend</span>
+      <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-1 border border-border/80 text-[11px] text-zinc-400 shadow-sm text-center">
+        <ShieldCheck className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+        <span>Client-Side BYOK Security • AES-GCM-256 Encrypted</span>
       </div>
 
       {/* Starter Prompts */}
-      <div className="w-full space-y-2 text-left pt-1">
-        <span className="text-xs font-semibold text-zinc-400 px-1">
-          Quick test prompts:
-        </span>
+      <div className="w-full space-y-2.5 text-left pt-1">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+            <Sparkles className="h-3 w-3 text-blue-400" />
+            Quick Test Prompts
+          </span>
+          <span className="text-[11px] text-zinc-500 font-mono">1-click test</span>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           {starterPrompts.map((item, idx) => {
             const Icon = item.icon;
@@ -167,13 +210,13 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
               <button
                 key={idx}
                 onClick={() => sendMessage(item.prompt)}
-                className="group flex flex-col justify-between p-3 rounded-xl border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-800/60 hover:border-zinc-700 text-left transition-all"
+                className="group flex flex-col justify-between p-3.5 rounded-lg border border-border bg-surface-1 hover:bg-surface-2 hover:border-zinc-700 text-left transition-all"
               >
                 <div className="flex items-center gap-2 mb-2 text-zinc-300 group-hover:text-blue-400 text-xs font-medium">
                   <Icon className="h-3.5 w-3.5" />
                   <span>{item.title}</span>
                 </div>
-                <p className="text-[12px] text-zinc-400 leading-snug line-clamp-2">
+                <p className="text-[12px] text-muted-foreground group-hover:text-zinc-300 leading-snug line-clamp-2 transition-colors">
                   {item.prompt}
                 </p>
               </button>

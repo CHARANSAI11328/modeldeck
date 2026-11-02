@@ -1,28 +1,47 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { X, Sliders, Zap, Server, MessageSquareCode, ShieldCheck } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 
 export function ParametersDrawer() {
   const { isSettingsOpen, setSettingsOpen, settings, updateSettings } = usePlaygroundStore();
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isSettingsOpen) {
+        setSettingsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isSettingsOpen, setSettingsOpen]);
+
   if (!isSettingsOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="parameters-drawer-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setSettingsOpen(false);
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
+    >
       <div className="relative w-full max-w-lg rounded-2xl border border-zinc-800 bg-[#121215] p-5 sm:p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
           <div className="flex items-center gap-2">
             <Sliders className="h-4 w-4 text-blue-400" />
-            <h3 className="font-semibold text-base text-zinc-100">
+            <h3 id="parameters-drawer-title" className="font-semibold text-base text-zinc-100">
               Model Parameters & System Prompt
             </h3>
           </div>
           <button
             onClick={() => setSettingsOpen(false)}
-            className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+            aria-label="Close parameters drawer"
+            className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <X className="h-5 w-5" />
           </button>

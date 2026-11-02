@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, ExternalLink, KeyRound, Sparkles, ShieldCheck, ArrowRight, Search } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import { PROVIDER_LIST } from "@/lib/providers";
@@ -70,6 +70,16 @@ export function ApiKeyDirectoryModal() {
 
   const [search, setSearch] = useState("");
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isApiDirectoryOpen) {
+        setApiDirectoryOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isApiDirectoryOpen, setApiDirectoryOpen]);
+
   if (!isApiDirectoryOpen) return null;
 
   const filteredProviders = PROVIDER_LIST.filter(
@@ -80,7 +90,15 @@ export function ApiKeyDirectoryModal() {
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="api-directory-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setApiDirectoryOpen(false);
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
+    >
       <div className="relative w-full max-w-3xl rounded-2xl border border-zinc-800 bg-[#121215] shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-800/80 px-4 sm:px-6 py-4">
@@ -89,8 +107,8 @@ export function ApiKeyDirectoryModal() {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-base sm:text-lg text-zinc-100">
-                AI Provider Directory & Official API Links
+              <h3 id="api-directory-title" className="font-semibold text-base sm:text-lg text-zinc-100">
+                AI Provider Directory &amp; Official API Links
               </h3>
               <p className="text-xs text-zinc-400">
                 Direct redirect links to generate API credentials for every supported AI model
@@ -100,7 +118,8 @@ export function ApiKeyDirectoryModal() {
 
           <button
             onClick={() => setApiDirectoryOpen(false)}
-            className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+            aria-label="Close API Key Directory"
+            className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <X className="h-5 w-5" />
           </button>

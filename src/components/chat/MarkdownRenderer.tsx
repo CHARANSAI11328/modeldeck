@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Terminal, FileCode2 } from "lucide-react";
 
 interface MarkdownRendererProps {
   content: string;
@@ -9,7 +9,6 @@ interface MarkdownRendererProps {
 }
 
 export function MarkdownRenderer({ content, isStreaming }: MarkdownRendererProps) {
-  // Parse blocks: code blocks vs text blocks
   const parts = parseMarkdownIntoBlocks(content);
 
   return (
@@ -80,7 +79,6 @@ function parseMarkdownIntoBlocks(text: string): ParsedBlock[] {
         codeLanguage = fenceMatch[1] || "text";
         currentCodeLines = [];
       } else {
-        // End of code block
         blocks.push({
           type: "code",
           content: currentCodeLines.join("\n"),
@@ -98,21 +96,22 @@ function parseMarkdownIntoBlocks(text: string): ParsedBlock[] {
       continue;
     }
 
-    // Detect table row (starts and contains pipes)
-    const isTableRow = line.trim().startsWith("|") && line.trim().endsWith("|");
-    if (isTableRow) {
-      // Check if it's separator line (e.g. |---|---|)
-      const isSep = /^\|[\s-:]+\|[\s-:]*\|?/.test(line.trim());
+    // Detect markdown table rows
+    if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
+      const isSeparator = /^\|(\s*[-:]+[-| :]*)\|$/.test(line.trim());
+      if (isSeparator) {
+        continue;
+      }
+      const cells = line
+        .split("|")
+        .slice(1, -1)
+        .map((c) => c.trim());
+
       if (!inTable) {
         flushText();
         inTable = true;
-      }
-      if (!isSep) {
-        const cells = line
-          .trim()
-          .slice(1, -1)
-          .split("|")
-          .map((c) => c.trim());
+        currentTableRows = [cells];
+      } else {
         currentTableRows.push(cells);
       }
       continue;
@@ -123,7 +122,6 @@ function parseMarkdownIntoBlocks(text: string): ParsedBlock[] {
     currentTextLines.push(line);
   }
 
-  // Handle open-ended code block while streaming
   if (inCodeBlock) {
     blocks.push({
       type: "code",
@@ -139,8 +137,77 @@ function parseMarkdownIntoBlocks(text: string): ParsedBlock[] {
   return blocks;
 }
 
+// Tokenize a code line for developer-tool syntax highlighting
+function highlightCodeLine(line: string, language: string = ""): React.ReactNode {
+  if (!line) return "\n";
+
+  // Match comments, strings, keywords, booleans/null, numbers, and functions
+  const tokenRegex = /(\/\/.*$|#.*$|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b(?:const|let|var|function|return|if|else|for|while|import|export|from|default|class|extends|interface|type|async|await|try|catch|finally|throw|new|switch|case|break|continue|yield|def|lambda|print|elif|self|select|where|insert|delete|update|join|table|create|drop|alter)\b|\b(?:true|false|null|undefined|boolean|string|number|any|void|never|unknown|int|float|str|bool|list|dict)\b|\b\d+(?:\.\d+)?\b|[a-zA-Z_$][a-zA-Z0-9_$]*(?=\s*\())/g;
+
+  const elements: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tokenRegex.exec(line)) !== null) {
+    const textBefore = line.substring(lastIndex, match.index);
+    if (textBefore) {
+      elements.push(textBefore);
+    }
+
+    const token = match[0];
+    lastIndex = tokenRegex.lastIndex;
+
+    if (token.startsWith("//") || token.startsWith("#") || token.startsWith("/*")) {
+      elements.push(
+        <span key={match.index} className="text-zinc-500 italic">
+          {token}
+        </span>
+      );
+    } else if (token.startsWith('"') || token.startsWith("'") || token.startsWith("`")) {
+      elements.push(
+        <span key={match.index} className="text-emerald-400">
+          {token}
+        </span>
+      );
+    } else if (/^\d+(\.\d+)?$/.test(token)) {
+      elements.push(
+        <span key={match.index} className="text-amber-300">
+          {token}
+        </span>
+      );
+    } else if (/^(true|false|null|undefined|boolean|string|number|any|void|never|unknown|int|float|str|bool|list|dict)$/i.test(token)) {
+      elements.push(
+        <span key={match.index} className="text-sky-400 font-medium">
+          {token}
+        </span>
+      );
+    } else if (/^(const|let|var|function|return|if|else|for|while|import|export|from|default|class|extends|interface|type|async|await|try|catch|finally|throw|new|switch|case|break|continue|yield|def|lambda|print|elif|self|select|where|insert|delete|update|join|table|create|drop|alter)$/i.test(token)) {
+      elements.push(
+        <span key={match.index} className="text-purple-400 font-medium">
+          {token}
+        </span>
+      );
+    } else {
+      // Function identifier
+      elements.push(
+        <span key={match.index} className="text-blue-300">
+          {token}
+        </span>
+      );
+    }
+  }
+
+  const remainder = line.substring(lastIndex);
+  if (remainder) {
+    elements.push(remainder);
+  }
+
+  return elements;
+}
+
 function CodeBlock({ code, language }: { code: string; language?: string }) {
   const [copied, setCopied] = useState(false);
+  const lines = code.split("\n");
 
   const copyToClipboard = async () => {
     try {
@@ -152,34 +219,57 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
     }
   };
 
+  const displayLang = (language || "code").toLowerCase();
+
   return (
-    <div className="relative my-3 rounded-lg border border-zinc-800 bg-[#0d0e11] overflow-hidden text-sm shadow-md">
-      <div className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/60 px-3.5 py-1.5 text-xs text-zinc-400 font-mono">
-        <span className="uppercase tracking-wider font-semibold text-zinc-300">
-          {language || "code"}
-        </span>
+    <div className="relative my-3 rounded-lg border border-border bg-[#0a0a0d] overflow-hidden text-sm shadow-md font-mono">
+      {/* Code Header Bar */}
+      <div className="flex items-center justify-between border-b border-border bg-surface-1 px-3 py-1.5 text-xs text-zinc-400">
+        <div className="flex items-center gap-2">
+          <FileCode2 className="h-3.5 w-3.5 text-blue-400" />
+          <span className="uppercase tracking-wider font-semibold text-zinc-300 text-[11px]">
+            {displayLang}
+          </span>
+          <span className="text-[10px] text-zinc-500">
+            {lines.length} {lines.length === 1 ? "line" : "lines"}
+          </span>
+        </div>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-1.5 rounded px-2 py-0.5 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/70 transition-colors"
+          className="flex items-center gap-1.5 rounded px-2 py-0.5 text-zinc-400 hover:text-zinc-100 hover:bg-surface-2 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 text-xs"
           title="Copy code to clipboard"
+          aria-label="Copy code block"
         >
           {copied ? (
             <>
               <Check className="h-3.5 w-3.5 text-emerald-400" />
-              <span className="text-emerald-400 font-sans">Copied!</span>
+              <span className="text-emerald-400 font-sans font-medium text-[11px]">Copied!</span>
             </>
           ) : (
             <>
               <Copy className="h-3.5 w-3.5" />
-              <span className="font-sans">Copy</span>
+              <span className="font-sans text-[11px]">Copy</span>
             </>
           )}
         </button>
       </div>
-      <div className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-zinc-200">
-        <pre>
-          <code>{code}</code>
-        </pre>
+
+      {/* Code Content with Line Numbers & Syntax Highlighting */}
+      <div className="overflow-x-auto p-3 text-[13px] leading-relaxed text-zinc-200">
+        <table className="w-full border-collapse">
+          <tbody>
+            {lines.map((lineStr, lineIdx) => (
+              <tr key={lineIdx} className="hover:bg-zinc-800/20">
+                <td className="select-none pr-3 text-right text-zinc-600 text-[11px] font-mono align-top w-8">
+                  {lineIdx + 1}
+                </td>
+                <td className="pl-2 whitespace-pre font-mono text-[13px] align-top">
+                  {highlightCodeLine(lineStr, displayLang)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -191,9 +281,9 @@ function TableBlock({ rows }: { rows: string[][] }) {
   const body = rows.slice(1);
 
   return (
-    <div className="my-3 overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/30">
-      <table className="min-w-full divide-y divide-zinc-800 text-sm">
-        <thead className="bg-zinc-900/80 text-zinc-200 font-medium">
+    <div className="my-3 overflow-x-auto rounded-lg border border-border bg-surface-1">
+      <table className="min-w-full divide-y divide-border text-sm">
+        <thead className="bg-surface-2 text-zinc-200 font-medium">
           <tr>
             {header.map((cell, idx) => (
               <th key={idx} className="px-3.5 py-2 text-left font-semibold">
@@ -202,9 +292,9 @@ function TableBlock({ rows }: { rows: string[][] }) {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+        <tbody className="divide-y divide-border/60 text-zinc-300">
           {body.map((row, rIdx) => (
-            <tr key={rIdx} className="hover:bg-zinc-800/20">
+            <tr key={rIdx} className="hover:bg-surface-2/50 transition-colors">
               {row.map((cell, cIdx) => (
                 <td key={cIdx} className="px-3.5 py-2">
                   {cell}
@@ -237,7 +327,7 @@ function TextBlock({ text }: { text: string }) {
         }
         if (trimmed.startsWith("## ")) {
           return (
-            <h2 key={pIdx} className="text-lg font-semibold text-zinc-50 mt-5 mb-2.5 tracking-tight border-b border-zinc-800/60 pb-1">
+            <h2 key={pIdx} className="text-lg font-semibold text-zinc-50 mt-5 mb-2.5 tracking-tight border-b border-border pb-1">
               {renderFormattedSpan(trimmed.slice(3))}
             </h2>
           );
@@ -256,7 +346,7 @@ function TextBlock({ text }: { text: string }) {
           return (
             <blockquote
               key={pIdx}
-              className="border-l-2 border-blue-500/80 bg-blue-950/15 pl-3.5 py-1.5 my-2.5 text-zinc-300 italic rounded-r"
+              className="border-l-2 border-primary bg-blue-500/10 pl-3.5 py-1.5 my-2.5 text-zinc-300 italic rounded-r"
             >
               {quoteLines.map((ql, qIdx) => (
                 <p key={qIdx}>{renderFormattedSpan(ql)}</p>
@@ -265,24 +355,34 @@ function TextBlock({ text }: { text: string }) {
           );
         }
 
-        // Bullet or Numbered List
-        const lines = trimmed.split("\n");
-        const isList = lines.every((l) => /^\s*([*\-+]|\d+\.)\s/.test(l));
-
-        if (isList) {
+        // Unordered list
+        if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+          const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- ") || l.trim().startsWith("* "));
           return (
-            <ul key={pIdx} className="space-y-1.5 my-2 pl-5 list-disc marker:text-zinc-500">
-              {lines.map((item, lIdx) => {
-                const cleanItem = item.replace(/^\s*([*\-+]|\d+\.)\s/, "");
-                return <li key={lIdx}>{renderFormattedSpan(cleanItem)}</li>;
-              })}
+            <ul key={pIdx} className="my-2 ml-4 list-disc space-y-1 text-zinc-300">
+              {items.map((item, iIdx) => (
+                <li key={iIdx}>{renderFormattedSpan(item.replace(/^[-*]\s+/, ""))}</li>
+              ))}
             </ul>
           );
         }
 
+        // Ordered list
+        if (/^\d+\.\s/.test(trimmed)) {
+          const items = trimmed.split("\n").filter((l) => /^\d+\.\s/.test(l.trim()));
+          return (
+            <ol key={pIdx} className="my-2 ml-4 list-decimal space-y-1 text-zinc-300">
+              {items.map((item, iIdx) => (
+                <li key={iIdx}>{renderFormattedSpan(item.replace(/^\d+\.\s+/, ""))}</li>
+              ))}
+            </ol>
+          );
+        }
+
+        // Standard paragraph
         return (
-          <p key={pIdx} className="my-1.5">
-            {renderFormattedSpan(para)}
+          <p key={pIdx} className="my-1.5 leading-relaxed">
+            {renderFormattedSpan(trimmed)}
           </p>
         );
       })}
@@ -290,60 +390,61 @@ function TextBlock({ text }: { text: string }) {
   );
 }
 
+// Inline formatting: code, bold, italic, links
 function renderFormattedSpan(text: string): React.ReactNode {
-  // Simple regex parser for `inline code`, **bold**, *italic*, and [links](url)
-  const regex = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g;
-  const parts = text.split(regex);
+  // Split inline code `...`
+  const codeParts = text.split(/(`[^`]+`)/g);
 
-  return parts.map((part, i) => {
-    if (!part) return null;
-
-    // Inline code: `code`
+  return codeParts.map((part, idx) => {
     if (part.startsWith("`") && part.endsWith("`") && part.length > 2) {
       return (
         <code
-          key={i}
-          className="rounded bg-zinc-800/80 px-1.5 py-0.5 font-mono text-[12.5px] text-zinc-200 border border-zinc-700/50"
+          key={idx}
+          className="rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[13px] text-blue-300"
         >
           {part.slice(1, -1)}
         </code>
       );
     }
 
-    // Bold: **text**
-    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
-      return (
-        <strong key={i} className="font-semibold text-zinc-100">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
+    // Bold formatting **...**
+    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+    return (
+      <React.Fragment key={idx}>
+        {boldParts.map((bPart, bIdx) => {
+          if (bPart.startsWith("**") && bPart.endsWith("**") && bPart.length > 4) {
+            return (
+              <strong key={bIdx} className="font-semibold text-zinc-100">
+                {bPart.slice(2, -2)}
+              </strong>
+            );
+          }
 
-    // Italic: *text*
-    if (part.startsWith("*") && part.endsWith("*") && part.length > 2) {
-      return (
-        <em key={i} className="italic text-zinc-300">
-          {part.slice(1, -1)}
-        </em>
-      );
-    }
-
-    // Link: [title](url)
-    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-    if (linkMatch) {
-      return (
-        <a
-          key={i}
-          href={linkMatch[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
-        >
-          {linkMatch[1]}
-        </a>
-      );
-    }
-
-    return <span key={i}>{part}</span>;
+          // Link formatting [text](url)
+          const linkParts = bPart.split(/(\[[^\]]+\]\([^)]+\))/g);
+          return (
+            <React.Fragment key={bIdx}>
+              {linkParts.map((lPart, lIdx) => {
+                const linkMatch = lPart.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+                if (linkMatch) {
+                  return (
+                    <a
+                      key={lIdx}
+                      href={linkMatch[2]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
+                    >
+                      {linkMatch[1]}
+                    </a>
+                  );
+                }
+                return lPart;
+              })}
+            </React.Fragment>
+          );
+        })}
+      </React.Fragment>
+    );
   });
 }

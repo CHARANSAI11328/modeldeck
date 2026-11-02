@@ -63,39 +63,41 @@ export function ChatInput() {
   const tokenEst = Math.round(charCount / 4);
 
   return (
-    <div className="relative mx-auto w-full max-w-3xl px-3 sm:px-4 pb-3 sm:pb-4">
-      {/* Missing Key Warning Pill (if not configured) */}
-      {!hasKey && (
-        <div className="mb-2 flex items-center justify-between rounded-xl border border-amber-500/40 bg-amber-950/30 px-3 py-1.5 text-xs text-amber-300 backdrop-blur-sm animate-in fade-in">
-          <div className="flex items-center gap-2 truncate pr-2">
-            <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-            <span className="truncate">
-              <strong>{provider.label}</strong> API key required to test.
-            </span>
+    <div className="sticky bottom-0 z-20 w-full shrink-0 bg-background/95 backdrop-blur-md pt-2 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] border-t border-border/40">
+      <div className="relative mx-auto w-full max-w-3xl px-3 sm:px-4">
+        {/* Missing Key Warning Pill (if not configured) */}
+        {!hasKey && (
+          <div className="mb-2 flex items-center justify-between rounded-lg border border-amber-500/40 bg-amber-950/20 px-3 py-1.5 text-xs text-amber-300 backdrop-blur-sm animate-in fade-in">
+            <div className="flex items-center gap-2 truncate pr-2">
+              <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+              <span className="truncate">
+                <strong className="font-semibold">{provider.shortLabel}</strong> key required.
+              </span>
+            </div>
+            <button
+              onClick={() => setKeyVaultOpen(true, providerId)}
+              className="rounded-md bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1 text-amber-200 font-medium text-xs transition-colors shrink-0"
+            >
+              Enter Key ↗
+            </button>
           </div>
-          <button
-            onClick={() => setKeyVaultOpen(true, providerId)}
-            className="rounded-lg bg-amber-500/30 hover:bg-amber-500/40 px-2.5 py-1 text-amber-200 font-medium transition-colors shrink-0"
-          >
-            Enter Key ↗
-          </button>
-        </div>
-      )}
+        )}
 
-      {/* Main Input Dock */}
-      <div className="relative rounded-2xl border border-zinc-800 bg-[#121215]/95 p-2 shadow-2xl backdrop-blur-xl focus-within:border-zinc-700 focus-within:ring-1 focus-within:ring-blue-500/40 transition-all">
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={`Message ${model.name} (${provider.shortLabel})...`}
-          rows={1}
-          className="w-full resize-none bg-transparent px-3 py-2 text-[14.5px] leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none max-h-48"
-        />
+        {/* Main Input Dock */}
+        <div className="relative rounded-xl border border-border bg-surface-1 p-2 shadow-lg focus-within:border-zinc-700 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={`Message ${model.name} (${provider.shortLabel})...`}
+            aria-label={`Message ${model.name}`}
+            rows={1}
+            className="w-full resize-none bg-transparent px-3 py-2 text-base sm:text-sm leading-relaxed text-foreground placeholder-zinc-500 focus:outline-none max-h-40"
+          />
 
-        {/* Bottom controls bar inside the input dock */}
-        <div className="flex items-center justify-between px-2 pt-1 border-t border-zinc-800/40 text-xs text-zinc-500">
+          {/* Bottom controls bar inside the input dock */}
+          <div className="flex items-center justify-between px-2 pt-1 border-t border-border/40 text-xs text-zinc-500">
           <div className="flex items-center gap-2 min-w-0 pr-2">
             <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-400 truncate">
               <Sparkles className="h-3 w-3 text-blue-400 shrink-0" />
@@ -117,7 +119,8 @@ export function ChatInput() {
             {isStreaming ? (
               <button
                 onClick={stopStreaming}
-                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-red-600 text-white shadow-md hover:bg-red-500 transition-colors"
+                aria-label="Stop generation"
+                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-red-600 text-white shadow-md hover:bg-red-500 transition-colors focus-visible:ring-2 focus-visible:ring-red-400"
                 title="Stop generation"
               >
                 <Square className="h-3.5 w-3.5 fill-current" />
@@ -126,7 +129,8 @@ export function ChatInput() {
               <button
                 disabled={!input.trim()}
                 onClick={handleSend}
-                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md hover:bg-blue-500 disabled:opacity-40 disabled:hover:bg-blue-600 transition-colors"
+                aria-label="Send message"
+                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary text-white shadow-md hover:bg-blue-600 disabled:opacity-40 disabled:hover:bg-primary transition-colors focus-visible:ring-2 focus-visible:ring-blue-400"
                 title="Send message"
               >
                 <ArrowUp className="h-4 w-4" />
@@ -135,6 +139,7 @@ export function ChatInput() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
