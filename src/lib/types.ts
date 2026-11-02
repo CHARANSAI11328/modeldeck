@@ -5,6 +5,7 @@ export type ProviderId =
   | "deepseek"
   | "groq"
   | "openrouter"
+  | "demonroute"
   | "together"
   | "mistral"
   | "custom-openai-compatible";

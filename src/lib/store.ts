@@ -174,6 +174,7 @@ export const usePlaygroundStore = create<PlaygroundState>((set, get) => {
       deepseek: false,
       groq: false,
       openrouter: false,
+      demonroute: false,
       together: false,
       mistral: false,
       "custom-openai-compatible": true,
