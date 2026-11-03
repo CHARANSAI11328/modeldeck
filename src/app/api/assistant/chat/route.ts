@@ -223,11 +223,11 @@ export async function POST(req: NextRequest) {
 
     // 4. Resolve Provider and Key
     const provider = assistantConfig?.provider || "groq";
-    let model = assistantConfig?.model || "llama-3.3-70b-versatile";
+    let model = assistantConfig?.model || "openai/gpt-oss-120b";
 
-    // Fallback model map for any legacy model strings
-    if (provider === "groq" && (model.includes("gemini") || model.includes("gpt-4"))) {
-      model = "llama-3.3-70b-versatile";
+    // Map legacy or retired Groq models to active high-performance models
+    if (provider === "groq" && (model === "llama-3.3-70b-versatile" || model.includes("gemini") || model.includes("gpt-4"))) {
+      model = "openai/gpt-oss-120b";
     }
 
     let apiKey = await getServerKey(provider);
@@ -453,27 +453,51 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Groq / OpenAI / DeepSeek / OpenRouter streaming
-    const upstreamRes = await fetch(upstreamBaseUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: fullMessages,
-        stream: true,
-        temperature: 0.7,
-        max_tokens: 2048,
-      }),
-    });
+    // Groq / OpenAI / DeepSeek / OpenRouter streaming with automatic model fallback
+    const candidateModels = [model];
+    if (effectiveProvider === "groq") {
+      for (const m of ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]) {
+        if (!candidateModels.includes(m)) candidateModels.push(m);
+      }
+    }
 
-    if (!upstreamRes.ok) {
-      const errText = await upstreamRes.text();
+    let upstreamRes: Response | null = null;
+    let lastErrorText = "";
+
+    for (const candModel of candidateModels) {
+      const res = await fetch(upstreamBaseUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: candModel,
+          messages: fullMessages,
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 2048,
+        }),
+      });
+
+      if (res.ok) {
+        upstreamRes = res;
+        break;
+      } else {
+        lastErrorText = await res.text();
+        // If error is 404 / model_not_found, try next candidate model
+        if (res.status === 404 && lastErrorText.includes("model")) {
+          continue;
+        }
+        upstreamRes = res;
+        break;
+      }
+    }
+
+    if (!upstreamRes || !upstreamRes.ok) {
       return NextResponse.json(
-        { error: `Provider error (${upstreamRes.status}): ${errText}` },
-        { status: upstreamRes.status, headers: corsHeaders }
+        { error: `Provider error: ${lastErrorText || "Upstream request failed"}` },
+        { status: upstreamRes ? upstreamRes.status : 502, headers: corsHeaders }
       );
     }
 

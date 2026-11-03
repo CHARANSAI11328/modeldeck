@@ -96,7 +96,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
     avatar: "🤖",
     position: "bottom-right",
     provider: "groq",
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-120b",
     allowedDomains: ["*"],
     websiteUrl: "https://github.com",
     createdAt: Date.now(),
@@ -711,7 +711,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                               ? "gemini-2.5-flash"
                               : e.target.value === "openai"
                               ? "gpt-4o-mini"
-                              : "llama-3.3-70b-versatile",
+                              : "openai/gpt-oss-120b",
                         })
                       }
                       className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
