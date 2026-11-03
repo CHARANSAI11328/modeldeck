@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
   Sparkles,
   Terminal,
@@ -12,12 +13,15 @@ import {
   ArrowRight,
   Zap,
   Lock,
+  Bot,
+  Cpu,
   Layers,
 } from "lucide-react";
 import { ProviderId } from "@/lib/types";
 import { getProvider, getModel } from "@/lib/providers";
 import { usePlaygroundStore } from "@/lib/store";
 import { ProviderMark } from "@/components/ui/ProviderMark";
+import { Tilt3DCard } from "@/components/ui/Tilt3DCard";
 
 interface EmptyChatStateProps {
   providerId: ProviderId;
@@ -30,196 +34,173 @@ export function EmptyChatState({ providerId, modelId }: EmptyChatStateProps) {
   const model = getModel(providerId, modelId);
   const hasKey = keyStatusMap[providerId] || providerId === "custom-openai-compatible";
 
-  const starterPrompts = [
-    {
-      title: "Full-Stack TypeScript",
-      prompt: "Write a high-performance TypeScript WebSocket worker with exponential backoff and connection pooling.",
-      icon: Code2,
-    },
-    {
-      title: "Reasoning & Logic",
-      prompt: "Solve this riddle step by step: A farmer needs to take a wolf, goat, and cabbage across a river...",
-      icon: BrainCircuit,
-    },
-    {
-      title: "System Architecture",
-      prompt: "Draft an architecture specification for an ultra-low latency real-time streaming AI pipeline.",
-      icon: Terminal,
-    },
-  ];
-
   return (
-    <div className="flex flex-col items-center justify-center py-6 sm:py-10 px-3 sm:px-4 text-center max-w-2xl mx-auto space-y-6 animate-in fade-in duration-200">
-      {/* Provider & Model Header Badge */}
+    <div className="flex flex-col items-center justify-center py-6 sm:py-10 px-3 sm:px-4 text-center max-w-3xl mx-auto space-y-7 animate-in fade-in duration-300">
+      {/* Provider & Model Header Pill */}
       <div className="space-y-3 max-w-full">
-        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border text-xs font-mono text-zinc-300 shadow-sm">
+        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-1 border border-border text-xs font-mono shadow-sm">
           <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
-          <span className="font-semibold text-foreground">{provider.label}</span>
-          <span className="text-zinc-600">/</span>
-          <span className="text-zinc-300 font-medium truncate max-w-[180px] sm:max-w-none">{model.name}</span>
+          <span className="font-bold text-foreground">{provider.label}</span>
+          <span className="text-muted-foreground/60">/</span>
+          <span className="text-primary font-semibold truncate max-w-[200px] sm:max-w-none">{model.name}</span>
+          {model.isReasoning && (
+            <span className="rounded-full bg-purple-500/15 border border-purple-500/30 px-2 py-0.2 text-[10px] font-sans font-medium text-purple-600 dark:text-purple-300">
+              🧠 Reasoning
+            </span>
+          )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
-          ModelDeck Playground
+        {/* Hero Title with Gradient Text */}
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-gradient-aurora leading-tight">
+          Frontier AI Playground &amp; Studio
         </h1>
 
-        <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          {model.description}
+        <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed font-normal">
+          Test frontier LLMs with real-time token telemetry, or synthesize a personalized AI assistant for your personal website.
         </p>
-
-        {model.contextWindow && (
-          <div className="flex items-center justify-center gap-2 pt-0.5 text-[11px] text-zinc-500 font-mono">
-            <span>Context: {model.contextWindow}</span>
-            {model.isReasoning && (
-              <>
-                <span className="text-zinc-700">•</span>
-                <span className="text-purple-400 font-medium flex items-center gap-1">
-                  <BrainCircuit className="h-3 w-3" />
-                  Reasoning Traces
-                </span>
-              </>
-            )}
-          </div>
-        )}
       </div>
 
-      {/* 3-Step Quick Setup Card */}
-      {!hasKey ? (
-        <div className="w-full rounded-xl border border-border bg-surface-1 p-4 sm:p-5 text-left shadow-lg space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                <KeyRound className="h-4 w-4" />
+      {/* Interactive Bento Showcase Grid */}
+      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-left pt-2">
+        {/* Bento Card 1: Fast LPU Speedrun (Spans 2 columns) */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() =>
+            sendMessage(
+              "Write a production-ready TypeScript distributed rate limiter with Redis sliding window and graceful memory fallback."
+            )
+          }
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              sendMessage(
+                "Write a production-ready TypeScript distributed rate limiter with Redis sliding window and graceful memory fallback."
+              );
+            }
+          }}
+          className="group sm:col-span-2 relative rounded-2xl border border-border bg-gradient-to-br from-surface-1 to-surface-2 p-5 shadow-sm hover:shadow-xl hover:border-blue-500/50 transition-all cursor-pointer overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                <Zap className="h-4 w-4" />
               </div>
-              <div>
-                <h3 className="font-semibold text-sm text-foreground">
-                  Quick Setup: 3 Easy Steps to Test {provider.shortLabel}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Bring your own API key to test frontier models at direct provider rates.
-                </p>
-              </div>
+              <span className="font-bold text-sm text-foreground">LPU Lightning Speedrun</span>
             </div>
-            <button
-              onClick={() => setKeyVaultOpen(true, providerId)}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary hover:bg-blue-600 text-white font-medium text-xs px-3.5 py-1.5 transition-colors shadow-sm shrink-0"
-            >
-              <span>Setup Key</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
+            <span className="rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-blue-600 dark:text-blue-400">
+              100+ tok/s
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Step 1 */}
-            <div className="group rounded-lg border border-border/80 bg-surface-2 p-3.5 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition-colors">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 font-mono font-semibold text-[11px] border border-blue-500/20">
-                    1
-                  </span>
-                  <KeyRound className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
-                </div>
-                <h4 className="font-medium text-xs text-foreground">Get API Key</h4>
-                <p className="text-[11px] text-muted-foreground leading-normal">
-                  Create or copy your key from the official {provider.shortLabel} developer console.
-                </p>
-              </div>
-              <a
-                href={provider.getKeyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-400 hover:text-blue-300 pt-1 transition-colors"
-              >
-                <span>Console link</span>
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </div>
+          <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+            Test ultra-low latency token generation on dedicated LPUs with live Time-to-First-Token and token velocity metrics.
+          </p>
 
-            {/* Step 2 */}
-            <div className="group rounded-lg border border-border/80 bg-surface-2 p-3.5 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition-colors">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 font-mono font-semibold text-[11px] border border-blue-500/20">
-                    2
-                  </span>
-                  <Lock className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
-                </div>
-                <h4 className="font-medium text-xs text-foreground">Paste into Vault</h4>
-                <p className="text-[11px] text-muted-foreground leading-normal">
-                  Encrypted at rest in browser memory with AES-GCM-256. Never stored on our servers.
-                </p>
-              </div>
-              <button
-                onClick={() => setKeyVaultOpen(true, providerId)}
-                className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-400 hover:text-blue-300 pt-1 transition-colors"
-              >
-                <span>Open Vault</span>
-                <ArrowRight className="h-3 w-3" />
-              </button>
-            </div>
+          <div className="flex items-center justify-between text-xs text-blue-600 dark:text-blue-400 font-semibold group-hover:translate-x-0.5 transition-transform">
+            <span>Test TypeScript System Benchmark →</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </div>
+        </div>
 
-            {/* Step 3 */}
-            <div className="group rounded-lg border border-border/80 bg-surface-2 p-3.5 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition-colors">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 font-mono font-semibold text-[11px] border border-blue-500/20">
-                    3
-                  </span>
-                  <Zap className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
-                </div>
-                <h4 className="font-medium text-xs text-foreground">Test &amp; Stream</h4>
-                <p className="text-[11px] text-muted-foreground leading-normal">
-                  Verify key connectivity and stream tokens with live TTFT and speed metrics.
-                </p>
+        {/* Bento Card 2: Assistant Studio (Spans 1 column) */}
+        <Link
+          href="/studio"
+          className="group relative rounded-2xl border border-border bg-gradient-to-br from-purple-500/10 via-surface-1 to-surface-2 p-5 shadow-sm hover:shadow-xl hover:border-purple-500/50 transition-all overflow-hidden flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400">
+                <Bot className="h-4 w-4" />
               </div>
-              <span className="text-[11px] text-emerald-400/90 font-medium pt-1 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Zero markup
+              <span className="rounded-md bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 text-[10px] font-mono font-semibold text-purple-600 dark:text-purple-400">
+                NEW STUDIO
               </span>
             </div>
+
+            <h3 className="font-bold text-sm text-foreground mb-1">Portfolio Chatbot</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Auto-synthesize an AI bot for your website with 1-click GitHub PR.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-purple-600 dark:text-purple-400 font-semibold pt-4 group-hover:translate-x-0.5 transition-transform">
+            <span>Open Studio 🚀</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </div>
+        </Link>
+
+        {/* Bento Card 3: Deep Reasoning Traces (Spans 1 column) */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() =>
+            sendMessage(
+              "Solve this logic problem step by step with full rationale: A farmer must cross a river with a wolf, goat, and cabbage. His boat can only hold him and one item. If left alone, the wolf eats the goat, or the goat eats the cabbage. What is the minimum sequence of crossings?"
+            )
+          }
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              sendMessage(
+                "Solve this logic problem step by step with full rationale: A farmer must cross a river with a wolf, goat, and cabbage. His boat can only hold him and one item. If left alone, the wolf eats the goat, or the goat eats the cabbage. What is the minimum sequence of crossings?"
+              );
+            }
+          }}
+          className="group relative rounded-2xl border border-border bg-gradient-to-br from-surface-1 to-surface-2 p-5 shadow-sm hover:shadow-xl hover:border-indigo-500/50 transition-all cursor-pointer overflow-hidden flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400">
+                <BrainCircuit className="h-4 w-4" />
+              </div>
+              <span className="rounded-md bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 text-[10px] font-mono text-indigo-600 dark:text-indigo-400">
+                R1 / Thinking
+              </span>
+            </div>
+
+            <h3 className="font-bold text-sm text-foreground mb-1">Reasoning Traces</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Inspect raw chain-of-thought steps and internal model deliberations.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-indigo-600 dark:text-indigo-400 font-semibold pt-4 group-hover:translate-x-0.5 transition-transform">
+            <span>Solve Logic Riddle →</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </div>
         </div>
-      ) : (
-        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-300 shadow-sm text-center">
-          <Zap className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-          <span>{provider.label} Key Ready</span>
-        </div>
-      )}
 
-      {/* Security Assurance Badge */}
-      <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-1 border border-border/80 text-[11px] text-zinc-400 shadow-sm text-center">
-        <ShieldCheck className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-        <span>Client-Side BYOK Security • AES-GCM-256 Encrypted</span>
-      </div>
+        {/* Bento Card 4: Zero-Trust Local BYOK Vault (Spans 2 columns) */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setKeyVaultOpen(true, providerId)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              setKeyVaultOpen(true, providerId);
+            }
+          }}
+          className="group sm:col-span-2 relative rounded-2xl border border-border bg-gradient-to-br from-surface-1 to-surface-2 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500/50 transition-all cursor-pointer overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                <ShieldCheck className="h-4 w-4" />
+              </div>
+              <span className="font-bold text-sm text-foreground">Zero-Trust BYOK Vault</span>
+            </div>
+            <span className="rounded-md bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+              AES-GCM-256
+            </span>
+          </div>
 
-      {/* Starter Prompts */}
-      <div className="w-full space-y-2.5 text-left pt-1">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Sparkles className="h-3 w-3 text-blue-400" />
-            Quick Test Prompts
-          </span>
-          <span className="text-[11px] text-zinc-500 font-mono">1-click test</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          {starterPrompts.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={idx}
-                onClick={() => sendMessage(item.prompt)}
-                className="group flex flex-col justify-between p-3.5 rounded-lg border border-border bg-surface-1 hover:bg-surface-2 hover:border-zinc-700 text-left transition-all"
-              >
-                <div className="flex items-center gap-2 mb-2 text-zinc-300 group-hover:text-blue-400 text-xs font-medium">
-                  <Icon className="h-3.5 w-3.5" />
-                  <span>{item.title}</span>
-                </div>
-                <p className="text-[12px] text-muted-foreground group-hover:text-zinc-300 leading-snug line-clamp-2 transition-colors">
-                  {item.prompt}
-                </p>
-              </button>
-            );
-          })}
+          <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+            Direct provider pricing with zero subscription markup. All API credentials are encrypted with hardware AES-GCM in browser memory and never hit ModelDeck servers.
+          </p>
+
+          <div className="flex items-center justify-between text-xs text-emerald-600 dark:text-emerald-400 font-semibold group-hover:translate-x-0.5 transition-transform">
+            <span>Configure BYOK Encryption Vault ↗</span>
+            <KeyRound className="h-3.5 w-3.5" />
+          </div>
         </div>
       </div>
     </div>

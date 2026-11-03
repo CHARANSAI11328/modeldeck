@@ -42,3 +42,4 @@ export function applyTheme(theme: Theme) {
     // Ignore localStorage errors
   }
 }
+

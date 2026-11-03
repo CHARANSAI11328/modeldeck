@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check, Terminal, FileCode2 } from "lucide-react";
+import { Copy, Check, FileCode2 } from "lucide-react";
 
 interface MarkdownRendererProps {
   content: string;
@@ -12,7 +12,7 @@ export function MarkdownRenderer({ content, isStreaming }: MarkdownRendererProps
   const parts = parseMarkdownIntoBlocks(content);
 
   return (
-    <div className={`space-y-3 leading-relaxed text-zinc-200 text-[14.5px] ${isStreaming ? "streaming-cursor" : ""}`}>
+    <div className={`space-y-3.5 leading-relaxed text-foreground text-[14.5px] ${isStreaming ? "streaming-cursor" : ""}`}>
       {parts.map((block, idx) => {
         if (block.type === "code") {
           return <CodeBlock key={idx} code={block.content} language={block.language} />;
@@ -98,22 +98,21 @@ function parseMarkdownIntoBlocks(text: string): ParsedBlock[] {
 
     // Detect markdown table rows
     if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
-      const isSeparator = /^\|(\s*[-:]+[-| :]*)\|$/.test(line.trim());
-      if (isSeparator) {
+      const isDivider = /^\|\s*[-:]+[-|\s:]*\|$/.test(line.trim());
+      if (isDivider) {
+        // Skip separator row
         continue;
       }
-      const cells = line
-        .split("|")
-        .slice(1, -1)
-        .map((c) => c.trim());
-
       if (!inTable) {
         flushText();
         inTable = true;
-        currentTableRows = [cells];
-      } else {
-        currentTableRows.push(cells);
       }
+      const cells = line
+        .trim()
+        .slice(1, -1)
+        .split("|")
+        .map((c) => c.trim());
+      currentTableRows.push(cells);
       continue;
     } else if (inTable) {
       flushTable();
@@ -122,27 +121,17 @@ function parseMarkdownIntoBlocks(text: string): ParsedBlock[] {
     currentTextLines.push(line);
   }
 
-  if (inCodeBlock) {
-    blocks.push({
-      type: "code",
-      content: currentCodeLines.join("\n"),
-      language: codeLanguage,
-    });
-  } else if (inTable) {
-    flushTable();
-  } else {
-    flushText();
-  }
+  flushText();
+  flushTable();
 
   return blocks;
 }
 
-// Tokenize a code line for developer-tool syntax highlighting
-function highlightCodeLine(line: string, language: string = ""): React.ReactNode {
+// Simple regex-based syntax highlight tokenizer
+function highlightCodeLine(line: string, _lang: string): React.ReactNode {
   if (!line) return "\n";
 
-  // Match comments, strings, keywords, booleans/null, numbers, and functions
-  const tokenRegex = /(\/\/.*$|#.*$|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b(?:const|let|var|function|return|if|else|for|while|import|export|from|default|class|extends|interface|type|async|await|try|catch|finally|throw|new|switch|case|break|continue|yield|def|lambda|print|elif|self|select|where|insert|delete|update|join|table|create|drop|alter)\b|\b(?:true|false|null|undefined|boolean|string|number|any|void|never|unknown|int|float|str|bool|list|dict)\b|\b\d+(?:\.\d+)?\b|[a-zA-Z_$][a-zA-Z0-9_$]*(?=\s*\())/g;
+  const tokenRegex = /(\/\/.*$|#.*$|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b(?:const|let|var|function|return|if|else|for|while|import|export|from|default|class|extends|interface|type|async|await|try|catch|finally|throw|new|switch|case|break|continue|yield|def|lambda|print|elif|self|select|where|insert|delete|update|join|table|create|drop|alter)\b|\b(?:true|false|null|undefined|boolean|string|number|any|void|never|unknown|int|float|str|bool|list|dict)\b|\b\d+(?:\.\d+)?\b)/g;
 
   const elements: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -188,7 +177,6 @@ function highlightCodeLine(line: string, language: string = ""): React.ReactNode
         </span>
       );
     } else {
-      // Function identifier
       elements.push(
         <span key={match.index} className="text-blue-300">
           {token}
@@ -222,44 +210,51 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
   const displayLang = (language || "code").toLowerCase();
 
   return (
-    <div className="relative my-3 rounded-lg border border-border bg-[#0a0a0d] overflow-hidden text-sm shadow-md font-mono">
-      {/* Code Header Bar */}
-      <div className="flex items-center justify-between border-b border-border bg-surface-1 px-3 py-1.5 text-xs text-zinc-400">
-        <div className="flex items-center gap-2">
-          <FileCode2 className="h-3.5 w-3.5 text-blue-400" />
-          <span className="uppercase tracking-wider font-semibold text-zinc-300 text-[11px]">
-            {displayLang}
-          </span>
+    <div className="relative my-3 rounded-xl border border-zinc-700/60 bg-[#0d1117] overflow-hidden text-sm shadow-xl font-mono">
+      {/* Code Header Bar with macOS Window Dots */}
+      <div className="flex items-center justify-between border-b border-zinc-800 bg-[#161b22] px-3.5 py-2 text-xs">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
+          </div>
+          <div className="flex items-center gap-1.5 text-zinc-300">
+            <FileCode2 className="h-3.5 w-3.5 text-blue-400" />
+            <span className="uppercase tracking-wider font-semibold text-[11px]">
+              {displayLang}
+            </span>
+          </div>
           <span className="text-[10px] text-zinc-500">
             {lines.length} {lines.length === 1 ? "line" : "lines"}
           </span>
         </div>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-1.5 rounded px-2 py-0.5 text-zinc-400 hover:text-zinc-100 hover:bg-surface-2 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 text-xs"
+          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 text-xs font-sans"
           title="Copy code to clipboard"
           aria-label="Copy code block"
         >
           {copied ? (
             <>
               <Check className="h-3.5 w-3.5 text-emerald-400" />
-              <span className="text-emerald-400 font-sans font-medium text-[11px]">Copied!</span>
+              <span className="text-emerald-400 font-medium text-[11px]">Copied!</span>
             </>
           ) : (
             <>
               <Copy className="h-3.5 w-3.5" />
-              <span className="font-sans text-[11px]">Copy</span>
+              <span className="text-[11px]">Copy Code</span>
             </>
           )}
         </button>
       </div>
 
       {/* Code Content with Line Numbers & Syntax Highlighting */}
-      <div className="overflow-x-auto p-3 text-[13px] leading-relaxed text-zinc-200">
+      <div className="overflow-x-auto p-3 text-[13px] leading-relaxed text-[#e6edf3]">
         <table className="w-full border-collapse">
           <tbody>
             {lines.map((lineStr, lineIdx) => (
-              <tr key={lineIdx} className="hover:bg-zinc-800/20">
+              <tr key={lineIdx} className="hover:bg-zinc-800/30">
                 <td className="select-none pr-3 text-right text-zinc-600 text-[11px] font-mono align-top w-8">
                   {lineIdx + 1}
                 </td>
@@ -281,22 +276,22 @@ function TableBlock({ rows }: { rows: string[][] }) {
   const body = rows.slice(1);
 
   return (
-    <div className="my-3 overflow-x-auto rounded-lg border border-border bg-surface-1">
+    <div className="my-3 overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
       <table className="min-w-full divide-y divide-border text-sm">
-        <thead className="bg-surface-2 text-zinc-200 font-medium">
+        <thead className="bg-surface-2 text-foreground font-semibold">
           <tr>
             {header.map((cell, idx) => (
-              <th key={idx} className="px-3.5 py-2 text-left font-semibold">
+              <th key={idx} className="px-3.5 py-2.5 text-left text-xs uppercase tracking-wider">
                 {cell}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-border/60 text-zinc-300">
+        <tbody className="divide-y divide-border/60 text-foreground">
           {body.map((row, rIdx) => (
-            <tr key={rIdx} className="hover:bg-surface-2/50 transition-colors">
+            <tr key={rIdx} className="hover:bg-surface-2/60 transition-colors">
               {row.map((cell, cIdx) => (
-                <td key={cIdx} className="px-3.5 py-2">
+                <td key={cIdx} className="px-3.5 py-2.5 text-xs">
                   {cell}
                 </td>
               ))}
@@ -320,21 +315,21 @@ function TextBlock({ text }: { text: string }) {
         // Headings
         if (trimmed.startsWith("### ")) {
           return (
-            <h3 key={pIdx} className="text-base font-semibold text-zinc-100 mt-4 mb-2 tracking-tight">
+            <h3 key={pIdx} className="text-base font-bold text-foreground mt-4 mb-2 tracking-tight">
               {renderFormattedSpan(trimmed.slice(4))}
             </h3>
           );
         }
         if (trimmed.startsWith("## ")) {
           return (
-            <h2 key={pIdx} className="text-lg font-semibold text-zinc-50 mt-5 mb-2.5 tracking-tight border-b border-border pb-1">
+            <h2 key={pIdx} className="text-lg font-bold text-foreground mt-5 mb-2.5 tracking-tight border-b border-border/80 pb-1.5">
               {renderFormattedSpan(trimmed.slice(3))}
             </h2>
           );
         }
         if (trimmed.startsWith("# ")) {
           return (
-            <h1 key={pIdx} className="text-xl font-bold text-zinc-50 mt-5 mb-3 tracking-tight">
+            <h1 key={pIdx} className="text-xl font-extrabold text-foreground mt-5 mb-3 tracking-tight">
               {renderFormattedSpan(trimmed.slice(2))}
             </h1>
           );
@@ -346,7 +341,7 @@ function TextBlock({ text }: { text: string }) {
           return (
             <blockquote
               key={pIdx}
-              className="border-l-2 border-primary bg-blue-500/10 pl-3.5 py-1.5 my-2.5 text-zinc-300 italic rounded-r"
+              className="border-l-3 border-primary bg-primary/10 pl-3.5 py-2 my-2.5 text-foreground italic rounded-r-lg"
             >
               {quoteLines.map((ql, qIdx) => (
                 <p key={qIdx}>{renderFormattedSpan(ql)}</p>
@@ -359,7 +354,7 @@ function TextBlock({ text }: { text: string }) {
         if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
           const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- ") || l.trim().startsWith("* "));
           return (
-            <ul key={pIdx} className="my-2 ml-4 list-disc space-y-1 text-zinc-300">
+            <ul key={pIdx} className="my-2 ml-4 list-disc space-y-1.5 text-foreground">
               {items.map((item, iIdx) => (
                 <li key={iIdx}>{renderFormattedSpan(item.replace(/^[-*]\s+/, ""))}</li>
               ))}
@@ -371,7 +366,7 @@ function TextBlock({ text }: { text: string }) {
         if (/^\d+\.\s/.test(trimmed)) {
           const items = trimmed.split("\n").filter((l) => /^\d+\.\s/.test(l.trim()));
           return (
-            <ol key={pIdx} className="my-2 ml-4 list-decimal space-y-1 text-zinc-300">
+            <ol key={pIdx} className="my-2 ml-4 list-decimal space-y-1.5 text-foreground">
               {items.map((item, iIdx) => (
                 <li key={iIdx}>{renderFormattedSpan(item.replace(/^\d+\.\s+/, ""))}</li>
               ))}
@@ -381,7 +376,7 @@ function TextBlock({ text }: { text: string }) {
 
         // Standard paragraph
         return (
-          <p key={pIdx} className="my-1.5 leading-relaxed">
+          <p key={pIdx} className="my-1.5 leading-relaxed text-foreground">
             {renderFormattedSpan(trimmed)}
           </p>
         );
@@ -400,7 +395,7 @@ function renderFormattedSpan(text: string): React.ReactNode {
       return (
         <code
           key={idx}
-          className="rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[13px] text-blue-300"
+          className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[12.5px] text-blue-600 dark:text-blue-400 font-medium"
         >
           {part.slice(1, -1)}
         </code>
@@ -414,7 +409,7 @@ function renderFormattedSpan(text: string): React.ReactNode {
         {boldParts.map((bPart, bIdx) => {
           if (bPart.startsWith("**") && bPart.endsWith("**") && bPart.length > 4) {
             return (
-              <strong key={bIdx} className="font-semibold text-zinc-100">
+              <strong key={bIdx} className="font-bold text-foreground">
                 {bPart.slice(2, -2)}
               </strong>
             );
@@ -433,9 +428,10 @@ function renderFormattedSpan(text: string): React.ReactNode {
                       href={linkMatch[2]}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
+                      className="text-blue-600 dark:text-blue-400 hover:underline font-medium inline-flex items-center gap-0.5"
                     >
                       {linkMatch[1]}
+                      <span className="text-[10px]">↗</span>
                     </a>
                   );
                 }

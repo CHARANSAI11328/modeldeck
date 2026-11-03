@@ -152,12 +152,12 @@ export function Navbar() {
             className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border bg-surface-2 px-2 sm:px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-3 hover:border-zinc-700 transition-all shadow-sm max-w-[135px] sm:max-w-[320px] truncate focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-3.5 w-3.5 shrink-0" />
-            <span className="font-semibold text-zinc-100 shrink-0">{provider.shortLabel}</span>
-            <span className="text-zinc-500 font-normal shrink-0">/</span>
+            <span className="font-bold text-foreground shrink-0">{provider.shortLabel}</span>
+            <span className="text-muted-foreground font-normal shrink-0">/</span>
             <span className="font-mono text-zinc-300 truncate">
               {model.name}
             </span>
-            <ChevronDown className="h-3.5 w-3.5 text-zinc-400 shrink-0 ml-0.5" />
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-0.5" />
           </button>
 
           {/* Model Selector Popover Menu */}
@@ -414,8 +414,8 @@ export function Navbar() {
             aria-label={`BYOK Key Vault: ${configuredKeysCount} of 8 keys configured`}
             className={`flex items-center gap-1.5 rounded-lg border px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-all shadow-sm ${
               hasKey
-                ? "border-border bg-surface-2 text-zinc-200 hover:bg-surface-3 hover:border-zinc-700"
-                : "border-amber-500/50 bg-amber-950/20 text-amber-300 hover:bg-amber-950/40"
+                ? "border-border bg-surface-1 text-foreground hover:bg-surface-2"
+                : "border-amber-500/50 bg-amber-500/15 text-amber-600 dark:text-amber-300 hover:bg-amber-500/25"
             }`}
           >
             <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
@@ -429,7 +429,7 @@ export function Navbar() {
         {/* Parameters & Prompt Trigger */}
         <button
           onClick={() => setSettingsOpen(true)}
-          className="rounded-lg border border-border bg-surface-2 p-1.5 sm:p-2 text-zinc-300 hover:bg-surface-3 hover:border-zinc-700 transition-colors"
+          className="rounded-lg border border-border bg-surface-1 p-1.5 sm:p-2 text-foreground hover:bg-surface-2 transition-colors"
           title="Model Parameters & System Prompt"
           aria-label="Parameters and system prompt"
         >
@@ -439,7 +439,7 @@ export function Navbar() {
         {/* Export Chat */}
         <button
           onClick={() => exportCurrentSession("markdown")}
-          className="hidden md:flex rounded-lg border border-border bg-surface-2 p-2 text-zinc-300 hover:bg-surface-3 hover:border-zinc-700 transition-colors"
+          className="hidden md:flex rounded-lg border border-border bg-surface-1 p-2 text-foreground hover:bg-surface-2 transition-colors"
           title="Export chat as Markdown"
           aria-label="Export chat"
         >
@@ -453,7 +453,7 @@ export function Navbar() {
               clearCurrentSession();
             }
           }}
-          className="rounded-lg border border-border bg-surface-2 p-1.5 sm:p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/20 hover:border-red-900/40 transition-colors"
+          className="rounded-lg border border-border bg-surface-1 p-1.5 sm:p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
           title="Clear current session messages"
           aria-label="Clear chat session"
         >

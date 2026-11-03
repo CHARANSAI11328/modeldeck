@@ -81,7 +81,7 @@ export function Sidebar() {
                 setSidebarOpen(false);
               }
             }}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 py-2.5 px-3 text-xs font-semibold text-white shadow-md transition-all active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 py-2.5 px-3 text-xs font-bold text-white shadow-md hover:shadow-blue-500/25 transition-all active:scale-[0.98]"
           >
             <Plus className="h-4 w-4" />
             <span>New Chat Session</span>

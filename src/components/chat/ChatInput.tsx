@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ArrowUp, Square, KeyRound } from "lucide-react";
+import { ArrowUp, Square, KeyRound, Sparkles, Zap, BrainCircuit, Code2 } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import { getProvider, getModel } from "@/lib/providers";
 import { ProviderMark } from "@/components/ui/ProviderMark";
@@ -32,7 +32,7 @@ export function ChatInput() {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 220)}px`;
     }
   }, [input]);
 
@@ -60,87 +60,118 @@ export function ChatInput() {
     sendMessage(toSend);
   };
 
+  const insertPromptTag = (tag: string) => {
+    setInput((prev) => (prev ? `${prev} ${tag}` : tag));
+    textareaRef.current?.focus();
+  };
+
   const charCount = input.length;
   const tokenEst = Math.round(charCount / 4);
 
   return (
-    <div className="sticky bottom-0 z-20 w-full shrink-0 bg-background/95 backdrop-blur-md pt-2 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] border-t border-border/40">
-      <div className="relative mx-auto w-full max-w-3xl px-3 sm:px-4">
+    <div className="sticky bottom-0 z-20 w-full shrink-0 bg-background/80 backdrop-blur-xl pt-2 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] border-t border-border/60">
+      <div className="relative mx-auto w-full max-w-3xl px-3 sm:px-4 space-y-2">
         {/* Missing Key Warning Pill (if not configured) */}
         {!hasKey && (
-          <div className="mb-2 flex items-center justify-between rounded-lg border border-amber-500/40 bg-amber-950/20 px-3 py-1.5 text-xs text-amber-300 backdrop-blur-sm animate-in fade-in">
+          <div className="flex items-center justify-between rounded-xl border border-amber-500/40 bg-amber-500/10 px-3.5 py-1.5 text-xs text-amber-600 dark:text-amber-300 backdrop-blur-sm animate-in fade-in">
             <div className="flex items-center gap-2 truncate pr-2">
-              <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+              <KeyRound className="h-3.5 w-3.5 text-amber-500 shrink-0" />
               <span className="truncate">
-                <strong className="font-semibold">{provider.shortLabel}</strong> key required.
+                <strong className="font-semibold">{provider.shortLabel}</strong> key required to stream.
               </span>
             </div>
             <button
               onClick={() => setKeyVaultOpen(true, providerId)}
-              className="rounded-md bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1 text-amber-200 font-medium text-xs transition-colors shrink-0"
+              className="rounded-lg bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1 text-amber-700 dark:text-amber-200 font-medium text-xs transition-colors shrink-0"
             >
               Enter Key ↗
             </button>
           </div>
         )}
 
-        {/* Main Input Dock */}
-        <div className="relative rounded-xl border border-border bg-surface-1 p-2 shadow-lg focus-within:border-zinc-700 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
+        {/* Floating Raycast-Style Studio Dock */}
+        <div className="relative rounded-2xl glass-panel p-2.5 shadow-2xl transition-all focus-within:ring-2 focus-within:ring-blue-500/50">
+          {/* Quick Capability Tags */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 px-1">
+            <button
+              onClick={() => insertPromptTag("Benchmark this with detailed speed analysis and step-by-step breakdown:")}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-2 hover:bg-surface-3 border border-border text-[11px] text-muted-foreground hover:text-foreground font-medium transition-all shrink-0"
+            >
+              <Zap className="h-3 w-3 text-amber-500" />
+              <span>Speed Benchmark</span>
+            </button>
+            <button
+              onClick={() => insertPromptTag("Analyze this step by step, showing all reasoning and tradeoffs:")}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-2 hover:bg-surface-3 border border-border text-[11px] text-muted-foreground hover:text-foreground font-medium transition-all shrink-0"
+            >
+              <BrainCircuit className="h-3 w-3 text-indigo-500" />
+              <span>Deep Reason</span>
+            </button>
+            <button
+              onClick={() => insertPromptTag("Write production-grade, cleanly typed TypeScript code for:")}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-2 hover:bg-surface-3 border border-border text-[11px] text-muted-foreground hover:text-foreground font-medium transition-all shrink-0"
+            >
+              <Code2 className="h-3 w-3 text-blue-500" />
+              <span>TypeScript</span>
+            </button>
+          </div>
+
+          {/* Text Input Area */}
           <textarea
             ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={`Message ${model.name} (${provider.shortLabel})...`}
+            placeholder={`Ask ${model.name} (${provider.shortLabel}) anything...`}
             aria-label={`Message ${model.name}`}
             rows={1}
-            className="w-full resize-none bg-transparent px-3 py-2 text-base sm:text-sm leading-relaxed text-foreground placeholder-zinc-500 focus:outline-none max-h-40"
+            className="w-full resize-none bg-transparent px-3 py-2 text-base sm:text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none max-h-48"
           />
 
-          {/* Bottom controls bar inside the input dock */}
-          <div className="flex items-center justify-between px-2 pt-1 border-t border-border/40 text-xs text-zinc-500">
-          <div className="flex items-center gap-2 min-w-0 pr-2">
-            <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-400 truncate">
-              <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-3 w-3 shrink-0" />
-              <span className="truncate">{model.name}</span>
-            </span>
-            {charCount > 0 && (
-              <span className="hidden sm:inline font-mono text-[11px] text-zinc-500 shrink-0">
-                • {charCount} chars (~{tokenEst} tok)
+          {/* Bottom Dock Controls Bar */}
+          <div className="flex items-center justify-between px-2 pt-1.5 border-t border-border/60 text-xs">
+            <div className="flex items-center gap-2 min-w-0 pr-2">
+              <span className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground truncate">
+                <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-3 w-3 shrink-0" />
+                <span className="font-semibold text-foreground truncate">{model.name}</span>
               </span>
-            )}
-          </div>
+              {charCount > 0 && (
+                <span className="hidden sm:inline font-mono text-[11px] text-muted-foreground shrink-0">
+                  • {charCount} chars (~{tokenEst} tok)
+                </span>
+              )}
+            </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="hidden md:inline text-[11px] text-zinc-500">
-              {isStreaming ? "Stop stream" : "Enter to send • Shift+Enter newline"}
-            </span>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="hidden md:inline text-[11px] text-muted-foreground">
+                {isStreaming ? "Stop stream" : "Enter to send • Shift+Enter newline"}
+              </span>
 
-            {/* Send or Stop Button */}
-            {isStreaming ? (
-              <button
-                onClick={stopStreaming}
-                aria-label="Stop generation"
-                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-red-600 text-white shadow-md hover:bg-red-500 transition-colors focus-visible:ring-2 focus-visible:ring-red-400"
-                title="Stop generation"
-              >
-                <Square className="h-3.5 w-3.5 fill-current" />
-              </button>
-            ) : (
-              <button
-                disabled={!input.trim()}
-                onClick={handleSend}
-                aria-label="Send message"
-                className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary text-white shadow-md hover:bg-blue-600 disabled:opacity-40 disabled:hover:bg-primary transition-colors focus-visible:ring-2 focus-visible:ring-blue-400"
-                title="Send message"
-              >
-                <ArrowUp className="h-4 w-4" />
-              </button>
-            )}
+              {/* Action Button: Send or Stop */}
+              {isStreaming ? (
+                <button
+                  onClick={stopStreaming}
+                  aria-label="Stop generation"
+                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-red-600 text-white shadow-lg hover:bg-red-500 transition-all focus-visible:ring-2 focus-visible:ring-red-400"
+                  title="Stop generation"
+                >
+                  <Square className="h-3.5 w-3.5 fill-current" />
+                </button>
+              ) : (
+                <button
+                  disabled={!input.trim()}
+                  onClick={handleSend}
+                  aria-label="Send message"
+                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-blue-500/25 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 disabled:shadow-none transition-all focus-visible:ring-2 focus-visible:ring-blue-400"
+                  title="Send message"
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }
