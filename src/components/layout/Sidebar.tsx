@@ -48,22 +48,22 @@ export function Sidebar() {
         aria-hidden="true"
       />
 
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-[300px] flex-col border-r border-border bg-[#0c0d0f] md:static md:w-72 md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-transform animate-in slide-in-from-left duration-200 ease-out">
+      <aside className="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-[300px] flex-col border-r border-border bg-surface-1 md:static md:w-72 md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-transform animate-in slide-in-from-left duration-200 ease-out">
         {/* Header with New Chat & Collapse */}
-        <div className="flex h-14 items-center justify-between border-b border-zinc-800 px-3.5">
-          <div className="flex items-center gap-2.5 font-semibold text-sm text-zinc-100 tracking-tight">
+        <div className="flex h-14 items-center justify-between border-b border-border px-3.5">
+          <div className="flex items-center gap-2.5 font-semibold text-sm text-foreground tracking-tight">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-xs shadow-md">
               MD
             </div>
             <div className="flex flex-col">
-              <span className="font-bold tracking-tight text-zinc-50 leading-none">ModelDeck</span>
-              <span className="text-[10px] text-zinc-400 font-mono tracking-tight leading-none mt-1">BYOK Playground</span>
+              <span className="font-bold tracking-tight text-foreground leading-none">ModelDeck</span>
+              <span className="text-[10px] text-muted-foreground font-mono tracking-tight leading-none mt-1">BYOK Playground</span>
             </div>
           </div>
 
           <button
             onClick={() => setSidebarOpen(false)}
-            className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
+            className="rounded-lg p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
             title="Close sidebar"
           >
             <ChevronLeft className="hidden md:block h-4 w-4" />
@@ -90,7 +90,7 @@ export function Sidebar() {
 
         {/* Sessions list */}
         <div className="flex-1 overflow-y-auto px-2 space-y-1">
-          <div className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+          <div className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground0">
             History ({sessions.length})
           </div>
 
@@ -129,7 +129,7 @@ export function Sidebar() {
                   <ProviderMark providerId={session.providerId} modelId={session.modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px]">{session.title}</p>
-                    <p className="text-[10px] text-zinc-500 font-mono truncate">
+                    <p className="text-[10px] text-foreground0 font-mono truncate">
                       {provider.shortLabel} • {session.modelId}
                     </p>
                   </div>
@@ -141,7 +141,7 @@ export function Sidebar() {
                     e.stopPropagation();
                     deleteSession(session.id);
                   }}
-                  className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1 text-zinc-500 hover:text-red-400 transition-all rounded ml-1"
+                  className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1 text-foreground0 hover:text-red-400 transition-all rounded ml-1"
                   title="Delete session"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -160,7 +160,7 @@ export function Sidebar() {
             <div className="flex items-center gap-2">
               <Bot className="h-4 w-4 text-blue-400" />
               <div className="flex flex-col text-left">
-                <span className="font-semibold text-[12px] leading-tight text-zinc-100">Assistant Studio</span>
+                <span className="font-semibold text-[12px] leading-tight text-foreground">Assistant Studio</span>
                 <span className="text-[10px] text-blue-300/80 leading-tight">Embed Chatbot on Your Site</span>
               </div>
             </div>
@@ -172,13 +172,13 @@ export function Sidebar() {
           <button
             onClick={() => setApiDirectoryOpen(true)}
             aria-label="Open API Keys Directory"
-            className="flex w-full items-center justify-between rounded-lg border border-border bg-surface-1 hover:bg-surface-2 p-2.5 text-xs text-zinc-300 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500"
+            className="flex w-full items-center justify-between rounded-lg border border-border bg-surface-1 hover:bg-surface-2 p-2.5 text-xs text-foreground transition-colors focus-visible:ring-1 focus-visible:ring-blue-500"
           >
             <div className="flex items-center gap-2">
               <BookOpen className="h-3.5 w-3.5 text-blue-400" />
               <span>Get API Keys Directory</span>
             </div>
-            <ExternalLink className="h-3 w-3 text-zinc-500" />
+            <ExternalLink className="h-3 w-3 text-foreground0" />
           </button>
 
           {/* BYOK Security Status Footer */}
@@ -195,14 +195,14 @@ export function Sidebar() {
             }}
             className="flex items-center justify-between rounded-lg border border-border bg-surface-1/50 p-2.5 text-xs cursor-pointer hover:bg-surface-2 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
           >
-            <div className="flex items-center gap-2 text-zinc-300">
+            <div className="flex items-center gap-2 text-foreground">
               <ShieldCheck className="h-4 w-4 text-emerald-400" />
               <div>
-                <div className="font-medium text-[11px] text-zinc-200">Local BYOK Vault</div>
-                <div className="text-[10px] text-zinc-500 font-mono">AES-GCM-256 Protected</div>
+                <div className="font-medium text-[11px] text-foreground">Local BYOK Vault</div>
+                <div className="text-[10px] text-foreground0 font-mono">AES-GCM-256 Protected</div>
               </div>
             </div>
-            <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
+            <KeyRound className="h-3.5 w-3.5 text-muted-foreground" />
           </div>
         </div>
       </aside>

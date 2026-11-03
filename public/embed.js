@@ -232,6 +232,23 @@
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --border-color: #2e3440;
+      --code-bg: #111317;
+      --chip-bg: #1d212a;
+      --chip-text: #93c5fd;
+      --chip-border: #2e3440;
+    }
+
+    :host(.theme-light) {
+      --bg-dark: #ffffff;
+      --bg-surface: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #f8fafc;
+      --chip-bg: #f1f5f9;
+      --chip-text: #2563eb;
+      --chip-border: #cbd5e1;
     }
 
     /* Launcher Bubble */
@@ -495,9 +512,9 @@
       margin-bottom: 8px;
     }
     .md-chip {
-      background: #1d212a;
-      border: 1px solid #2e3440;
-      color: #93c5fd;
+      background: var(--chip-bg);
+      border: 1px solid var(--chip-border);
+      color: var(--chip-text);
       border-radius: 12px;
       padding: 6px 10px;
       font-size: 11.5px;
@@ -707,6 +724,10 @@
           </div>
         </div>
         <div class="md-header-actions">
+          <button class="md-btn-icon" id="mdThemeBtn" title="Toggle Light / Dark mode">
+            <svg id="mdThemeIconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="mdThemeIconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
           <button class="md-btn-icon" id="mdClearBtn" title="Clear Chat History">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
           </button>
@@ -747,6 +768,54 @@
   const chatWindow = shadow.getElementById("mdChatWindow");
   const closeBtn = shadow.getElementById("mdCloseBtn");
   const clearBtn = shadow.getElementById("mdClearBtn");
+  const themeBtn = shadow.getElementById("mdThemeBtn");
+  const themeSun = shadow.getElementById("mdThemeIconSun");
+  const themeMoon = shadow.getElementById("mdThemeIconMoon");
+
+  function getStoredOrHostTheme() {
+    try {
+      const saved = sessionStorage.getItem("modeldeck_theme_" + config.id);
+      if (saved === "light" || saved === "dark") return saved;
+      if (document.body) {
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        if (bodyBg && bodyBg !== "transparent" && bodyBg !== "rgba(0, 0, 0, 0)") {
+          const rgb = bodyBg.match(/\d+/g);
+          if (rgb && rgb.length >= 3) {
+            const brightness = (Number(rgb[0]) * 299 + Number(rgb[1]) * 587 + Number(rgb[2]) * 114) / 1000;
+            return brightness > 140 ? "light" : "dark";
+          }
+        }
+      }
+      return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    } catch {
+      return "dark";
+    }
+  }
+
+  function applyWidgetTheme(theme) {
+    if (theme === "light") {
+      host.classList.add("theme-light");
+      if (themeSun) themeSun.style.display = "none";
+      if (themeMoon) themeMoon.style.display = "block";
+    } else {
+      host.classList.remove("theme-light");
+      if (themeSun) themeSun.style.display = "block";
+      if (themeMoon) themeMoon.style.display = "none";
+    }
+    try {
+      sessionStorage.setItem("modeldeck_theme_" + config.id, theme);
+    } catch {}
+  }
+
+  let currentWidgetTheme = getStoredOrHostTheme();
+  applyWidgetTheme(currentWidgetTheme);
+
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      currentWidgetTheme = currentWidgetTheme === "light" ? "dark" : "light";
+      applyWidgetTheme(currentWidgetTheme);
+    });
+  }
   const messagesContainer = shadow.getElementById("mdMessages");
   const textarea = shadow.getElementById("mdInput");
   const sendBtn = shadow.getElementById("mdSendBtn");

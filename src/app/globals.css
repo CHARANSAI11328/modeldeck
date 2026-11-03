@@ -3,7 +3,59 @@
 @tailwind utilities;
 
 @layer base {
+  /* LIGHT MODE (Default: Apple / Linear / Vercel Minimalist Aesthetic) */
   :root {
+    --background: #f8fafc;
+    --foreground: #090d16;
+
+    --card: #ffffff;
+    --card-foreground: #090d16;
+
+    --popover: #ffffff;
+    --popover-foreground: #090d16;
+
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+
+    --accent: #2563eb;
+    --accent-foreground: #ffffff;
+
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+
+    --border: #e2e8f0;
+    --border-subtle: #f1f5f9;
+    --border-focus: #2563eb;
+    --input: #ffffff;
+    --ring: #3b82f6;
+
+    --radius: 0.625rem;
+    --user-accent: #2563eb;
+    --app-font-size: 14.5px;
+    --app-line-height: 1.6;
+
+    --surface-0: #f8fafc;
+    --surface-1: #ffffff;
+    --surface-2: #f1f5f9;
+    --surface-3: #e2e8f0;
+    --ink: #090d16;
+    --muted-ink: #64748b;
+    --line: #e2e8f0;
+
+    --glass-bg: rgba(255, 255, 255, 0.82);
+    --glass-border: rgba(226, 232, 240, 0.85);
+    --glass-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+  }
+
+  /* DARK MODE (Obsidian Slate / Deep Matte Aesthetic) */
+  .dark,
+  :root[data-theme="dark"] {
     --background: #09090b;
     --foreground: #f4f4f5;
 
@@ -34,11 +86,6 @@
     --input: #141418;
     --ring: #3b82f6;
 
-    --radius: 0.5rem;
-    --user-accent: #3b82f6;
-    --app-font-size: 14.5px;
-    --app-line-height: 1.6;
-
     --surface-0: #09090b;
     --surface-1: #111114;
     --surface-2: #18181b;
@@ -46,6 +93,10 @@
     --ink: #f4f4f5;
     --muted-ink: #a1a1aa;
     --line: #27272a;
+
+    --glass-bg: rgba(17, 17, 20, 0.82);
+    --glass-border: rgba(39, 39, 42, 0.8);
+    --glass-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
   }
 
   * {
@@ -53,7 +104,6 @@
   }
 
   html {
-    color-scheme: dark;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -68,6 +118,7 @@
     color: var(--foreground);
     font-size: var(--app-font-size);
     line-height: var(--app-line-height);
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   button, input, textarea, select {
@@ -77,8 +128,8 @@
     -webkit-tap-highlight-color: transparent;
   }
   ::selection {
-    background: rgba(59, 130, 246, 0.35);
-    color: #ffffff;
+    background: rgba(37, 99, 235, 0.25);
+    color: var(--foreground);
   }
 }
 
@@ -99,16 +150,40 @@
   overflow: hidden;
 }
 
-/* Subtle, calm background grid for developer aesthetic */
+/* Subtle, calm background grid & ambient light for modern aesthetic */
 .ambient-field {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.05), transparent 35%);
+  background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06), transparent 45%);
 }
 
-/* Custom sleek dark scrollbar */
+.dark .ambient-field {
+  background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08), transparent 35%);
+}
+
+/* Sleek Glassmorphism Panel */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* 3D Perspective Container Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.perspective-1200 {
+  perspective: 1200px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Custom sleek scrollbar for light and dark */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -119,11 +194,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #27272a;
+}
+
 ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
 }
 

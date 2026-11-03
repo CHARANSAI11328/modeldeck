@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { AssistantConfig, ScrapedSiteData } from "@/lib/assistantTypes";
+import { Tilt3DCard } from "@/components/ui/Tilt3DCard";
 import { ProviderId } from "@/lib/types";
 import { usePlaygroundStore } from "@/lib/store";
 
@@ -341,9 +342,9 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#0b0c10] text-zinc-100 overflow-hidden select-none">
+    <div className="flex flex-col h-full w-full bg-background text-foreground transition-colors overflow-hidden select-none">
       {/* Studio Top Navigation Bar */}
-      <header className="flex h-14 items-center justify-between border-b border-zinc-800/80 bg-zinc-950/80 px-4 shrink-0 backdrop-blur-md">
+      <header className="flex h-14 items-center justify-between border-b border-border bg-card/85 px-4 shrink-0 backdrop-blur-md text-foreground transition-colors">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 shadow-md">
             <Bot className="h-4 w-4 text-white" />
@@ -363,7 +364,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
 
         {/* Tabs & Close button */}
         <div className="flex items-center gap-2">
-          <div className="flex rounded-lg bg-zinc-900 border border-zinc-800 p-0.5 text-xs">
+          <div className="flex rounded-lg bg-surface-2 border border-border p-0.5 text-xs">
             <button
               onClick={() => setActiveTab("customize")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-colors ${
@@ -414,9 +415,9 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
       {/* Main Studio Body: Split View (Config & Controls on Left, Live Sandbox on Right) */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left Side: URL Extraction & Configuration Panel */}
-        <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col border-r border-zinc-800/80 bg-zinc-950/40 overflow-y-auto p-4 sm:p-5 space-y-5">
+        <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col border-r border-border bg-surface-0/60 overflow-y-auto p-4 sm:p-5 space-y-5">
           {/* Section 1: URL Analyzer & Persona Generator */}
-          <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/50 p-4 space-y-3.5 shadow-lg">
+          <div className="rounded-2xl border border-border bg-surface-1 shadow-sm p-4 space-y-3.5 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-blue-400" />
@@ -433,7 +434,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
                 placeholder="https://yourportfolio.dev or GitHub..."
-                className="flex-1 rounded-xl border border-zinc-700/80 bg-zinc-900 px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                className="flex-1 rounded-xl border border-border bg-surface-2 text-foreground px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
               />
               <button
                 onClick={() => handleScrape()}
@@ -530,7 +531,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       type="text"
                       value={assistant.name}
                       onChange={(e) => setAssistant({ ...assistant, name: e.target.value })}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
                     />
                   </div>
                   <div className="space-y-1">
@@ -539,7 +540,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       type="text"
                       value={assistant.title}
                       onChange={(e) => setAssistant({ ...assistant, title: e.target.value })}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -550,7 +551,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     rows={2}
                     value={assistant.greeting}
                     onChange={(e) => setAssistant({ ...assistant, greeting: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500 resize-none"
+                    className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500 resize-none"
                   />
                 </div>
 
@@ -562,7 +563,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     rows={4}
                     value={assistant.persona}
                     onChange={(e) => setAssistant({ ...assistant, persona: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 text-xs font-mono text-zinc-300 focus:outline-none focus:border-blue-500 resize-y"
+                    className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs font-mono text-zinc-300 focus:outline-none focus:border-blue-500 resize-y"
                   />
                 </div>
               </div>
@@ -587,7 +588,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                           updated[idx] = e.target.value;
                           setAssistant({ ...assistant, suggestedQuestions: updated });
                         }}
-                        className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
+                        className="flex-1 rounded-lg border border-border bg-surface-2 text-foreground px-2.5 py-1 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
                       />
                       <button
                         onClick={() => {
@@ -721,7 +722,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                               : "openai/gpt-oss-120b",
                         })
                       }
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
                     >
                       <option value="groq">Groq (Ultra-Fast ⚡)</option>
                       <option value="gemini">Google Gemini (Flash 3.5)</option>
@@ -737,7 +738,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       type="text"
                       value={assistant.model}
                       onChange={(e) => setAssistant({ ...assistant, model: e.target.value })}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -760,7 +761,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       })
                     }
                     placeholder="myportfolio.dev, localhost, *"
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
               </div>
@@ -770,7 +771,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
           {/* Section: Embed Script Hub */}
           {activeTab === "embed" && (
             <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/50 p-4 space-y-3">
+              <div className="rounded-2xl border border-border bg-surface-1 shadow-sm p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Code2 className="h-4 w-4 text-blue-400" />
@@ -833,7 +834,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
           {/* Section: GitHub 1-Click PR */}
           {activeTab === "github-pr" && (
             <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/50 p-4 space-y-3.5">
+              <div className="rounded-2xl border border-border bg-surface-1 shadow-sm p-4 space-y-3.5">
                 <div className="flex items-center gap-2">
                   <GitPullRequest className="h-4 w-4 text-emerald-400" />
                   <span className="font-semibold text-xs uppercase tracking-wider text-zinc-200">
@@ -851,7 +852,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     value={repoUrl}
                     onChange={(e) => setRepoUrl(e.target.value)}
                     placeholder="e.g. username/my-portfolio or https://github.com/..."
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
+                    className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
 
@@ -872,7 +873,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     value={githubToken}
                     onChange={(e) => setGithubToken(e.target.value)}
                     placeholder="ghp_xxxxxxxxxxxx..."
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
 
@@ -922,7 +923,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
         </div>
 
         {/* Right Side: Magic Live Sandbox Preview */}
-        <div className="hidden lg:flex flex-1 flex-col bg-[#07080a] relative overflow-hidden items-center justify-center p-6">
+        <div className="hidden lg:flex flex-1 flex-col bg-surface-0/80 relative overflow-hidden items-center justify-center p-6">
           {/* Device Toggle & Sandbox Header */}
           <div className="absolute top-4 left-6 right-6 flex items-center justify-between z-10 pointer-events-auto">
             <div className="flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-1.5 backdrop-blur-md shadow-md">
@@ -957,16 +958,17 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
             </div>
           </div>
 
-          {/* Browser / Device Frame Mockup */}
+          {/* Browser / Device Frame Mockup with Interactive 3D Perspective Tilt */}
+          <Tilt3DCard maxTilt={6} perspective={1400} className="w-full flex items-center justify-center">
           <div
-            className={`transition-all duration-300 flex flex-col rounded-2xl border border-zinc-800 bg-[#121318] shadow-2xl overflow-hidden relative ${
+            className={`transition-all duration-300 flex flex-col rounded-2xl border border-border bg-surface-1 shadow-2xl overflow-hidden relative ${
               previewDevice === "desktop"
                 ? "w-full max-w-[820px] h-[580px]"
                 : "w-[360px] h-[640px] rounded-[36px] border-[6px] border-zinc-800"
             }`}
           >
             {/* Browser Top Window Bar */}
-            <div className="flex h-9 items-center justify-between border-b border-zinc-800/80 bg-zinc-950/80 px-3 shrink-0">
+            <div className="flex h-9 items-center justify-between border-b border-border bg-surface-2/90 px-3 shrink-0">
               <div className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
@@ -983,7 +985,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
             </div>
 
             {/* Simulated Website Background Content */}
-            <div className="flex-1 overflow-y-auto p-8 relative flex flex-col justify-center items-center text-center space-y-4 bg-gradient-to-b from-[#121318] to-[#0c0d11]">
+            <div className="flex-1 overflow-y-auto p-8 relative flex flex-col justify-center items-center text-center space-y-4 bg-gradient-to-b from-surface-1 to-surface-2">
               <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-3 py-1 text-xs text-blue-400">
                 <Sparkles className="h-3 w-3" />
                 <span>Live Interactive Preview</span>
@@ -1148,6 +1150,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               {isSandboxChatOpen ? <X className="h-5 w-5" /> : assistant.avatar}
             </button>
           </div>
+          </Tilt3DCard>
         </div>
       </div>
     </div>

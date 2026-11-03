@@ -30,6 +30,7 @@ import {
 import { ProviderId, ModelInfo } from "@/lib/types";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ProviderMark } from "@/components/ui/ProviderMark";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 export function Navbar() {
   const {
@@ -127,7 +128,7 @@ export function Navbar() {
   }, [searchQuery, selectedCategory, syncedVersion]);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-zinc-800/80 bg-zinc-950/85 px-3 sm:px-4 backdrop-blur-md">
+    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-border bg-background/85 px-3 sm:px-4 backdrop-blur-md text-foreground transition-colors">
       {/* Left side: Hamburger toggle + Model selector */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
@@ -161,9 +162,9 @@ export function Navbar() {
 
           {/* Model Selector Popover Menu */}
           {isModelSelectorOpen && (
-            <div className="fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto top-16 sm:top-auto sm:mt-2 w-auto sm:w-[420px] rounded-2xl border border-zinc-800 bg-[#121215] shadow-2xl backdrop-blur-2xl z-50 max-h-[80vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto top-16 sm:top-auto sm:mt-2 w-auto sm:w-[420px] rounded-2xl border border-border bg-card/95 shadow-2xl backdrop-blur-2xl text-foreground z-50 max-h-[80vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
               {/* Header & Search */}
-              <div className="p-3 border-b border-zinc-800/80 space-y-2.5 bg-zinc-950/60">
+              <div className="p-3 border-b border-zinc-800/80 space-y-2.5 bg-surface-2/60">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold text-zinc-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5 text-blue-400" />
@@ -196,7 +197,7 @@ export function Navbar() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search 40+ models (e.g. R1, Claude, Flash, Groq)..."
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900/90 pl-9 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                    className="w-full rounded-xl border border-border bg-surface-1 pl-9 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
                     autoFocus
                   />
                   {searchQuery && (
@@ -232,7 +233,7 @@ export function Navbar() {
                       className={`px-2.5 py-1 rounded-lg shrink-0 transition-colors ${
                         selectedCategory === tab.id
                           ? "bg-blue-600 text-white font-medium shadow-sm"
-                          : "bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
+                          : "bg-surface-2 text-muted-foreground hover:text-foreground hover:bg-surface-3"
                       }`}
                     >
                       {tab.label}
@@ -376,6 +377,8 @@ export function Navbar() {
             </span>
           </Tooltip>
         )}
+
+        <ThemeToggle />
 
         {/* Assistant Studio Trigger */}
         <Link
