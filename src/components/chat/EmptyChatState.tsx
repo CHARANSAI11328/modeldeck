@@ -21,7 +21,6 @@ import { ProviderId } from "@/lib/types";
 import { getProvider, getModel } from "@/lib/providers";
 import { usePlaygroundStore } from "@/lib/store";
 import { ProviderMark } from "@/components/ui/ProviderMark";
-import { Tilt3DCard } from "@/components/ui/Tilt3DCard";
 
 interface EmptyChatStateProps {
   providerId: ProviderId;

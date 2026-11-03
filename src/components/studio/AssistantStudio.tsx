@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { AssistantConfig, ScrapedSiteData } from "@/lib/assistantTypes";
-import { Tilt3DCard } from "@/components/ui/Tilt3DCard";
 import { ProviderId } from "@/lib/types";
 import { usePlaygroundStore } from "@/lib/store";
 
@@ -958,10 +957,10 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
             </div>
           </div>
 
-          {/* Browser / Device Frame Mockup with Interactive 3D Perspective Tilt */}
-          <Tilt3DCard maxTilt={6} perspective={1400} className="w-full flex items-center justify-center">
+          {/* Browser / Device Frame Mockup - Clean, Lightweight & Effective */}
+          <div className="w-full flex items-center justify-center">
           <div
-            className={`transition-all duration-300 flex flex-col rounded-2xl border border-border bg-surface-1 shadow-2xl overflow-hidden relative ${
+            className={`transition-all duration-300 flex flex-col rounded-2xl border border-border bg-surface-1 shadow-lg overflow-hidden relative ${
               previewDevice === "desktop"
                 ? "w-full max-w-[820px] h-[580px]"
                 : "w-[360px] h-[640px] rounded-[36px] border-[6px] border-zinc-800"
@@ -1150,7 +1149,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               {isSandboxChatOpen ? <X className="h-5 w-5" /> : assistant.avatar}
             </button>
           </div>
-          </Tilt3DCard>
+          </div>
         </div>
       </div>
     </div>
