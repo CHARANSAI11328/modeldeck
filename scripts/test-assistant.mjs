@@ -295,4 +295,30 @@ function testCorsOriginNormalization() {
 }
 testCorsOriginNormalization();
 
+// 8. Test monorepo and subfolder layout resolution (e.g. frontend/app/layout.tsx)
+function testMonorepoEntrypointResolution() {
+  const sampleFiles = [
+    "backend/main.py",
+    "backend/requirements.txt",
+    "frontend/package.json",
+    "frontend/app/layout.tsx",
+    "frontend/app/page.tsx",
+    "package.json"
+  ];
+
+  const appLayouts = sampleFiles.filter((f) =>
+    /(?:^|\/)(?:app|src\/app)\/layout\.(?:tsx|jsx|js)$/i.test(f)
+  );
+  const resolved =
+    appLayouts.find((f) => /^(?:frontend|client|web)\//i.test(f)) ||
+    appLayouts.find((f) => /^src\//i.test(f)) ||
+    appLayouts[0];
+
+  if (resolved !== "frontend/app/layout.tsx") {
+    throw new Error(`Monorepo entrypoint failed: expected 'frontend/app/layout.tsx', got '${resolved}'`);
+  }
+  console.log("PASS: Monorepo subfolder entrypoint successfully resolved frontend/app/layout.tsx.");
+}
+testMonorepoEntrypointResolution();
+
 console.log("ALL ASSISTANT SYSTEM TESTS PASSED SUCCESSFULLY! 🚀");

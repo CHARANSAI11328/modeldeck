@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
     const branchRefData = await branchRefRes.json();
     const latestCommitSha = branchRefData.object.sha;
 
-    // 3. Inspect repository tree to locate best entrypoint file
+    // 3. Inspect repository tree to locate best entrypoint file (supporting monorepos, frontend/ subdirs, etc.)
     const treeRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/git/trees/${latestCommitSha}?recursive=1`,
       { headers: authHeaders }
@@ -126,30 +126,52 @@ export async function POST(req: NextRequest) {
         .filter((node: any) => node.type === "blob")
         .map((node: any) => node.path);
 
-      const candidates = [
-        "index.html",
-        "public/index.html",
-        "src/index.html",
-        "app/layout.tsx",
-        "src/app/layout.tsx",
-        "app/layout.jsx",
-        "src/app/layout.jsx",
-        "app/layout.js",
-        "src/app/layout.js",
-        "src/layouts/Layout.astro",
-        "src/layouts/BaseLayout.astro",
-        "src/routes/+layout.svelte",
-        "pages/_document.tsx",
-        "src/pages/_document.tsx",
-        "pages/_document.js",
-        "src/pages/_document.js",
-        "index.htm",
-      ];
-
-      for (const candidate of candidates) {
-        if (files.includes(candidate)) {
-          targetFilePath = candidate;
-          break;
+      // 1. Next.js App Router layout anywhere in the repo (prioritizing frontend/, client/, web/, or src/)
+      const appLayouts = files.filter((f) =>
+        /(?:^|\/)(?:app|src\/app)\/layout\.(?:tsx|jsx|js)$/i.test(f)
+      );
+      if (appLayouts.length > 0) {
+        targetFilePath =
+          appLayouts.find((f) => /^(?:frontend|client|web)\//i.test(f)) ||
+          appLayouts.find((f) => /^src\//i.test(f)) ||
+          appLayouts[0];
+      } else {
+        // 2. Next.js Pages Router _document
+        const pageDocs = files.filter((f) =>
+          /(?:^|\/)(?:pages|src\/pages)\/_document\.(?:tsx|jsx|js)$/i.test(f)
+        );
+        if (pageDocs.length > 0) {
+          targetFilePath =
+            pageDocs.find((f) => /^(?:frontend|client|web)\//i.test(f)) ||
+            pageDocs[0];
+        } else {
+          // 3. Astro Layouts
+          const astroLayouts = files.filter((f) =>
+            /(?:^|\/)layout\.(?:astro)$/i.test(f)
+          );
+          if (astroLayouts.length > 0) {
+            targetFilePath = astroLayouts[0];
+          } else {
+            // 4. SvelteKit layout
+            const svelteLayouts = files.filter((f) =>
+              /(?:^|\/)\+layout\.svelte$/i.test(f)
+            );
+            if (svelteLayouts.length > 0) {
+              targetFilePath = svelteLayouts[0];
+            } else {
+              // 5. HTML files (prioritizing frontend/, client/, public/, root)
+              const htmlFiles = files.filter((f) =>
+                /(?:^|\/)index\.html?$/i.test(f)
+              );
+              if (htmlFiles.length > 0) {
+                targetFilePath =
+                  htmlFiles.find((f) => /^(?:frontend|client|web)\//i.test(f)) ||
+                  htmlFiles.find((f) => /(?:public|src)\/index\.html?$/i.test(f)) ||
+                  htmlFiles.find((f) => f === "index.html") ||
+                  htmlFiles[0];
+              }
+            }
+          }
         }
       }
     }
