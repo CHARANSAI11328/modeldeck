@@ -46,6 +46,48 @@
 
   const STORAGE_KEY = `modeldeck_assistant_session_${config.id}`;
 
+  // Extract real-time live page context from the current website DOM
+  function getLivePageContext() {
+    try {
+      const title = document.title || "";
+      const descMeta =
+        document.querySelector('meta[name="description"]') ||
+        document.querySelector('meta[property="og:description"]');
+      const description = descMeta ? descMeta.getAttribute("content") || "" : "";
+
+      // Extract headings from the page
+      const headings = Array.from(document.querySelectorAll("h1, h2, h3"))
+        .map((h) => (h.innerText || "").trim())
+        .filter((t) => t.length > 2 && t.length < 90)
+        .slice(0, 15);
+
+      // Extract visible text content, stripping out script/style/assistant DOM
+      let bodySnippet = "";
+      if (document.body) {
+        const clone = document.body.cloneNode(true);
+        clone
+          .querySelectorAll("script, style, svg, noscript, [id^='modeldeck-assistant']")
+          .forEach((el) => el.remove());
+        bodySnippet = (clone.innerText || "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 4500);
+      }
+
+      return {
+        url: window.location.href,
+        hostname: window.location.hostname,
+        pathname: window.location.pathname,
+        title,
+        description,
+        headings,
+        bodySnippet,
+      };
+    } catch {
+      return null;
+    }
+  }
+
   // Helper: safe markdown renderer with strict XSS escaping
   function escapeHtml(text) {
     if (!text) return "";
@@ -834,6 +876,7 @@
           messages: messages.map((m) => ({ role: m.role, content: m.content })),
           assistantConfig: config,
           hostOrigin: window.location.origin,
+          pageContext: getLivePageContext(),
         }),
       });
 

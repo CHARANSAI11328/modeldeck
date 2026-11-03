@@ -45,6 +45,16 @@ export interface ScrapeResponse {
   error?: string;
 }
 
+export interface LivePageContext {
+  url?: string;
+  hostname?: string;
+  pathname?: string;
+  title?: string;
+  description?: string;
+  headings?: string[];
+  bodySnippet?: string;
+}
+
 export interface ChatRequestPayload {
   messages: {
     role: "user" | "assistant" | "system";
@@ -52,6 +62,7 @@ export interface ChatRequestPayload {
   }[];
   assistantConfig: Partial<AssistantConfig>;
   hostOrigin?: string;
+  pageContext?: LivePageContext;
 }
 
 export interface GitHubPrRequestPayload {

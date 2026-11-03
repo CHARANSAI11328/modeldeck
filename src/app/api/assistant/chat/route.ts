@@ -271,10 +271,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 5. Construct Prompts
-    const systemPersona =
-      assistantConfig?.persona ||
-      `You are the personal portfolio AI assistant for ${assistantConfig?.name || "the website owner"}. Answer questions accurately, professionally, and politely.`;
+    // 5. Construct Grounded, Deeply Personalized System Persona
+    const pageContext = body.pageContext;
+    const pageTitle = pageContext?.title || assistantConfig?.title || assistantConfig?.name || "this website";
+    const pageUrl = pageContext?.url || assistantConfig?.websiteUrl || "";
+    const pageDesc = pageContext?.description || "";
+    const pageHeadings = Array.isArray(pageContext?.headings) ? pageContext.headings.join(", ") : "";
+    const pageSnippet = (pageContext?.bodySnippet || "").trim();
+
+    let systemPersona = "";
+
+    if (assistantConfig?.persona && assistantConfig.persona.length > 50) {
+      systemPersona = assistantConfig.persona;
+    } else {
+      systemPersona = `You are the official dedicated AI Personal Assistant for "${pageTitle}" (${pageUrl || "this website"}). Your job is to represent this platform and assist visitors with exact knowledge of this website's features, tools, and purpose.`;
+    }
+
+    // Always inject verified live website context so the AI is deeply personalized to this exact website
+    if (pageSnippet || pageHeadings || pageDesc) {
+      systemPersona += `\n\n--- VERIFIED LIVE WEBSITE KNOWLEDGE BASE (${pageUrl || "Current Page"}) ---
+Website Title: ${pageTitle}
+Meta Description: ${pageDesc || "N/A"}
+Key Sections / Headings: ${pageHeadings || "N/A"}
+Live Page Content & Functionality:
+${pageSnippet}
+--------------------------------------------------
+
+STRICT INSTRUCTIONS FOR PERSONALIZED RESPONSES:
+1. You are the dedicated AI Assistant specifically representing "${pageTitle}".
+2. You are NOT a generic portfolio template. NEVER use placeholders like "[Your Name]" or describe generic portfolio sections unless they actually exist in the verified text above.
+3. When the visitor asks "what is this website about and how it is helpful to me?", explain SPECIFICALLY what THIS website/application does based on the real content above (e.g. if this is TRAFFIC TREND, explain Road Safety Intelligence, Accident Severity, Geographical Hotspotting, KPIs, and how analysts/researchers use it).
+4. Be engaging, accurate, clear, and professional. Guide the visitor directly to the tools, navigation, or data available on this website.
+5. Format your answers cleanly using bold titles, bullet points, and markdown when appropriate.`;
+    }
 
     const conversationTurns = sanitizeConversation(messages);
     const fullMessages = [

@@ -213,6 +213,13 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
           messages: newMessages,
           assistantConfig: assistant,
           hostOrigin: window.location.origin,
+          pageContext: {
+            url: assistant.websiteUrl || "https://my-portfolio.dev",
+            title: scrapedData?.title || assistant.name,
+            description: scrapedData?.description || "",
+            headings: scrapedData?.projects?.map((p) => p.title) || [],
+            bodySnippet: scrapedData?.extractedText || "",
+          },
         }),
       });
 

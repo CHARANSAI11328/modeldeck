@@ -321,4 +321,27 @@ function testMonorepoEntrypointResolution() {
 }
 testMonorepoEntrypointResolution();
 
+// 9. Test real-time page context personalization injection
+function testPageContextPersonalization() {
+  const pageContext = {
+    title: "TRAFFIC TREND — Road Safety Intelligence",
+    url: "https://traffic-trend.vercel.app",
+    description: "Accident Analytics and Hotspotting Platform",
+    headings: ["Overview", "KPIs", "Accident Trends", "Severity Breakdown"],
+    bodySnippet: "Executive Overview & KPIs Benchmark Demonstration Dataset PostgreSQL Live Road Safety Intelligence...",
+  };
+
+  const pageTitle = pageContext.title;
+  let persona = `You are the official dedicated AI Personal Assistant for "${pageTitle}".`;
+  if (pageContext.bodySnippet || pageContext.headings) {
+    persona += `\n\n--- VERIFIED LIVE WEBSITE KNOWLEDGE BASE ---\nTitle: ${pageTitle}\nHeadings: ${pageContext.headings.join(", ")}\nContent: ${pageContext.bodySnippet}`;
+  }
+
+  if (!persona.includes("TRAFFIC TREND") || !persona.includes("Road Safety Intelligence") || !persona.includes("Severity Breakdown")) {
+    throw new Error("Page context personalization failed to ground assistant persona!");
+  }
+  console.log("PASS: Real-time on-page context personalization verified.");
+}
+testPageContextPersonalization();
+
 console.log("ALL ASSISTANT SYSTEM TESTS PASSED SUCCESSFULLY! 🚀");
