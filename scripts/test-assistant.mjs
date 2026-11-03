@@ -80,7 +80,25 @@ function testScraperParser() {
   if (!mailMatch || mailMatch[1] !== "sarah@example.com") throw new Error("Email extraction failed");
   if (!ghMatch || !ghMatch[1].includes("sarahjenkins")) throw new Error("GitHub link extraction failed");
 
-  console.log("PASS: Scraper parser logic extracted title, author, email, og:title, and github across all attribute orders.");
+  // Test C++ and special character skills matching without regex crashing
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+  const testHtml = "I write high-performance C++ backend services and React frontend code.";
+  const testTech = ["C++", "C#", "Next.js", "React", "Go"];
+  const detected = [];
+  for (const tech of testTech) {
+    const escaped = escapeRegex(tech);
+    const startBoundary = /^\w/.test(tech) ? "\\b" : "(?:^|[^a-zA-Z0-9_])";
+    const endBoundary = /\w$/.test(tech) ? "\\b" : "(?:$|[^a-zA-Z0-9_])";
+    const pattern = new RegExp(`${startBoundary}${escaped}${endBoundary}`, "i");
+    if (pattern.test(testHtml)) detected.push(tech);
+  }
+  if (!detected.includes("C++") || !detected.includes("React") || detected.includes("C#") || detected.includes("Go")) {
+    throw new Error(`Tech detection failed: ${JSON.stringify(detected)}`);
+  }
+
+  console.log("PASS: Scraper parser logic extracted title, author, email, og:title, and C++ tech skills safely.");
 }
 testScraperParser();
 

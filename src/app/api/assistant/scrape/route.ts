@@ -66,13 +66,19 @@ async function getServerKey(provider: string): Promise<string> {
   return "";
 }
 
+// Safe regex escaper to prevent ReDoS and invalid pattern syntax
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Robust meta attribute parser regardless of property/name/content order
 function extractMetaTag(html: string, key: string): string {
-  const p1 = new RegExp(`<meta[^>]*(?:name|property)=["']${key}["'][^>]*content=["']([^"']*)["']`, "i");
+  const safeKey = escapeRegex(key);
+  const p1 = new RegExp(`<meta[^>]*(?:name|property)=["']${safeKey}["'][^>]*content=["']([^"']*)["']`, "i");
   const m1 = html.match(p1);
   if (m1) return m1[1];
 
-  const p2 = new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*(?:name|property)=["']${key}["']`, "i");
+  const p2 = new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*(?:name|property)=["']${safeKey}["']`, "i");
   const m2 = html.match(p2);
   if (m2) return m2[1];
 
@@ -156,11 +162,20 @@ function extractHtmlDetails(html: string, targetUrl: string): ScrapedSiteData {
   ];
 
   const skills: string[] = [];
-  const lowerHtml = cleanHtml.toLowerCase();
   for (const tech of commonTech) {
-    const pattern = new RegExp(`\\b${tech.replace(".", "\\.")}\\b`, "i");
-    if (pattern.test(cleanHtml)) {
-      skills.push(tech);
+    const escaped = escapeRegex(tech);
+    const startBoundary = /^\w/.test(tech) ? "\\b" : "(?:^|[^a-zA-Z0-9_])";
+    const endBoundary = /\w$/.test(tech) ? "\\b" : "(?:$|[^a-zA-Z0-9_])";
+    try {
+      const pattern = new RegExp(`${startBoundary}${escaped}${endBoundary}`, "i");
+      if (pattern.test(cleanHtml)) {
+        skills.push(tech);
+      }
+    } catch {
+      // Fallback safe string match if regex fails
+      if (cleanHtml.toLowerCase().includes(tech.toLowerCase())) {
+        skills.push(tech);
+      }
     }
   }
 
