@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Link from "next/link";
 import {
   Plus,
   Trash2,
@@ -10,6 +11,7 @@ import {
   ChevronLeft,
   BookOpen,
   X,
+  Bot,
 } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import { getProvider } from "@/lib/providers";
@@ -151,6 +153,22 @@ export function Sidebar() {
 
         {/* Directory & Security Footer */}
         <div className="p-3 border-t border-border space-y-2">
+          <Link
+            href="/studio"
+            className="flex w-full items-center justify-between rounded-lg border border-blue-500/30 bg-blue-950/20 hover:bg-blue-900/30 p-2.5 text-xs text-blue-300 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 shadow-sm"
+          >
+            <div className="flex items-center gap-2">
+              <Bot className="h-4 w-4 text-blue-400" />
+              <div className="flex flex-col text-left">
+                <span className="font-semibold text-[12px] leading-tight text-zinc-100">Assistant Studio</span>
+                <span className="text-[10px] text-blue-300/80 leading-tight">Embed Chatbot on Your Site</span>
+              </div>
+            </div>
+            <span className="rounded bg-blue-500/20 border border-blue-400/30 px-1.5 py-0.5 text-[9px] font-mono text-blue-300">
+              NEW
+            </span>
+          </Link>
+
           <button
             onClick={() => setApiDirectoryOpen(true)}
             aria-label="Open API Keys Directory"

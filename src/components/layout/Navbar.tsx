@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import Link from "next/link";
 import {
   KeyRound,
   Sliders,
@@ -17,6 +18,7 @@ import {
   Code,
   Bolt,
   X,
+  Bot,
 } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import {
@@ -374,6 +376,20 @@ export function Navbar() {
             </span>
           </Tooltip>
         )}
+
+        {/* Assistant Studio Trigger */}
+        <Link
+          href="/studio"
+          className="flex items-center gap-1.5 rounded-lg border border-blue-500/30 bg-blue-950/20 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-blue-300 hover:bg-blue-900/40 hover:border-blue-400 transition-all shadow-sm"
+          title="Create & Embed Personalized AI Chatbot for your website"
+          aria-label="Assistant Studio"
+        >
+          <Bot className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+          <span className="hidden sm:inline">Assistant Studio</span>
+          <span className="rounded bg-blue-500/20 px-1 py-0.2 text-[9px] font-mono text-blue-300">
+            NEW
+          </span>
+        </Link>
 
         {/* API Keys Vault Trigger */}
         <Tooltip
