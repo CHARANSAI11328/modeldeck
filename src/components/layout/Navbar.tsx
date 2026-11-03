@@ -221,6 +221,7 @@ export function Navbar() {
                     { id: "groq", label: "Groq" },
                     { id: "openrouter", label: "OpenRouter" },
                     { id: "demonroute", label: "Demon Route" },
+                    { id: "cheaperinference", label: "Cheaper Inference" },
                     { id: "together", label: "Together" },
                     { id: "mistral", label: "Mistral" },
                   ].map((tab) => (

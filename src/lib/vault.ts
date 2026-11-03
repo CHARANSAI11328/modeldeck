@@ -327,6 +327,7 @@ export class BYOKVault {
       "groq",
       "openrouter",
       "demonroute",
+      "cheaperinference",
       "together",
       "mistral",
       "custom-openai-compatible",

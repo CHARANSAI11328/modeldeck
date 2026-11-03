@@ -36,6 +36,7 @@ Deploy with 1-click to **Vercel**, **Railway**, **Render**, or **Docker** and te
 | **Groq (LPU Speed)** | [https://console.groq.com/keys](https://console.groq.com/keys) | `gsk_` | **Generous Free Tier** for Llama 3.3 70B & DeepSeek R1 Distill (300–800+ tok/s) |
 | **OpenRouter** | [https://openrouter.ai/keys](https://openrouter.ai/keys) | `sk-or-` | Access 300+ models with 1 key; includes free open-weight models (`:free`) |
 | **Demon Route** | [https://demonroute.com/login](https://demonroute.com/login) | N/A | Prepaid, hard stop at $0; some free models (Dolphin 3.0 8B, Hermes 3 8B) |
+| **Cheaper Inference** | [https://cheaperinference.com](https://cheaperinference.com) | `ci_live_` | Prepaid, no free tier; minimum top-up $5 |
 | **Together AI** | [https://api.together.xyz/settings/api-keys](https://api.together.xyz/settings/api-keys) | `together-` | $5 in free credits for new developer signups |
 | **Mistral AI** | [https://console.mistral.ai/api-keys/](https://console.mistral.ai/api-keys/) | N/A | Free experimentation tier for Codestral, Mistral Small & Large |
 | **Custom / Local** | [https://github.com/ollama/ollama](https://github.com/ollama/ollama) | N/A | **100% Free & Private**, runs on local GPU/CPU (Ollama, vLLM) |

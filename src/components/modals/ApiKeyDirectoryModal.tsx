@@ -49,6 +49,11 @@ const PROVIDER_GUIDES: Record<string, ProviderGuide> = {
     signupTip: "Visit demonroute.com, sign in, and create a key. Standard OpenAI-compatible Bearer key; one key reaches 1,300+ open-weight models.",
     freeTier: "Prepaid (crypto or card) with a hard stop at $0. Some models are free, e.g. Dolphin 3.0 8B and Hermes 3 8B.",
   },
+  cheaperinference: {
+    id: "cheaperinference",
+    signupTip: "Visit cheaperinference.com, sign up, and create an API key. Standard OpenAI-compatible Bearer key; one key reaches models from several labs.",
+    freeTier: "No free tier. Prepaid balance; the minimum top-up is $5.",
+  },
   together: {
     id: "together",
     signupTip: "Visit Together AI Settings > API Keys > Generate Key. Dedicated clusters for open models.",

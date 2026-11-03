@@ -6,6 +6,7 @@ export type ProviderId =
   | "groq"
   | "openrouter"
   | "demonroute"
+  | "cheaperinference"
   | "together"
   | "mistral"
   | "custom-openai-compatible";
