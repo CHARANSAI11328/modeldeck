@@ -18,10 +18,11 @@ export default function PlaygroundPage() {
   }, [refreshKeyStatus]);
 
   return (
-    <div className="app-shell flex h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground relative selection:bg-blue-500/20 selection:text-foreground">
+    <div className="app-shell flex h-[100dvh] w-full max-w-full overflow-hidden bg-[#0c0807] text-[#faf5ef] relative selection:bg-[#ff5722]/30 selection:text-white">
       {/* Luminous atmospheric background layers */}
       <div className="ambient-field" aria-hidden="true" />
       <div className="ambient-mesh-glow" aria-hidden="true" />
+      <div className="site-noise" aria-hidden="true" />
 
       {/* Sessions Sidebar */}
       <Sidebar />

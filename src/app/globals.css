@@ -56,8 +56,8 @@
   /* DARK MODE (Deep Obsidian Canvas, Linear/Vanguard Agency Grade) */
   .dark,
   :root[data-theme="dark"] {
-    --background: #08090d;
-    --foreground: #f8fafc;
+    --background: #0c0807;
+    --foreground: #faf5ef;
 
     --card: #0e1117;
     --card-foreground: #f8fafc;
@@ -65,38 +65,38 @@
     --popover: #12151c;
     --popover-foreground: #f8fafc;
 
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
+    --primary: #ff5722;
+    --primary-foreground: #1a0a04;
 
     --secondary: #161922;
     --secondary-foreground: #e2e8f0;
 
     --muted: #161922;
-    --muted-foreground: #94a3b8;
+    --muted-foreground: #b8a79b;
 
-    --accent: #6366f1;
+    --accent: #ff7043;
     --accent-foreground: #ffffff;
 
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
 
-    --border: #1f2430;
-    --border-subtle: #171b24;
+    --border: rgba(255, 203, 169, 0.14);
+    --border-subtle: rgba(255, 203, 169, 0.08);
     --border-focus: #3b82f6;
     --input: #12151c;
-    --ring: #3b82f6;
+    --ring: #ff5722;
 
-    --surface-0: #08090d;
-    --surface-1: #0e1117;
-    --surface-2: #161922;
-    --surface-3: #212634;
-    --ink: #f8fafc;
-    --muted-ink: #94a3b8;
+    --surface-0: #0c0807;
+    --surface-1: #160e0a;
+    --surface-2: #221510;
+    --surface-3: #321f18;
+    --ink: #faf5ef;
+    --muted-ink: #a99a91;
     --line: #1f2430;
 
-    --glass-bg: rgba(14, 17, 23, 0.82);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(22, 14, 10, 0.85);
+    --glass-border: rgba(255, 203, 169, 0.16);
+    --glass-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 87, 34, 0.08);
   }
 
   * {
@@ -200,8 +200,8 @@
 
 .dark .ambient-mesh-glow {
   background: 
-    radial-gradient(circle 750px at 90% 10%, rgba(59, 130, 246, 0.12), transparent 70%),
-    radial-gradient(circle 600px at 10% 90%, rgba(99, 102, 241, 0.08), transparent 70%);
+    radial-gradient(circle 750px at 90% 10%, rgba(255, 87, 34, 0.14), transparent 70%),
+    radial-gradient(circle 600px at 10% 90%, rgba(234, 88, 12, 0.10), transparent 70%);
 }
 
 /* Double-Bezel (Doppelrand) Architecture: Machine-crafted hardware enclosure */

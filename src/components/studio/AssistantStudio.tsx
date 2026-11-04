@@ -341,17 +341,17 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-background text-foreground transition-colors overflow-hidden select-none">
+    <div className="flex flex-col h-full w-full bg-[#0c0807] text-[#faf5ef] transition-colors overflow-hidden select-none">
       {/* Studio Header Bar */}
-      <header className="flex h-14 items-center justify-between border-b border-border/80 bg-surface-1/90 px-4 sm:px-6 shrink-0 backdrop-blur-xl text-foreground transition-colors z-20">
+      <header className="flex h-14 items-center justify-between border-b border-white/10 bg-[#140d0a]/80 px-4 sm:px-6 shrink-0 backdrop-blur-xl text-[#faf5ef] transition-colors z-20">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 shadow-md shadow-blue-500/20 text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#ff5722] to-[#ea580c] shadow-md shadow-[#ff5722]/20 text-[#140a06]">
             <Bot className="h-4.5 w-4.5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm text-foreground tracking-tight">Assistant Studio</span>
-              <span className="rounded-full bg-blue-500/10 border border-blue-500/25 px-2 py-0.5 text-[10px] font-mono font-medium text-blue-600 dark:text-blue-400">
+              <span className="rounded-full bg-[#ff5722]/10 border border-[#ff5722]/25 px-2 py-0.5 text-[10px] font-mono font-medium text-[#ff8a50]">
                 AI Agent Generator
               </span>
             </div>
@@ -363,12 +363,12 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
 
         {/* Studio Tabs & Actions */}
         <div className="flex items-center gap-2">
-          <div className="flex rounded-xl bg-surface-2 border border-border p-1 text-xs">
+          <div className="flex rounded-xl border border-white/10 bg-[#140d0a]/80 p-1 text-xs">
             <button
               onClick={() => setActiveTab("customize")}
               className={`btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeTab === "customize"
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -379,7 +379,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               onClick={() => setActiveTab("embed")}
               className={`btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeTab === "embed"
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -390,7 +390,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               onClick={() => setActiveTab("github-pr")}
               className={`btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeTab === "github-pr"
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -414,13 +414,13 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
       {/* Main Studio Body: Split View (Controls Left, Device Sandbox Right) */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left Side: URL Extraction & Configuration Panel */}
-        <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col border-r border-border bg-surface-0/60 overflow-y-auto p-4 sm:p-5 space-y-4">
+        <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col border-r border-white/10 bg-[#0c0807]/60 overflow-y-auto p-4 sm:p-5 space-y-4">
           {/* Section 1: URL Analyzer & Persona Generator with Double-Bezel */}
           <div className="double-bezel">
             <div className="double-bezel-inner p-4 space-y-3.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ff5722]/10 text-[#ff8a50] border border-[#ff5722]/20">
                     <Globe className="h-3.5 w-3.5" />
                   </div>
                   <span className="font-bold text-xs uppercase tracking-wider text-foreground">
@@ -436,12 +436,12 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://yourportfolio.dev or GitHub..."
-                  className="flex-1 rounded-xl border border-border bg-surface-2 text-foreground px-3.5 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-colors"
+                  className="flex-1 rounded-xl border border-white/10 bg-[#180f0b] text-[#faf5ef] px-3.5 py-2 text-xs placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ff5722] transition-colors"
                 />
                 <button
                   onClick={() => handleScrape()}
                   disabled={isScraping || !urlInput.trim()}
-                  className="btn-tactile flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-3.5 py-2 text-xs font-semibold text-white shadow-md shadow-blue-500/20 transition-all disabled:opacity-50 shrink-0"
+                  className="btn-tactile flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] px-3.5 py-2 text-xs font-bold shadow-lg shadow-[#ff5722]/25 hover:scale-[1.01] transition-all disabled:opacity-50 shrink-0"
                 >
                   {isScraping ? (
                     <RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -460,7 +460,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     setUrlInput("https://leerob.io");
                     handleScrape("https://leerob.io");
                   }}
-                  className="hover:text-blue-500 underline decoration-muted-foreground/40 underline-offset-2"
+                  className="hover:text-[#ff8a50] underline decoration-muted-foreground/40 underline-offset-2"
                 >
                   leerob.io
                 </button>
@@ -470,7 +470,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     setUrlInput("https://delba.dev");
                     handleScrape("https://delba.dev");
                   }}
-                  className="hover:text-blue-500 underline decoration-muted-foreground/40 underline-offset-2"
+                  className="hover:text-[#ff8a50] underline decoration-muted-foreground/40 underline-offset-2"
                 >
                   delba.dev
                 </button>
@@ -480,7 +480,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     setUrlInput("https://rauchg.com");
                     handleScrape("https://rauchg.com");
                   }}
-                  className="hover:text-blue-500 underline decoration-muted-foreground/40 underline-offset-2"
+                  className="hover:text-[#ff8a50] underline decoration-muted-foreground/40 underline-offset-2"
                 >
                   rauchg.com
                 </button>
@@ -793,7 +793,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     </div>
                     <button
                       onClick={copySnippet}
-                      className="btn-tactile flex items-center gap-1 rounded-xl bg-blue-600 hover:bg-blue-500 px-3 py-1 text-xs font-semibold text-white shadow transition-all"
+                      className="btn-tactile flex items-center gap-1 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] px-3 py-1 text-xs font-bold shadow-lg shadow-[#ff5722]/25 hover:scale-[1.01] transition-all"
                     >
                       {copiedSnippet ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                       <span>{copiedSnippet ? "Copied!" : "Copy Script"}</span>
@@ -812,7 +812,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         onClick={() => setFrameworkTab(fw)}
                         className={`btn-tactile px-2.5 py-1 rounded-lg capitalize font-semibold transition-colors ${
                           frameworkTab === fw
-                            ? "bg-blue-600 text-white"
+                            ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                             : "bg-surface-2 text-muted-foreground hover:text-foreground"
                         }`}
                       >
@@ -894,7 +894,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                   <button
                     onClick={handleCreatePr}
                     disabled={isCreatingPr || !githubToken.trim() || !repoUrl.trim()}
-                    className="btn-tactile flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 py-2.5 px-4 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition-all disabled:opacity-50"
+                    className="btn-tactile flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] py-2.5 px-4 text-xs font-bold shadow-lg shadow-[#ff5722]/25 hover:scale-[1.01] transition-all disabled:opacity-50"
                   >
                     {isCreatingPr ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
@@ -938,21 +938,21 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
         </div>
 
         {/* Right Side: Interactive Hardware Device Frame */}
-        <div className="hidden lg:flex flex-1 flex-col bg-surface-0/80 relative overflow-hidden items-center justify-center p-6">
+        <div className="hidden lg:flex flex-1 flex-col bg-[#0c0807]/80 relative overflow-hidden items-center justify-center p-6">
           {/* Device Toggle & Sandbox Header */}
           <div className="absolute top-4 left-6 right-6 flex items-center justify-between z-10 pointer-events-auto">
-            <div className="flex items-center gap-2 bg-surface-1/90 border border-border/80 rounded-xl px-3 py-1.5 backdrop-blur-md shadow-md">
+            <div className="flex items-center gap-2 bg-[#140d0a]/80 border border-white/10 rounded-2xl px-3 py-1.5 backdrop-blur-xl shadow-md">
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-foreground">Interactive Device Sandbox</span>
+              <span className="text-xs font-bold text-[#faf5ef]">Interactive Device Sandbox</span>
               <span className="text-[10px] text-muted-foreground font-mono">Real-Time Streaming</span>
             </div>
 
-            <div className="flex items-center gap-1 bg-surface-1/90 border border-border/80 rounded-xl p-1 backdrop-blur-md shadow-md">
+            <div className="flex items-center gap-1 bg-[#140d0a]/80 border border-white/10 rounded-2xl p-1 backdrop-blur-xl shadow-md">
               <button
                 onClick={() => setPreviewDevice("desktop")}
                 className={`btn-tactile p-1.5 rounded-lg transition-colors ${
                   previewDevice === "desktop"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Desktop View"
@@ -963,7 +963,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                 onClick={() => setPreviewDevice("mobile")}
                 className={`btn-tactile p-1.5 rounded-lg transition-colors ${
                   previewDevice === "mobile"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Mobile View"
@@ -976,18 +976,18 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
           {/* Hardware Device Mockup Frame */}
           <div className="w-full flex items-center justify-center">
             <div
-              className={`transition-all duration-300 flex flex-col rounded-3xl border border-border/90 bg-surface-1 shadow-2xl overflow-hidden relative ${
+              className={`transition-all duration-300 flex flex-col rounded-2xl border border-amber-900/40 bg-[#1a100c] shadow-2xl overflow-hidden relative ${
                 previewDevice === "desktop"
                   ? "w-full max-w-[840px] h-[580px]"
                   : "w-[360px] h-[640px] rounded-[44px] border-[8px] border-zinc-800 shadow-2xl"
               }`}
             >
               {/* Browser Window Titlebar */}
-              <div className="flex h-10 items-center justify-between border-b border-border bg-surface-2/90 px-3.5 shrink-0">
+              <div className="flex h-10 items-center justify-between border-b border-amber-900/40 bg-[#160e0a] px-3.5 shrink-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <span className="h-3 w-3 rounded-full bg-green-500/80" />
+                  <span className="h-3 w-3 rounded-full bg-[#ff5722]/80" />
+                  <span className="h-3 w-3 rounded-full bg-[#ff8a50]/80" />
+                  <span className="h-3 w-3 rounded-full bg-amber-300/80" />
                 </div>
 
                 {/* URL Address Bar */}
@@ -1001,7 +1001,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
 
               {/* Simulated Website Background Content */}
               <div className="flex-1 overflow-y-auto p-8 relative flex flex-col justify-center items-center text-center space-y-4 bg-gradient-to-b from-surface-1 to-surface-2/60">
-                <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/25 px-3 py-1 text-xs text-blue-600 dark:text-blue-400 font-semibold">
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs text-emerald-400 font-semibold">
                   <Sparkles className="h-3 w-3" />
                   <span>Live Interactive Preview</span>
                 </div>
@@ -1030,7 +1030,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               {/* Live Interactive Assistant Widget Mounted Inside Sandbox */}
               {isSandboxChatOpen && (
                 <div
-                  className={`absolute bottom-20 z-20 flex flex-col rounded-2xl border border-border bg-surface-1 shadow-2xl overflow-hidden transition-all duration-200 ${
+                  className={`absolute bottom-20 z-20 flex flex-col rounded-2xl border border-amber-900/40 bg-[#1a100c] shadow-2xl overflow-hidden transition-all duration-200 ${
                     assistant.position === "bottom-left" ? "left-5" : "right-5"
                   } ${
                     previewDevice === "desktop"
@@ -1114,7 +1114,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                           <button
                             key={i}
                             onClick={() => handleSandboxSend(chip)}
-                            className="btn-tactile rounded-xl border border-border bg-surface-2 hover:bg-surface-3 px-2.5 py-1 text-[11px] text-blue-500 font-medium transition-colors text-left"
+                            className="btn-tactile rounded-xl border border-white/10 bg-[#180f0b] hover:bg-[#281711] px-2.5 py-1 text-[11px] text-[#ff8a50] font-medium transition-colors text-left"
                           >
                             {chip}
                           </button>
@@ -1124,9 +1124,9 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
 
                     {isSandboxStreaming && (
                       <div className="flex items-center gap-1.5 text-muted-foreground text-xs py-1">
-                        <span className="h-2 w-2 rounded-full bg-blue-500 animate-bounce" />
-                        <span className="h-2 w-2 rounded-full bg-blue-500 animate-bounce [animation-delay:0.2s]" />
-                        <span className="h-2 w-2 rounded-full bg-blue-500 animate-bounce [animation-delay:0.4s]" />
+                        <span className="h-2 w-2 rounded-full bg-[#ff5722] animate-bounce" />
+                        <span className="h-2 w-2 rounded-full bg-[#ff5722] animate-bounce [animation-delay:0.2s]" />
+                        <span className="h-2 w-2 rounded-full bg-[#ff5722] animate-bounce [animation-delay:0.4s]" />
                       </div>
                     )}
                     <div ref={chatBottomRef} />
@@ -1140,7 +1140,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       onChange={(e) => setSandboxInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSandboxSend()}
                       placeholder="Ask a question..."
-                      className="flex-1 rounded-xl border border-border bg-surface-1 px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-colors"
+                      className="flex-1 rounded-xl border border-white/10 bg-[#180f0b] px-3 py-1.5 text-xs text-[#faf5ef] placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ff5722] transition-colors"
                     />
                     <button
                       onClick={() => handleSandboxSend()}

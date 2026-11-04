@@ -128,7 +128,7 @@ export function Navbar() {
   }, [searchQuery, selectedCategory, syncedVersion]);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-border/80 bg-background/80 px-3 sm:px-5 backdrop-blur-xl text-foreground transition-colors shadow-sm">
+    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-amber-950/40 bg-[#0f0907]/90 px-3 sm:px-5 backdrop-blur-xl text-[#faf5ef] transition-colors shadow-sm">
       {/* Left side: Hamburger toggle + Model selector */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
@@ -149,7 +149,7 @@ export function Navbar() {
             aria-haspopup="listbox"
             aria-label="Select AI provider and model"
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-            className="btn-tactile flex items-center gap-1.5 sm:gap-2 rounded-xl border border-border bg-surface-1/90 hover:bg-surface-2 hover:border-zinc-700/80 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-foreground transition-all shadow-sm max-w-[150px] sm:max-w-[320px] truncate focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="btn-tactile flex items-center gap-1.5 sm:gap-2 rounded-xl border border-amber-900/40 bg-[#1c110d] hover:bg-[#281711] hover:border-[#ff5722]/50 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-[#ff8a50] transition-all shadow-sm max-w-[150px] sm:max-w-[320px] truncate focus-visible:ring-2 focus-visible:ring-[#ff5722]"
           >
             <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
             <span className="font-bold text-foreground shrink-0">{provider.shortLabel}</span>
@@ -168,7 +168,7 @@ export function Navbar() {
                 <div className="p-3.5 border-b border-border space-y-2.5 bg-surface-2/70">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-foreground uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+                      <Sparkles className="h-3.5 w-3.5 text-[#ff5722]" />
                       <span>Select AI Model</span>
                     </span>
                     <div className="flex items-center gap-2">
@@ -177,7 +177,7 @@ export function Navbar() {
                           setIsModelSelectorOpen(false);
                           setApiDirectoryOpen(true);
                         }}
-                        className="btn-tactile text-blue-500 hover:text-blue-400 font-semibold flex items-center gap-1 text-[11px] transition-colors"
+                        className="btn-tactile text-[#ff8a50] hover:text-[#ff7043] font-semibold flex items-center gap-1 text-[11px] transition-colors"
                       >
                         <span>Get Keys ↗</span>
                       </button>
@@ -198,7 +198,7 @@ export function Navbar() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search 40+ models (e.g. R1, Claude, Flash, Groq)..."
-                      className="w-full rounded-xl border border-border bg-surface-1 pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-colors"
+                      className="w-full rounded-xl border border-white/10 bg-[#180f0b] pl-9 pr-3 py-2 text-xs text-[#faf5ef] placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ff5722] transition-colors"
                       autoFocus
                     />
                     {searchQuery && (
@@ -233,7 +233,7 @@ export function Navbar() {
                         onClick={() => setSelectedCategory(tab.id)}
                         className={`btn-tactile px-2.5 py-1 rounded-lg shrink-0 transition-colors ${
                           selectedCategory === tab.id
-                            ? "bg-blue-600 text-white font-semibold shadow-sm"
+                            ? "bg-[#ff5722] text-[#1a0a04] font-bold shadow-lg shadow-[#ff5722]/25"
                             : "bg-surface-1 border border-border text-foreground hover:bg-surface-3 font-medium"
                         }`}
                       >
@@ -299,7 +299,7 @@ export function Navbar() {
                                   }}
                                   className={`btn-tactile flex items-start justify-between rounded-xl px-2.5 py-2 text-left text-xs transition-colors ${
                                     isSelected
-                                      ? "bg-blue-600/15 border border-blue-500/40 text-blue-600 dark:text-blue-300"
+                                      ? "bg-[#ff5722]/15 border border-[#ff5722]/40 text-[#ff8a50]"
                                       : "hover:bg-surface-2 text-foreground border border-transparent"
                                   }`}
                                 >
@@ -308,12 +308,12 @@ export function Navbar() {
                                       <ProviderMark providerId={prov.id as ProviderId} modelId={m.id} label={m.name} className="h-3.5 w-3.5 shrink-0" />
                                       <span className="text-foreground font-semibold">{m.name}</span>
                                       {m.isAccountModel && (
-                                        <span className="rounded bg-blue-500/15 border border-blue-500/30 px-1 py-0.2 text-[9px] font-mono text-blue-600 dark:text-blue-300 flex items-center gap-0.5">
+                                        <span className="rounded border border-amber-900/40 bg-[#1c110d] px-1 py-0.2 text-[9px] font-mono text-[#ff8a50] flex items-center gap-0.5">
                                           <Sparkles className="h-2.5 w-2.5" /> Key Verified
                                         </span>
                                       )}
                                       {m.isReasoning && (
-                                        <span className="rounded bg-purple-500/15 border border-purple-500/30 px-1 py-0.2 text-[9px] font-mono text-purple-600 dark:text-purple-300 flex items-center gap-0.5">
+                                        <span className="rounded border border-amber-900/40 bg-[#1c110d] px-1 py-0.2 text-[9px] font-mono text-[#ff8a50] flex items-center gap-0.5">
                                           <Cpu className="h-2.5 w-2.5" /> Thinking
                                         </span>
                                       )}
@@ -333,7 +333,7 @@ export function Navbar() {
                                     </p>
                                   </div>
                                   {isSelected && (
-                                    <Check className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+                                    <Check className="h-4 w-4 text-[#ff5722] shrink-0 mt-0.5" />
                                   )}
                                 </button>
                               );
@@ -359,7 +359,7 @@ export function Navbar() {
             content={
               <div className="space-y-1 text-left">
                 <div className="font-semibold text-foreground flex items-center gap-1">
-                  <Zap className="h-3 w-3 text-blue-500 fill-current" />
+                  <Zap className="h-3 w-3 text-[#ff5722] fill-current" />
                   <span>Stateless Edge Proxy</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground leading-normal">
@@ -372,7 +372,7 @@ export function Navbar() {
               tabIndex={0}
               role="status"
               aria-label="Stateless Edge Proxy Active"
-              className="hidden lg:inline-flex items-center gap-1 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono text-blue-500 cursor-help"
+              className="hidden lg:inline-flex items-center gap-1 rounded-full border border-amber-900/40 bg-[#1c110d] px-2 py-0.5 text-[10px] font-mono text-[#ff8a50] cursor-help"
             >
               <Zap className="h-2.5 w-2.5 fill-current" />
               Proxy On
@@ -385,13 +385,13 @@ export function Navbar() {
         {/* Assistant Studio Trigger */}
         <Link
           href="/studio"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border border-blue-500/30 bg-blue-500/10 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 hover:border-blue-400 transition-all shadow-sm"
+          className="btn-tactile flex items-center gap-1.5 rounded-xl border border-amber-900/40 bg-[#1c110d] px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[#ff8a50] hover:bg-[#281711] hover:border-[#ff5722]/50 transition-all shadow-sm"
           title="Create & Embed Personalized AI Chatbot for your website"
           aria-label="Assistant Studio"
         >
-          <Bot className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+          <Bot className="h-3.5 w-3.5 text-[#ff5722] shrink-0" />
           <span className="hidden sm:inline">Assistant Studio</span>
-          <span className="rounded bg-blue-500/20 px-1 py-0.2 text-[9px] font-mono text-blue-600 dark:text-blue-300">
+          <span className="rounded bg-[#ff5722]/15 px-1 py-0.2 text-[9px] font-mono text-[#ff8a50]">
             NEW
           </span>
         </Link>

@@ -90,8 +90,8 @@ export function ChatInput() {
         )}
 
         {/* Double-Bezel Raycast-Style Floating Command Dock */}
-        <div className="double-bezel">
-          <div className="double-bezel-inner p-2.5 transition-all focus-within:border-blue-500/60 focus-within:ring-1 focus-within:ring-blue-500/30">
+        <div className="rounded-2xl border border-white/10 bg-[#140d0a] shadow-xl shadow-black/40">
+          <div className="p-2.5 transition-all focus-within:border-[#ff5722]/60 focus-within:ring-1 focus-within:ring-[#ff5722]/30">
             {/* Quick Capability Tags */}
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 px-1">
               <button
@@ -112,7 +112,7 @@ export function ChatInput() {
                 onClick={() => insertPromptTag("Write production-grade, cleanly typed TypeScript code for:")}
                 className="btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-2 hover:bg-surface-3 border border-border text-[11px] text-muted-foreground hover:text-foreground font-medium transition-all shrink-0"
               >
-                <Code2 className="h-3 w-3 text-blue-500" />
+                <Code2 className="h-3 w-3 text-[#ff5722]" />
                 <span>TypeScript</span>
               </button>
             </div>
@@ -166,7 +166,7 @@ export function ChatInput() {
                     aria-label="Send message"
                     className={`btn-tactile group flex items-center justify-center h-8 w-8 rounded-full transition-all shadow-sm ${
                       input.trim()
-                        ? "bg-blue-600 text-white hover:bg-blue-500 active:scale-95 shadow-blue-500/20"
+                        ? "bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] hover:from-[#ff6b35] hover:to-[#f97316] active:scale-95 shadow-[#ff5722]/25"
                         : "bg-surface-2 text-muted-foreground/50 cursor-not-allowed border border-border"
                     }`}
                   >

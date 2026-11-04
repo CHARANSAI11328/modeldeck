@@ -49,11 +49,11 @@ export function Sidebar() {
         aria-hidden="true"
       />
 
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-[300px] flex-col border-r border-border bg-surface-1 md:static md:w-72 md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-transform animate-in slide-in-from-left duration-200 ease-out">
+      <aside className="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-[300px] flex-col border-r border-amber-950/40 bg-[#120a07]/90 backdrop-blur-xl md:static md:w-72 md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-transform animate-in slide-in-from-left duration-200 ease-out">
         {/* Header with New Chat & Collapse */}
         <div className="flex h-14 items-center justify-between border-b border-border/80 px-4">
           <div className="flex items-center gap-2.5 font-semibold text-sm text-foreground tracking-tight">
-            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/20">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff5722] to-[#ea580c] text-[#1a0a04] font-bold text-xs shadow-md shadow-[#ff5722]/20">
               MD
             </div>
             <div className="flex flex-col">
@@ -82,7 +82,7 @@ export function Sidebar() {
                 setSidebarOpen(false);
               }
             }}
-            className="btn-tactile group flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 py-2.5 px-3.5 text-xs font-bold text-white shadow-md shadow-blue-500/25 transition-all"
+            className="btn-tactile group flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] hover:from-[#ff6b35] hover:to-[#f97316] py-2.5 px-3.5 text-xs font-bold text-[#1a0a04] shadow-lg shadow-[#ff5722]/25 transition-all"
           >
             <div className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -128,7 +128,7 @@ export function Sidebar() {
                 }}
                 className={`btn-tactile group flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 ${
                   isSelected
-                    ? "bg-surface-2 text-foreground font-semibold border border-border/80 shadow-sm"
+                    ? "bg-[#ff5722]/15 border-l-2 border-[#ff5722] text-[#faf5ef] font-semibold shadow-sm"
                     : "text-muted-foreground hover:bg-surface-2/70 hover:text-foreground border border-transparent"
                 }`}
               >
@@ -168,13 +168,13 @@ export function Sidebar() {
         <div className="p-3 border-t border-border/80 space-y-2 bg-surface-2/40">
           <Link
             href="/studio"
-            className="btn-tactile flex items-center justify-between w-full px-3 py-2 rounded-xl border border-blue-500/30 bg-blue-500/10 text-xs font-semibold text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 transition-all shadow-sm"
+            className="btn-tactile flex items-center justify-between w-full px-3 py-2 rounded-xl border border-amber-900/40 bg-[#1c110d] text-xs font-semibold text-[#ff8a50] hover:bg-[#281711] transition-all shadow-sm"
           >
             <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-blue-500" />
+              <Bot className="h-4 w-4 text-[#ff5722]" />
               <span>Assistant Studio</span>
             </div>
-            <span className="rounded bg-blue-500/20 px-1 py-0.2 text-[9px] font-mono">1-CLICK</span>
+            <span className="rounded bg-[#ff5722]/15 px-1 py-0.2 text-[9px] font-mono">1-CLICK</span>
           </Link>
 
           <div className="grid grid-cols-2 gap-1.5 pt-1">

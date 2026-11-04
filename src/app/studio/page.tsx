@@ -7,19 +7,20 @@ import { ArrowLeft, Sparkles, Home } from "lucide-react";
 
 export default function StudioPage() {
   return (
-    <div className="h-[100dvh] w-screen flex flex-col bg-background text-foreground overflow-hidden relative">
+    <div className="h-[100dvh] w-screen flex flex-col bg-[#0c0807] text-[#faf5ef] overflow-hidden relative">
       {/* Background ambient field & glow */}
       <div className="ambient-field" aria-hidden="true" />
       <div className="ambient-mesh-glow" aria-hidden="true" />
+      <div className="site-noise" aria-hidden="true" />
 
       {/* Top Breadcrumb Header Bar */}
-      <div className="h-11 px-4 sm:px-6 border-b border-border/80 bg-background/80 backdrop-blur-xl flex items-center justify-between text-xs z-20 shrink-0">
+      <div className="h-11 px-4 sm:px-6 border-b border-amber-950/40 bg-[#0f0907]/90 backdrop-blur-xl text-[#c2b2a6] flex items-center justify-between text-xs z-20 shrink-0">
         <div className="flex items-center gap-3">
           <Link
             href="/playground"
-            className="btn-tactile flex items-center gap-1.5 text-muted-foreground hover:text-foreground font-medium transition-colors"
+            className="btn-tactile flex items-center gap-1.5 text-[#c2b2a6] hover:text-[#ff8a50] font-medium transition-colors"
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-surface-2 border border-border">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#1a110d] border border-white/10">
               <ArrowLeft className="h-3.5 w-3.5" />
             </div>
             <span>Playground</span>
