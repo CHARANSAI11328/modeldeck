@@ -3,22 +3,35 @@
 import React from "react";
 import { AssistantStudio } from "@/components/studio/AssistantStudio";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 export default function StudioPage() {
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#0b0c10] overflow-hidden">
-      <div className="bg-zinc-950 px-4 py-2 border-b border-zinc-800 flex items-center justify-between text-xs">
+    <div className="h-[100dvh] w-screen flex flex-col bg-background text-foreground overflow-hidden relative">
+      {/* Background ambient field & glow */}
+      <div className="ambient-field" aria-hidden="true" />
+      <div className="ambient-mesh-glow" aria-hidden="true" />
+
+      {/* Top Breadcrumb Header Bar */}
+      <div className="h-11 px-4 sm:px-6 border-b border-border/80 bg-background/80 backdrop-blur-xl flex items-center justify-between text-xs z-20 shrink-0">
         <Link
           href="/"
-          className="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-100 transition-colors"
+          className="btn-tactile flex items-center gap-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-surface-2 border border-border">
+            <ArrowLeft className="h-3.5 w-3.5" />
+          </div>
           <span>Back to ModelDeck Playground</span>
         </Link>
-        <span className="text-zinc-500 font-mono text-[11px]">ModelDeck AI Assistant Engine</span>
+
+        <div className="flex items-center gap-2">
+          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-muted-foreground font-mono text-[11px]">ModelDeck Assistant Engine v2.0</span>
+        </div>
       </div>
-      <div className="flex-1 overflow-hidden">
+
+      {/* Studio Viewport */}
+      <div className="flex-1 overflow-hidden relative z-10">
         <AssistantStudio />
       </div>
     </div>

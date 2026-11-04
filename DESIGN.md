@@ -1,81 +1,79 @@
-# DESIGN.md — AI Chatbot Testing Playground (Multi-Provider BYOK)
+# DESIGN.md — Vanguard AI Chatbot Playground & Studio Architecture
 
-## 1. Executive Visual Theme
-Dark-mode-first, developer-tool aesthetic. Clean, spacious, high-contrast, and distraction-free.
-Inspired by modern developer platforms like Linear, Vercel Dashboard, Raycast, and the Mobbin-analyzed AI chat interfaces.
+## 1. Visual Theme & Atmosphere
+An elite, developer-first intelligence terminal combining Linear-grade precision engineering with vanguard Obsidian Glass depth.
+The atmosphere is clinical yet luminous — an expansive dark obsidian canvas with ethereal ambient radial light fields, physical double-bezel machine enclosures, and spring-physics micro-interactions.
 
-## 2. Mobbin References & Shipped UX Patterns
-Researched shipped patterns from leading web AI chat implementations on Mobbin:
+- **Design Variance:** `7` (Controlled asymmetric rhythm, non-templated bento layouts)
+- **Motion Intensity:** `6` (Weighted spring-physics transitions, haptic active feedback, fluid entry reveals)
+- **Visual Density:** `5` (Developer-balanced readability with monospace tabular telemetry)
 
-- **ChatGPT (Web)** — [https://mobbin.com/apps/chatgpt-web](https://mobbin.com/apps/chatgpt-web)
-  - *Pattern Used*: Centered `max-w-3xl` message thread with floating bottom input bar, distinct subtle assistant background tint, quick action bar below assistant responses (Copy markdown, Re-generate, Feedback, Token count).
-- **Claude (Web)** — [https://mobbin.com/apps/claude-web](https://mobbin.com/apps/claude-web)
-  - *Pattern Used*: Top header model selector dropdown with status indicators and parameter badges, collapsible sidebar session history, expandable/collapsible thought & reasoning chain accordions.
-- **Perplexity (Web)** — [https://mobbin.com/apps/perplexity-web](https://mobbin.com/apps/perplexity-web)
-  - *Pattern Used*: Tabbed Settings Modal for API key configuration with real-time key validity check, prominent "Get API Key ↗" redirect links, actionable inline error banners with retry countdowns for rate limits (HTTP 429).
-- **Linear App** — [https://mobbin.com/apps/linear](https://mobbin.com/apps/linear)
-  - *Pattern Used*: Dark zinc color tokens, subtle 1px border dividers (`zinc-800`), keyboard shortcut pills (`⌘K`, `Enter`, `Shift+Enter`), high-density monospace badges.
+---
 
-## 3. Color Palette (CSS Variables & Tailwind)
-- **Background Root**: `#09090B` (`zinc-950` / `--background`)
-- **Surface / Card**: `#121215` (`zinc-900/80` / `--card`)
-- **Surface Elevated / Popover**: `#18181B` (`zinc-900` / `--popover`)
-- **Border Default**: `#27272A` (`zinc-800` / `--border`)
-- **Border Hover / Focus**: `#3F3F46` (`zinc-700` / `--border-focus`)
-- **Text Primary**: `#FAFAFA` (`zinc-50` / `--foreground`)
-- **Text Muted**: `#A1A1AA` (`zinc-400` / `--muted-foreground`)
-- **Text Subtle**: `#71717A` (`zinc-500`)
-- **Primary / Accent**: `#3B82F6` (`blue-500` / `--primary`)
-- **Primary Foreground**: `#FFFFFF`
-- **Destructive**: `#EF4444` (`red-500` / `--destructive`)
-- **Success**: `#22C55E` (`green-500` / `--success`)
-- **Warning / Notice**: `#F59E0B` (`amber-500` / `--warning`)
-- **Reasoning Accent**: `#8B5CF6` (`violet-500` / for thinking models like DeepSeek-R1, o1/o3/o4)
+## 2. Color Calibration & Semantic Roles
+- **Canvas Obsidian** (`#08090D`) — Deepest root surface, OLED-optimized
+- **Surface Elevation 1** (`#0E1117`) — Double-bezel inner cores, cards, decks, and active panels
+- **Surface Elevation 2** (`#161922`) — Secondary containers, interactive badges, hover states
+- **Surface Elevation 3** (`#212634`) — Dropdown list items, popover elements, focused inputs
+- **Structural Hairline** (`#1F2430` / `rgba(255,255,255,0.08)`) — Outer bezels and section boundaries
+- **Primary Accent: Cobalt Azure** (`#3B82F6` / `#2563EB`) — Singularity accent for active triggers, focus rings, and primary actions
+- **Verified / Success** (`#10B981`) — Validated API credentials, live server health, ready status
+- **Warning / Attention** (`#F59E0B`) — Missing API key notifications, rate limit guidance
+- **Destructive** (`#EF4444`) — Clear session, delete history, disconnect keys
+- **Thinking / Reasoning Accent** (`#8B5CF6`) — DeepSeek R1 and OpenAI thinking trace accordions
 
-## 4. Typography
-- **Primary Font**: `Inter`, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
-- **Monospace Font**: `JetBrains Mono`, Menlo, Monaco, Consolas, "Liberation Mono", monospace
-- **Headings**: `tracking-tight font-semibold text-zinc-50`
-- **Body**: `text-sm leading-relaxed text-zinc-200` (or `15px / 1.6` in reading view)
-- **Code Blocks & Badges**: Monospace font with line numbers, syntax highlighting, and copy button
+> **Calibration Rule:** A single accent color (`#3B82F6`) dominates the primary interactive surfaces. No oversaturated neon glows or arbitrary multi-color gradient clashes.
 
-## 5. Spacing & Layout Architecture
-- Standard Tailwind spacing scale only (`p-2`, `p-3`, `p-4`, `p-6`, `gap-3`, `gap-4`). No arbitrary magic numbers.
-- **Root Grid**: Responsive split view:
-  - Collapsible Sidebar (`w-64` / `260px`): Session history, provider list, quick BYOK status.
-  - Central Main Chat: Fixed header (`h-14`), scrollable message container (`max-w-3xl mx-auto py-6 px-4`), sticky bottom input dock with auto-resizing textarea.
-  - Parameter Inspector Drawer / Sheet (`w-80`): System prompt, temperature, max tokens, top-p, CORS proxy mode.
-- **Message Gaps**: `space-y-6` between turns.
-- **Message Bubbles**:
-  - User turn: Right/Right-aligned or clean bubble (`bg-zinc-800/80 border border-zinc-700/60 rounded-2xl px-4 py-3 text-zinc-100`).
-  - Assistant turn: Left-aligned clean layout with provider logo avatar, model badge, markdown rendered content, and bottom action bar.
+---
 
-## 6. Component Rules (shadcn/ui Primitives)
-- Use standard shadcn/ui patterns:
-  - Dialog / Sheet for API key vault & system settings
-  - DropdownMenu for model switcher & session actions
-  - Tooltip for icon buttons and shortcuts
-  - ScrollArea for chat history and message stream
-  - Button with variants: `default`, `outline`, `ghost`, `secondary`, `destructive`
-  - Badge with provider brand colors and status indicators (active / missing key)
-  - Textarea with auto-resize on input
-  - Slider for temperature / max token adjustments
-- All interactive elements must implement:
-  - Focus rings: `focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none`
-  - Hover transitions: `transition-colors duration-150`
-  - Disabled states: `disabled:opacity-50 disabled:pointer-events-none`
-- Dark mode is the default and only shipped theme.
+## 3. Typographic Architecture
+- **Display Headlines:** `Geist Sans`, `font-black tracking-tight leading-[1.1]`, `text-balance`
+- **Body & Prompts:** `Geist Sans`, `text-sm sm:text-base leading-relaxed text-foreground max-w-[65ch]`
+- **Telemetry & Metadata:** `Geist Mono`, `font-mono tabular-nums text-[10px] to text-xs`
+- **Code & Syntax:** `JetBrains Mono` / `Geist Mono`, line numbers, syntax tokens, copy buttons
 
-## 7. Key Vault UX & Multi-Device Synchronized Vault Architecture
-- **Central Multi-Device Synchronization**: API keys are securely persisted on the central backend vault (`/api/vault` backed by private `data/vault.json`), enabling instant availability across all browser windows, tabs, and connected network devices (e.g. phones, tablets, or other workstations on `http://<LAN-IP>:3000`).
-- **Real-Time Cross-Window Sync**: Utilizes `BroadcastChannel("byok_cross_window_sync")` for instantaneous, zero-latency key synchronization across tabs and windows without requiring page refreshes.
-- **Background Multi-Device Polling & Window Focus Sync**: Listens to `window.focus` events and runs an automatic 10-second background poll so changes made on one device are immediately reflected on other connected devices.
-- **Client Fallback & In-Memory Decryption**: Retains encrypted local cache (`AES-GCM-256`) with ephemeral in-memory session execution.
-- **Zero Third-Party Logging**: Proxy forwarding forwards keys in transit via HTTPS headers directly to upstream APIs, never logged to third parties.
-- **Live Key Verification & Auto-Discovery**: "Test & Sync Key" tests the credential against the provider's active API, auto-discovers all active models, and selects the optimal model.
+---
 
-## 8. Error State UX
-- **HTTP 401/403 (Invalid Auth)**: Specific alert badge with direct link to the provider console.
-- **HTTP 429 (Rate Limit)**: Active countdown timer based on `Retry-After` header, with instant retry trigger.
-- **Stream Interruption**: Preserve all tokens received up to the disconnect point, mark state as interrupted, offer "Continue Generation" or "Retry".
-- **CORS Failure**: Guide user with 1-click fallback to the built-in stateless zero-logging proxy.
+## 4. Component Mastery & Mechanical Standards
+
+### A. The "Double-Bezel" (Doppelrand) Architecture
+Major cards, modals, and dock containers do not sit flatly on the canvas:
+- **Outer Shell (`.double-bezel`):** Translucent shell with hairline boundary (`border border-white/[0.07]`), outer padding (`p-1` to `p-1.5`), outer corner radius (`rounded-2xl` / `rounded-3xl`), and ambient drop-shadow.
+- **Inner Core (`.double-bezel-inner`):** Distinct surface fill (`bg-surface-1`), concentric inner radius (`rounded-[calc(1.125rem-4px)]`), and specular inner highlight (`shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]`).
+
+### B. Nested CTA & "Island" Button Pattern
+- Primary action buttons are tactile pills with button-in-button trailing icon circles.
+- On hover, the nested circular wrapper shifts diagonally (`group-hover:translate-x-0.5 group-hover:-translate-y-0.5`), imparting physical mechanical tension.
+- Active states enforce tactile feedback: `active:scale-[0.985] active:translate-y-[1px]`.
+
+### C. Floating Command Dock (ChatInput)
+- Raycast-style floating island positioned above the viewport safe area (`min-h-[100dvh]`).
+- Quick prompt chips, monospace character counter with live estimated token calculation (`tabular-nums`), and keyboard shortcut hints (`⌘ Enter`).
+
+### D. Executive Intelligence Deck (MessageItem)
+- Assistant turns feature a live telemetry HUD: Time-to-First-Token (`ttftMs`), streaming velocity (`tokensPerSec`), and token count chips.
+- Integrated collapsible thinking trace (`ReasoningAccordion`) for reasoning-capable models (DeepSeek-R1, o-series).
+
+---
+
+## 5. Layout Principles & Viewport Stability
+- **Asymmetric Bento Showcase:** Breaks visual monotony with 2-column wide speedrun benchmarks, 1-column studio showcase cards, and staggered prompt triggers.
+- **Strict Single-Column Collapse:** Below `768px`, all multi-column bento grids and split layouts collapse to clean single-column stacks (`grid-cols-1 w-full px-3 py-4`).
+- **Viewport Stability:** All full-height sections declare `min-h-[100dvh]` rather than `h-screen` to prevent iOS Safari address bar layout jumping.
+
+---
+
+## 6. Motion & Performance Guardrails
+- **GPU-Accelerated Properties:** Animations operate strictly on `transform` and `opacity`. Zero animation of `height`, `width`, `top`, or `left`.
+- **Blur Performance:** `backdrop-blur` is restricted to fixed/sticky elements (navbar, command dock, modal backdrops). Never applied to scrolling message streams.
+- **Spring Physics:** `transition-all duration-200 cubic-bezier(0.16, 1, 0.3, 1)`.
+
+---
+
+## 7. Anti-Pattern Bans (Strictly Enforced)
+1. **NO** generic AI purple/neon button outer glows or gradient slop.
+2. **NO** flat 3-column equal card layouts without variance.
+3. **NO** pure black backgrounds (`#000000`).
+4. **NO** generic circular spinners on primary actions; use layout-matching skeletons or pulse indicators.
+5. **NO** desktop CTA text wrapping onto multiple lines.
+6. **NO** multiple contradictory CTA intents in the same viewport.

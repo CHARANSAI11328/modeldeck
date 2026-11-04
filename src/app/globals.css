@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  /* LIGHT MODE (Clean, Modern, Lightweight Aesthetic) */
+  /* LIGHT MODE (Clean, Modern, Vanguard Developer Aesthetic) */
   :root {
     --background: #f8fafc;
     --foreground: #090d16;
@@ -35,7 +35,7 @@
     --input: #ffffff;
     --ring: #3b82f6;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
     --user-accent: #2563eb;
     --app-font-size: 14.5px;
     --app-line-height: 1.6;
@@ -48,30 +48,30 @@
     --muted-ink: #475569;
     --line: #e2e8f0;
 
-    --glass-bg: #ffffff;
-    --glass-border: #e2e8f0;
-    --glass-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+    --glass-bg: rgba(255, 255, 255, 0.88);
+    --glass-border: rgba(226, 232, 240, 0.8);
+    --glass-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
   }
 
-  /* DARK MODE (Clean Obsidian Minimalist) */
+  /* DARK MODE (Deep Obsidian Canvas, Linear/Vanguard Agency Grade) */
   .dark,
   :root[data-theme="dark"] {
-    --background: #090a0f;
+    --background: #08090d;
     --foreground: #f8fafc;
 
-    --card: #111318;
+    --card: #0e1117;
     --card-foreground: #f8fafc;
 
-    --popover: #141720;
+    --popover: #12151c;
     --popover-foreground: #f8fafc;
 
     --primary: #3b82f6;
     --primary-foreground: #ffffff;
 
-    --secondary: #171b24;
+    --secondary: #161922;
     --secondary-foreground: #e2e8f0;
 
-    --muted: #171b24;
+    --muted: #161922;
     --muted-foreground: #94a3b8;
 
     --accent: #6366f1;
@@ -80,23 +80,23 @@
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
 
-    --border: #222734;
-    --border-subtle: #191e29;
+    --border: #1f2430;
+    --border-subtle: #171b24;
     --border-focus: #3b82f6;
-    --input: #141720;
+    --input: #12151c;
     --ring: #3b82f6;
 
-    --surface-0: #090a0f;
-    --surface-1: #111318;
-    --surface-2: #171b24;
-    --surface-3: #222734;
+    --surface-0: #08090d;
+    --surface-1: #0e1117;
+    --surface-2: #161922;
+    --surface-3: #212634;
     --ink: #f8fafc;
     --muted-ink: #94a3b8;
-    --line: #222734;
+    --line: #1f2430;
 
-    --glass-bg: #111318;
-    --glass-border: #222734;
-    --glass-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.5);
+    --glass-bg: rgba(14, 17, 23, 0.82);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05);
   }
 
   * {
@@ -118,7 +118,7 @@
     color: var(--foreground);
     font-size: var(--app-font-size);
     line-height: var(--app-line-height);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   button, input, textarea, select {
@@ -128,12 +128,12 @@
     -webkit-tap-highlight-color: transparent;
   }
   ::selection {
-    background: rgba(37, 99, 235, 0.25);
+    background: rgba(59, 130, 246, 0.3);
     color: var(--foreground);
   }
 }
 
-/* Focus rings */
+/* Focus rings with high-end offset */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -151,94 +151,146 @@
   position: relative;
 }
 
-/* Subtle, clean micro-grid background */
+/* Atmospheric Ambient Lighting & Micro-Grid */
 .ambient-field {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-size: 28px 28px;
+}
+
+.ambient-mesh-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle 600px at 85% 15%, rgba(59, 130, 246, 0.07), transparent 70%),
+    radial-gradient(circle 500px at 15% 85%, rgba(99, 102, 241, 0.05), transparent 70%);
 }
 
 .dark .ambient-field {
-  background-image: radial-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-/* Clean Gradient Typography */
+.dark .ambient-mesh-glow {
+  background: 
+    radial-gradient(circle 750px at 90% 10%, rgba(59, 130, 246, 0.12), transparent 70%),
+    radial-gradient(circle 600px at 10% 90%, rgba(99, 102, 241, 0.08), transparent 70%);
+}
+
+/* Double-Bezel (Doppelrand) Architecture: Machine-crafted hardware enclosure */
+.double-bezel {
+  position: relative;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.35);
+  padding: 4px;
+  border-radius: 1.125rem;
+}
+
+.double-bezel-inner {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: calc(1.125rem - 4px);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Glassmorphism Frosted Panels with Physical Edge Highlight */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Haptic Tactile Buttons */
+.btn-tactile {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-tactile:hover {
+  transform: translateY(-0.5px);
+}
+.btn-tactile:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* Island Button with Trailing Circular Badge */
+.btn-island {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Gradient Typography */
 .text-gradient-aurora {
-  background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 50%, #4f46e5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dark .text-gradient-aurora {
-  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #c4b5fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Clean, Lightweight Panel */
-.glass-panel {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
-}
-
-/* Studio Prompt Card - Crisp, lightweight */
+/* Studio Prompt Card */
 .prompt-card {
   position: relative;
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: 0.875rem;
-  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.04);
-  transition: border-color 0.15s ease;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .prompt-card:hover {
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
-/* Response Deck - Clean, readable */
+/* Response Deck */
 .response-deck {
   position: relative;
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: 0.875rem;
-  box-shadow: 0 2px 10px -1px rgba(15, 23, 42, 0.04);
+  border-radius: 1.125rem;
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 /* Active Streaming Indicator */
 .streaming-deck {
   position: relative;
-  border-color: var(--primary) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 25px -4px rgba(59, 130, 246, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Custom sleek scrollbar for light and dark */
+/* Precision Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
+  border-radius: 9999px;
 }
-
 .dark ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #272d3b;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
-
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #3d465c;
 }
 
 .no-scrollbar::-webkit-scrollbar {

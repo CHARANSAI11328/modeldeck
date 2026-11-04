@@ -12,6 +12,7 @@ import {
   BookOpen,
   X,
   Bot,
+  Sparkles,
 } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
 import { getProvider } from "@/lib/providers";
@@ -50,9 +51,9 @@ export function Sidebar() {
 
       <aside className="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-[300px] flex-col border-r border-border bg-surface-1 md:static md:w-72 md:h-full md:z-auto md:shrink-0 shadow-2xl md:shadow-none transition-transform animate-in slide-in-from-left duration-200 ease-out">
         {/* Header with New Chat & Collapse */}
-        <div className="flex h-14 items-center justify-between border-b border-border px-3.5">
+        <div className="flex h-14 items-center justify-between border-b border-border/80 px-4">
           <div className="flex items-center gap-2.5 font-semibold text-sm text-foreground tracking-tight">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-xs shadow-md">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/20">
               MD
             </div>
             <div className="flex flex-col">
@@ -63,35 +64,41 @@ export function Sidebar() {
 
           <button
             onClick={() => setSidebarOpen(false)}
-            className="rounded-lg p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
+            className="btn-tactile rounded-lg p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
             title="Close sidebar"
+            aria-label="Close sidebar"
           >
             <ChevronLeft className="hidden md:block h-4 w-4" />
             <X className="md:hidden h-4 w-4" />
           </button>
         </div>
 
-        {/* New Chat Button */}
+        {/* New Chat Button with Button-in-Button Trailing Island */}
         <div className="p-3">
           <button
             onClick={() => {
               createNewSession();
-              // On mobile, close sidebar after starting new chat
               if (typeof window !== "undefined" && window.innerWidth < 768) {
                 setSidebarOpen(false);
               }
             }}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 py-2.5 px-3 text-xs font-bold text-white shadow-md hover:shadow-blue-500/25 transition-all active:scale-[0.98]"
+            className="btn-tactile group flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 py-2.5 px-3.5 text-xs font-bold text-white shadow-md shadow-blue-500/25 transition-all"
           >
-            <Plus className="h-4 w-4" />
-            <span>New Chat Session</span>
+            <div className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              <span>New Chat Session</span>
+            </div>
+            <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Sparkles className="h-2.5 w-2.5" />
+            </div>
           </button>
         </div>
 
         {/* Sessions list */}
         <div className="flex-1 overflow-y-auto px-2 space-y-1">
-          <div className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground0">
-            History ({sessions.length})
+          <div className="flex items-center justify-between px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            <span>Sessions</span>
+            <span className="font-mono tabular-nums text-[10px]">{sessions.length}</span>
           </div>
 
           {sessions.map((session) => {
@@ -119,17 +126,17 @@ export function Sidebar() {
                     }
                   }
                 }}
-                className={`group flex items-center justify-between rounded-lg px-2.5 py-2.5 text-xs cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 ${
+                className={`btn-tactile group flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 ${
                   isSelected
-                    ? "bg-surface-2 text-foreground font-medium border border-border shadow-sm"
-                    : "text-muted-foreground hover:bg-surface-2/60 hover:text-foreground border border-transparent"
+                    ? "bg-surface-2 text-foreground font-semibold border border-border/80 shadow-sm"
+                    : "text-muted-foreground hover:bg-surface-2/70 hover:text-foreground border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <ProviderMark providerId={session.providerId} modelId={session.modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px]">{session.title}</p>
-                    <p className="text-[10px] text-foreground0 font-mono truncate">
+                    <p className="text-[10px] text-muted-foreground font-mono truncate">
                       {provider.shortLabel} • {session.modelId}
                     </p>
                   </div>
@@ -139,10 +146,16 @@ export function Sidebar() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteSession(session.id);
+                    if (sessions.length > 1) {
+                      deleteSession(session.id);
+                    }
                   }}
-                  className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1 text-foreground0 hover:text-red-400 transition-all rounded ml-1"
-                  title="Delete session"
+                  disabled={sessions.length <= 1}
+                  className={`rounded-lg p-1 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors ${
+                    sessions.length <= 1 ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"
+                  }`}
+                  title="Delete chat session"
+                  aria-label="Delete chat session"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -151,58 +164,35 @@ export function Sidebar() {
           })}
         </div>
 
-        {/* Directory & Security Footer */}
-        <div className="p-3 border-t border-border space-y-2">
+        {/* Sidebar Footer with Quick Actions */}
+        <div className="p-3 border-t border-border/80 space-y-2 bg-surface-2/40">
           <Link
             href="/studio"
-            className="flex w-full items-center justify-between rounded-lg border border-blue-500/30 bg-blue-950/20 hover:bg-blue-900/30 p-2.5 text-xs text-blue-300 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 shadow-sm"
+            className="btn-tactile flex items-center justify-between w-full px-3 py-2 rounded-xl border border-blue-500/30 bg-blue-500/10 text-xs font-semibold text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 transition-all shadow-sm"
           >
             <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-blue-400" />
-              <div className="flex flex-col text-left">
-                <span className="font-semibold text-[12px] leading-tight text-foreground">Assistant Studio</span>
-                <span className="text-[10px] text-blue-300/80 leading-tight">Embed Chatbot on Your Site</span>
-              </div>
+              <Bot className="h-4 w-4 text-blue-500" />
+              <span>Assistant Studio</span>
             </div>
-            <span className="rounded bg-blue-500/20 border border-blue-400/30 px-1.5 py-0.5 text-[9px] font-mono text-blue-300">
-              NEW
-            </span>
+            <span className="rounded bg-blue-500/20 px-1 py-0.2 text-[9px] font-mono">1-CLICK</span>
           </Link>
 
-          <button
-            onClick={() => setApiDirectoryOpen(true)}
-            aria-label="Open API Keys Directory"
-            className="flex w-full items-center justify-between rounded-lg border border-border bg-surface-1 hover:bg-surface-2 p-2.5 text-xs text-foreground transition-colors focus-visible:ring-1 focus-visible:ring-blue-500"
-          >
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-3.5 w-3.5 text-blue-400" />
-              <span>Get API Keys Directory</span>
-            </div>
-            <ExternalLink className="h-3 w-3 text-foreground0" />
-          </button>
+          <div className="grid grid-cols-2 gap-1.5 pt-1">
+            <button
+              onClick={() => setKeyVaultOpen(true)}
+              className="btn-tactile flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border bg-surface-1 text-xs text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-all"
+            >
+              <KeyRound className="h-3 w-3 text-amber-500" />
+              <span className="text-[11px] font-medium">BYOK Vault</span>
+            </button>
 
-          {/* BYOK Security Status Footer */}
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label="Open Local BYOK Key Vault"
-            onClick={() => setKeyVaultOpen(true)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setKeyVaultOpen(true);
-              }
-            }}
-            className="flex items-center justify-between rounded-lg border border-border bg-surface-1/50 p-2.5 text-xs cursor-pointer hover:bg-surface-2 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
-          >
-            <div className="flex items-center gap-2 text-foreground">
-              <ShieldCheck className="h-4 w-4 text-emerald-400" />
-              <div>
-                <div className="font-medium text-[11px] text-foreground">Local BYOK Vault</div>
-                <div className="text-[10px] text-foreground0 font-mono">AES-GCM-256 Protected</div>
-              </div>
-            </div>
-            <KeyRound className="h-3.5 w-3.5 text-muted-foreground" />
+            <button
+              onClick={() => setApiDirectoryOpen(true)}
+              className="btn-tactile flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border bg-surface-1 text-xs text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-all"
+            >
+              <ShieldCheck className="h-3 w-3 text-emerald-500" />
+              <span className="text-[11px] font-medium">Keys Guide</span>
+            </button>
           </div>
         </div>
       </aside>

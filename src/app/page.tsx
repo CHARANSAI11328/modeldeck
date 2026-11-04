@@ -18,12 +18,16 @@ export default function Home() {
   }, [refreshKeyStatus]);
 
   return (
-    <div className="app-shell flex h-[100dvh] h-screen w-full max-w-full overflow-hidden bg-background text-foreground">
+    <div className="app-shell flex h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground relative selection:bg-blue-500/20 selection:text-foreground">
+      {/* Luminous GPU-accelerated atmospheric background layers */}
+      <div className="ambient-field" aria-hidden="true" />
+      <div className="ambient-mesh-glow" aria-hidden="true" />
+
       {/* Sessions Sidebar */}
       <Sidebar />
 
       {/* Main Chat Content Area */}
-      <div className="flex flex-1 flex-col min-w-0 h-full relative overflow-hidden bg-background">
+      <div className="flex flex-1 flex-col min-w-0 h-full relative z-10 overflow-hidden bg-transparent">
         <Navbar />
         <ChatContainer />
         <ChatInput />
