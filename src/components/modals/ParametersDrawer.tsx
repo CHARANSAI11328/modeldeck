@@ -34,7 +34,7 @@ export function ParametersDrawer() {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/80 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500 border border-blue-500/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#ff5722]/15 text-[#ff5722] border border-[#ff5722]/20">
                 <Sliders className="h-4 w-4" />
               </div>
               <h3 id="parameters-drawer-title" className="font-bold text-base text-foreground tracking-tight">
@@ -44,7 +44,7 @@ export function ParametersDrawer() {
             <button
               onClick={() => setSettingsOpen(false)}
               aria-label="Close parameters drawer"
-              className="btn-tactile rounded-xl p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="btn-tactile rounded-xl p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-[#ff5722]"
             >
               <X className="h-4.5 w-4.5" />
             </button>
@@ -53,7 +53,7 @@ export function ParametersDrawer() {
           {/* System Prompt Input */}
           <div className="space-y-1.5">
             <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-foreground">
-              <MessageSquareCode className="h-3.5 w-3.5 text-blue-500" />
+              <MessageSquareCode className="h-3.5 w-3.5 text-[#ff5722]" />
               <span>System Prompt Instructions</span>
             </label>
             <textarea
@@ -61,7 +61,7 @@ export function ParametersDrawer() {
               onChange={(e) => updateSettings({ systemPrompt: e.target.value })}
               rows={3}
               placeholder="e.g. You are an expert TypeScript engineer..."
-              className="w-full rounded-xl border border-border bg-surface-2 p-3 text-xs leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none transition-colors"
+              className="w-full rounded-xl border border-border bg-surface-2 p-3 text-xs leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-[#ff5722] focus:outline-none transition-colors"
             />
           </div>
 
@@ -71,7 +71,7 @@ export function ParametersDrawer() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-foreground">Temperature</span>
-                <span className="font-mono text-blue-500 font-bold tabular-nums">{settings.temperature}</span>
+                <span className="font-mono text-[#ff5722] font-bold tabular-nums">{settings.temperature}</span>
               </div>
               <input
                 type="range"
@@ -80,7 +80,7 @@ export function ParametersDrawer() {
                 step="0.05"
                 value={settings.temperature}
                 onChange={(e) => updateSettings({ temperature: parseFloat(e.target.value) })}
-                className="w-full accent-blue-600 bg-surface-2 rounded-lg h-2 cursor-pointer"
+                className="w-full accent-[#ff5722] bg-surface-2 rounded-lg h-2 cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-muted-foreground font-mono">
                 <span>0.0 (Deterministic)</span>
@@ -93,7 +93,7 @@ export function ParametersDrawer() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-foreground">Max Output Tokens</span>
-                <span className="font-mono text-blue-500 font-bold tabular-nums">{settings.maxTokens}</span>
+                <span className="font-mono text-[#ff5722] font-bold tabular-nums">{settings.maxTokens}</span>
               </div>
               <input
                 type="range"
@@ -102,7 +102,7 @@ export function ParametersDrawer() {
                 step="256"
                 value={settings.maxTokens}
                 onChange={(e) => updateSettings({ maxTokens: parseInt(e.target.value, 10) })}
-                className="w-full accent-blue-600 bg-surface-2 rounded-lg h-2 cursor-pointer"
+                className="w-full accent-[#ff5722] bg-surface-2 rounded-lg h-2 cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-muted-foreground font-mono">
                 <span>256</span>
@@ -115,7 +115,7 @@ export function ParametersDrawer() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-foreground">Top P (Nucleus Sampling)</span>
-                <span className="font-mono text-blue-500 font-bold tabular-nums">{settings.topP}</span>
+                <span className="font-mono text-[#ff5722] font-bold tabular-nums">{settings.topP}</span>
               </div>
               <input
                 type="range"
@@ -124,7 +124,7 @@ export function ParametersDrawer() {
                 step="0.05"
                 value={settings.topP}
                 onChange={(e) => updateSettings({ topP: parseFloat(e.target.value) })}
-                className="w-full accent-blue-600 bg-surface-2 rounded-lg h-2 cursor-pointer"
+                className="w-full accent-[#ff5722] bg-surface-2 rounded-lg h-2 cursor-pointer"
               />
             </div>
           </div>
@@ -149,7 +149,7 @@ export function ParametersDrawer() {
                 type="checkbox"
                 checked={settings.useProxy}
                 onChange={(e) => updateSettings({ useProxy: e.target.checked })}
-                className="h-5 w-5 rounded accent-blue-600 cursor-pointer shrink-0"
+                className="h-5 w-5 rounded accent-[#ff5722] cursor-pointer shrink-0"
               />
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-emerald-500 pt-1 font-mono font-semibold">
@@ -161,7 +161,7 @@ export function ParametersDrawer() {
           {/* Custom Provider / Local Endpoint Configuration */}
           <div className="rounded-2xl border border-border bg-surface-2/60 p-4 space-y-3">
             <div className="flex items-center gap-2 text-xs font-bold text-foreground">
-              <Server className="h-4 w-4 text-purple-500" />
+              <Server className="h-4 w-4 text-[#ff7043]" />
               <span>Local Endpoint (Ollama, vLLM, LM Studio)</span>
             </div>
             <div className="space-y-2 text-xs">
@@ -172,7 +172,7 @@ export function ParametersDrawer() {
                   value={settings.customBaseUrl}
                   onChange={(e) => updateSettings({ customBaseUrl: e.target.value })}
                   placeholder="http://localhost:11434/v1"
-                  className="w-full rounded-xl border border-border bg-surface-1 px-3 py-1.5 font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full rounded-xl border border-border bg-surface-1 px-3 py-1.5 font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#ff5722] transition-colors"
                 />
               </div>
               <div>
@@ -182,7 +182,7 @@ export function ParametersDrawer() {
                   value={settings.customModelName}
                   onChange={(e) => updateSettings({ customModelName: e.target.value })}
                   placeholder="llama3.3"
-                  className="w-full rounded-xl border border-border bg-surface-1 px-3 py-1.5 font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full rounded-xl border border-border bg-surface-1 px-3 py-1.5 font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#ff5722] transition-colors"
                 />
               </div>
             </div>
@@ -192,7 +192,7 @@ export function ParametersDrawer() {
           <div className="flex justify-end pt-2">
             <button
               onClick={() => setSettingsOpen(false)}
-              className="btn-tactile w-full sm:w-auto rounded-xl bg-blue-600 hover:bg-blue-500 px-6 py-2.5 text-xs font-bold text-white transition-all shadow-md shadow-blue-500/20"
+              className="btn-tactile w-full sm:w-auto rounded-xl bg-[#ff5722] hover:bg-[#ff6d3d] px-6 py-2.5 text-xs font-bold text-white transition-all shadow-md shadow-[#ff5722]/20"
             >
               Apply &amp; Close
             </button>

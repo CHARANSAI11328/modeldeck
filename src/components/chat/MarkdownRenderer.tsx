@@ -172,13 +172,13 @@ function highlightCodeLine(line: string, _lang: string): React.ReactNode {
       );
     } else if (/^(const|let|var|function|return|if|else|for|while|import|export|from|default|class|extends|interface|type|async|await|try|catch|finally|throw|new|switch|case|break|continue|yield|def|lambda|print|elif|self|select|where|insert|delete|update|join|table|create|drop|alter)$/i.test(token)) {
       elements.push(
-        <span key={match.index} className="text-purple-400 font-medium">
+        <span key={match.index} className="text-[#ff7043] font-medium">
           {token}
         </span>
       );
     } else {
       elements.push(
-        <span key={match.index} className="text-blue-300">
+        <span key={match.index} className="text-[#ffaa7d]">
           {token}
         </span>
       );
@@ -220,7 +220,7 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
             <span className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
           </div>
           <div className="flex items-center gap-1.5 text-zinc-300">
-            <FileCode2 className="h-3.5 w-3.5 text-blue-400" />
+            <FileCode2 className="h-3.5 w-3.5 text-[#ff8a50]" />
             <span className="uppercase tracking-wider font-semibold text-[11px]">
               {displayLang}
             </span>
@@ -231,7 +231,7 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
         </div>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-colors focus-visible:ring-1 focus-visible:ring-blue-500 text-xs font-sans"
+          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-colors focus-visible:ring-1 focus-visible:ring-[#ff5722] text-xs font-sans"
           title="Copy code to clipboard"
           aria-label="Copy code block"
         >
@@ -395,7 +395,7 @@ function renderFormattedSpan(text: string): React.ReactNode {
       return (
         <code
           key={idx}
-          className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[12.5px] text-blue-600 dark:text-blue-400 font-medium"
+          className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[12.5px] text-[#ff8a50] font-medium"
         >
           {part.slice(1, -1)}
         </code>
@@ -428,7 +428,7 @@ function renderFormattedSpan(text: string): React.ReactNode {
                       href={linkMatch[2]}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:underline font-medium inline-flex items-center gap-0.5"
+                      className="text-[#ff8a50] hover:underline font-medium inline-flex items-center gap-0.5"
                     >
                       {linkMatch[1]}
                       <span className="text-[10px]">↗</span>

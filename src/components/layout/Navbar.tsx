@@ -30,7 +30,6 @@ import {
 import { ProviderId, ModelInfo } from "@/lib/types";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ProviderMark } from "@/components/ui/ProviderMark";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 export function Navbar() {
   const {
@@ -133,7 +132,7 @@ export function Navbar() {
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
           onClick={() => setSidebarOpen(!isSidebarOpen)}
-          className="btn-tactile rounded-lg p-2 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors shrink-0 focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="btn-tactile rounded-lg p-2 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors shrink-0 focus-visible:ring-2 focus-visible:ring-[#ff5722]"
           title="Toggle sidebar"
           aria-label="Toggle sidebar"
         >
@@ -379,8 +378,6 @@ export function Navbar() {
             </span>
           </Tooltip>
         )}
-
-        <ThemeToggle />
 
         {/* Assistant Studio Trigger */}
         <Link

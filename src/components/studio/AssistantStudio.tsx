@@ -54,12 +54,12 @@ function renderSandboxMarkdown(raw: string): string {
     return `<div class="my-1.5 rounded-lg bg-black/60 p-2.5 font-mono text-[11px] text-zinc-300 border border-zinc-700/60 overflow-x-auto"><span class="text-[9px] uppercase tracking-wider text-muted-foreground block mb-1 font-semibold">${lang || "code"}</span><pre><code>${code.trim()}</code></pre></div>`;
   });
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="rounded bg-black/40 px-1 py-0.5 font-mono text-[11px] text-blue-400 border border-border/60">$1</code>');
+  html = html.replace(/`([^`]+)`/g, '<code class="rounded bg-black/40 px-1 py-0.5 font-mono text-[11px] text-[#ff8a50] border border-border/60">$1</code>');
   // Bold & Italic
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
   // Markdown links
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline font-semibold">$1 ↗</a>');
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#ff5722] hover:underline font-semibold">$1 ↗</a>');
   // Bullet lists
   html = html.replace(/^\s*[-*]\s+(.*)$/gm, '<li class="ml-3 list-disc">$1</li>');
   // Line breaks
@@ -524,7 +524,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               <div className="double-bezel">
                 <div className="double-bezel-inner p-4 space-y-3">
                   <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
-                    <Bot className="h-3.5 w-3.5 text-blue-500" />
+                    <Bot className="h-3.5 w-3.5 text-[#ff5722]" />
                     <span>Persona &amp; Greeting</span>
                   </div>
 
@@ -535,7 +535,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         type="text"
                         value={assistant.name}
                         onChange={(e) => setAssistant({ ...assistant, name: e.target.value })}
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
                       />
                     </div>
                     <div className="space-y-1">
@@ -544,7 +544,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         type="text"
                         value={assistant.title}
                         onChange={(e) => setAssistant({ ...assistant, title: e.target.value })}
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
                       />
                     </div>
                   </div>
@@ -555,7 +555,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       rows={2}
                       value={assistant.greeting}
                       onChange={(e) => setAssistant({ ...assistant, greeting: e.target.value })}
-                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs focus:outline-none focus:border-blue-500 resize-none transition-colors"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs focus:outline-none focus:border-[#ff5722] resize-none transition-colors"
                     />
                   </div>
 
@@ -567,7 +567,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       rows={4}
                       value={assistant.persona}
                       onChange={(e) => setAssistant({ ...assistant, persona: e.target.value })}
-                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs font-mono focus:outline-none focus:border-blue-500 resize-y transition-colors"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs font-mono focus:outline-none focus:border-[#ff5722] resize-y transition-colors"
                     />
                   </div>
                 </div>
@@ -594,7 +594,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                             updated[idx] = e.target.value;
                             setAssistant({ ...assistant, suggestedQuestions: updated });
                           }}
-                          className="flex-1 rounded-xl border border-border bg-surface-2 text-foreground px-2.5 py-1 text-xs focus:outline-none focus:border-blue-500 transition-colors"
+                          className="flex-1 rounded-xl border border-border bg-surface-2 text-foreground px-2.5 py-1 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
                         />
                         <button
                           onClick={() => {
@@ -619,7 +619,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                             ],
                           })
                         }
-                        className="btn-tactile text-[11px] text-blue-500 hover:text-blue-400 font-semibold pt-1 flex items-center gap-1"
+                        className="btn-tactile text-[11px] text-[#ff5722] hover:text-[#ff8a50] font-semibold pt-1 flex items-center gap-1"
                       >
                         + Add Question Chip
                       </button>
@@ -632,7 +632,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               <div className="double-bezel">
                 <div className="double-bezel-inner p-4 space-y-3">
                   <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
-                    <Palette className="h-3.5 w-3.5 text-purple-500" />
+                    <Palette className="h-3.5 w-3.5 text-[#ff7043]" />
                     <span>Branding &amp; Appearance</span>
                   </div>
 
@@ -646,7 +646,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                           onClick={() => setAssistant({ ...assistant, avatar: av })}
                           className={`btn-tactile h-8 w-8 rounded-xl flex items-center justify-center text-base transition-all ${
                             assistant.avatar === av
-                              ? "bg-blue-600 scale-110 shadow-md ring-2 ring-blue-400 text-white"
+                              ? "bg-[#ff5722] scale-110 shadow-md ring-2 ring-[#ff8a50] text-[#140a06]"
                               : "bg-surface-2 border border-border hover:bg-surface-3"
                           }`}
                         >
@@ -687,7 +687,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       onClick={() => setAssistant({ ...assistant, position: "bottom-right" })}
                       className={`btn-tactile rounded-xl border p-2 text-xs font-semibold text-center transition-all ${
                         assistant.position === "bottom-right"
-                          ? "border-blue-500 bg-blue-500/15 text-blue-600 dark:text-blue-300 shadow-sm"
+                          ? "border-[#ff5722] bg-[#ff5722]/15 text-[#ff8a50] shadow-sm"
                           : "border-border bg-surface-2 text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -697,7 +697,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       onClick={() => setAssistant({ ...assistant, position: "bottom-left" })}
                       className={`btn-tactile rounded-xl border p-2 text-xs font-semibold text-center transition-all ${
                         assistant.position === "bottom-left"
-                          ? "border-blue-500 bg-blue-500/15 text-blue-600 dark:text-blue-300 shadow-sm"
+                          ? "border-[#ff5722] bg-[#ff5722]/15 text-[#ff8a50] shadow-sm"
                           : "border-border bg-surface-2 text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -732,7 +732,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                                 : "openai/gpt-oss-120b",
                           })
                         }
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
                       >
                         <option value="groq">Groq (Ultra-Fast ⚡)</option>
                         <option value="gemini">Google Gemini (Flash 3.5)</option>
@@ -748,7 +748,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         type="text"
                         value={assistant.model}
                         onChange={(e) => setAssistant({ ...assistant, model: e.target.value })}
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-[#ff5722] transition-colors"
                       />
                     </div>
                   </div>
@@ -771,7 +771,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         })
                       }
                       placeholder="myportfolio.dev, localhost, *"
-                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-blue-500 transition-colors"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-[#ff5722] transition-colors"
                     />
                   </div>
                 </div>
@@ -786,7 +786,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                 <div className="double-bezel-inner p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Code2 className="h-4 w-4 text-blue-500" />
+                      <Code2 className="h-4 w-4 text-[#ff5722]" />
                       <span className="font-bold text-xs uppercase tracking-wider text-foreground">
                         1-Line Embed Code
                       </span>
@@ -801,7 +801,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                   </div>
 
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Paste this snippet before the closing <code className="text-blue-500 font-mono font-semibold">&lt;/body&gt;</code> tag of any web project. Zero npm dependencies, fully isolated Shadow DOM.
+                    Paste this snippet before the closing <code className="text-[#ff5722] font-mono font-semibold">&lt;/body&gt;</code> tag of any web project. Zero npm dependencies, fully isolated Shadow DOM.
                   </p>
 
                   {/* Framework Selector Tabs */}
@@ -877,7 +877,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         href="https://github.com/settings/tokens/new?scopes=repo&description=ModelDeck+Assistant+Integration"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[10px] text-blue-500 hover:underline flex items-center gap-0.5"
+                        className="text-[10px] text-[#ff5722] hover:underline flex items-center gap-0.5"
                       >
                         <span>Create Token (repo scope) ↗</span>
                       </a>

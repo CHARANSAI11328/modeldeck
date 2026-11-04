@@ -266,13 +266,13 @@ export function KeyVaultModal() {
           {/* Modal Header */}
           <div className="flex items-center justify-between border-b border-border/80 px-4 sm:px-6 py-4 bg-surface-1">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500 border border-blue-500/25 shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ff5722]/15 text-[#ff5722] border border-[#ff5722]/25 shrink-0">
                 <KeyRound className="h-4.5 w-4.5" />
               </div>
               <div>
                 <h3 id="vault-modal-title" className="font-bold text-base sm:text-lg text-foreground flex items-center gap-2 flex-wrap tracking-tight">
                   <span>BYOK Multi-Device Key Vault</span>
-                  <span className="rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-blue-600 dark:text-blue-400">
+                  <span className="rounded-full bg-[#ff5722]/10 border border-[#ff5722]/20 px-2 py-0.5 text-[10px] font-mono font-medium text-[#ff5722] dark:text-[#ff8a50]">
                     AES-GCM Sync
                   </span>
                 </h3>
@@ -285,7 +285,7 @@ export function KeyVaultModal() {
             <button
               onClick={() => setKeyVaultOpen(false)}
               aria-label="Close API Key Vault"
-              className="btn-tactile rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="btn-tactile rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-[#ff5722]"
             >
               <X className="h-4.5 w-4.5" />
             </button>
@@ -300,9 +300,9 @@ export function KeyVaultModal() {
               <button
                 type="button"
                 onClick={handleQuickLoadKeys}
-                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl bg-blue-500/15 border border-blue-500/30 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-300 hover:bg-blue-500/25 transition-all shadow-sm"
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl bg-[#ff5722]/15 border border-[#ff5722]/30 px-3 py-1 text-xs font-semibold text-[#ff5722] dark:text-[#ff8a50] hover:bg-[#ff6d3d]/25 transition-all shadow-sm"
               >
-                <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+                <Sparkles className="h-3.5 w-3.5 text-[#ff5722]" />
                 <span>Load Verified Groq &amp; Gemini Keys</span>
               </button>
             </div>
@@ -321,7 +321,7 @@ export function KeyVaultModal() {
                   key={provider.id}
                   className={`rounded-2xl border p-3.5 sm:p-4 transition-all ${
                     isFocused
-                      ? "border-blue-500/60 bg-blue-500/[0.04] ring-1 ring-blue-500/30"
+                      ? "border-[#ff5722]/60 bg-[#ff5722]/[0.04] ring-1 ring-[#ff5722]/30"
                       : "border-border bg-surface-1 hover:border-zinc-700/60 shadow-sm"
                   }`}
                 >
@@ -343,7 +343,7 @@ export function KeyVaultModal() {
                       href={provider.getKeyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-tactile inline-flex items-center gap-1 text-xs font-semibold text-blue-500 hover:text-blue-400 underline underline-offset-2 transition-colors py-0.5"
+                      className="btn-tactile inline-flex items-center gap-1 text-xs font-semibold text-[#ff5722] hover:text-[#ff8a50] underline underline-offset-2 transition-colors py-0.5"
                     >
                       <span>Get {provider.shortLabel} Key</span>
                       <ExternalLink className="h-3 w-3" />
@@ -362,7 +362,7 @@ export function KeyVaultModal() {
                             ? "Optional API key (if required by your endpoint)"
                             : `Paste your ${provider.shortLabel} API key here...`
                         }
-                        className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none transition-all"
+                        className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-[#ff5722] focus:outline-none transition-all"
                       />
                       <button
                         type="button"
@@ -384,12 +384,12 @@ export function KeyVaultModal() {
                     >
                       {test?.loading ? (
                         <>
-                          <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-500" />
+                          <Loader2 className="h-3.5 w-3.5 animate-spin text-[#ff5722]" />
                           <span>Syncing...</span>
                         </>
                       ) : (
                         <>
-                          <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+                          <Sparkles className="h-3.5 w-3.5 text-[#ff5722]" />
                           <span>Test &amp; Sync</span>
                         </>
                       )}
@@ -453,7 +453,7 @@ export function KeyVaultModal() {
               <button
                 onClick={handleSaveAll}
                 disabled={isSaving}
-                className="btn-tactile flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-5 py-2 text-xs font-bold text-white shadow-lg shadow-blue-500/20 transition-all"
+                className="btn-tactile flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-xl bg-[#ff5722] hover:bg-[#ff6d3d] px-5 py-2 text-xs font-bold text-white shadow-lg shadow-[#ff5722]/20 transition-all"
               >
                 <Lock className="h-3.5 w-3.5" />
                 <span>{isSaving ? "Saving..." : "Save & Synchronize"}</span>

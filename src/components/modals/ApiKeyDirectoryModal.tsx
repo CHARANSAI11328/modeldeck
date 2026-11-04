@@ -110,7 +110,7 @@ export function ApiKeyDirectoryModal() {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/80 px-4 sm:px-6 py-4 bg-surface-1">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500 border border-blue-500/25 shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ff5722]/15 text-[#ff5722] border border-[#ff5722]/25 shrink-0">
                 <Sparkles className="h-4.5 w-4.5" />
               </div>
               <div>
@@ -126,7 +126,7 @@ export function ApiKeyDirectoryModal() {
             <button
               onClick={() => setApiDirectoryOpen(false)}
               aria-label="Close API Key Directory"
-              className="btn-tactile rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="btn-tactile rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-[#ff5722]"
             >
               <X className="h-4.5 w-4.5" />
             </button>
@@ -141,7 +141,7 @@ export function ApiKeyDirectoryModal() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Filter providers (e.g. OpenAI, Anthropic, Gemini, Groq, Free)..."
-                className="w-full rounded-xl border border-border bg-surface-1 pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full rounded-xl border border-border bg-surface-1 pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#ff5722] transition-colors"
               />
             </div>
             <div className="text-[11px] text-muted-foreground flex items-center gap-2">
@@ -197,7 +197,7 @@ export function ApiKeyDirectoryModal() {
                         href={provider.getKeyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-tactile flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 px-3 py-2 text-xs font-semibold text-blue-600 dark:text-blue-300 transition-colors"
+                        className="btn-tactile flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#ff5722]/15 hover:bg-[#ff6d3d]/25 border border-[#ff5722]/30 px-3 py-2 text-xs font-semibold text-[#ff5722] dark:text-[#ff8a50] transition-colors"
                       >
                         <span>Get API Key</span>
                         <ExternalLink className="h-3 w-3" />
@@ -230,7 +230,7 @@ export function ApiKeyDirectoryModal() {
                 setApiDirectoryOpen(false);
                 setKeyVaultOpen(true);
               }}
-              className="btn-tactile flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2 font-bold text-white shadow-md shadow-blue-500/20 transition-all shrink-0"
+              className="btn-tactile flex items-center gap-1.5 rounded-xl bg-[#ff5722] hover:bg-[#ff6d3d] px-4 py-2 font-bold text-white shadow-md shadow-[#ff5722]/20 transition-all shrink-0"
             >
               <span>Open Key Vault</span>
               <ArrowRight className="h-3.5 w-3.5" />

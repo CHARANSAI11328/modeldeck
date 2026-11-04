@@ -126,7 +126,7 @@ export function Sidebar() {
                     }
                   }
                 }}
-                className={`btn-tactile group flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 ${
+                className={`btn-tactile group flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5722] ${
                   isSelected
                     ? "bg-[#ff5722]/15 border-l-2 border-[#ff5722] text-[#faf5ef] font-semibold shadow-sm"
                     : "text-muted-foreground hover:bg-surface-2/70 hover:text-foreground border border-transparent"

@@ -37,7 +37,7 @@ export function TypingIndicator({
     <div className="flex gap-3 py-3 animate-in fade-in duration-200">
       {/* Animated Provider Avatar */}
       <div className="relative shrink-0">
-        <div className="h-8 w-8 rounded-lg flex items-center justify-center border border-border bg-surface-1 shadow-sm relative z-10">
+        <div className="h-8 w-8 rounded-lg flex items-center justify-center border border-white/10 bg-[#160d09] shadow-sm relative z-10">
           <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4" />
         </div>
       </div>
@@ -50,11 +50,11 @@ export function TypingIndicator({
           <span className="rounded-full bg-surface-2 border border-border px-2 py-0.5 text-[11px] font-mono text-muted-foreground">
             {model.name}
           </span>
-          <div className="flex items-center gap-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono text-blue-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
+          <div className="flex items-center gap-1.5 rounded-full bg-[#ff5722]/15 border border-[#ff5722]/30 px-2 py-0.5 text-[10px] font-mono text-[#ff8a50]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#ff5722] animate-pulse" />
             <span className="flex items-center gap-1">
               <Clock className="h-2.5 w-2.5" />
-              {hasReasoning ? "Reasoning deep thoughts" : "Streaming response"} • {elapsedSeconds.toFixed(1)}s
+              {hasReasoning ? "Reasoning deliberation trace" : "Streaming response"} • {elapsedSeconds.toFixed(1)}s
             </span>
           </div>
 
@@ -71,7 +71,7 @@ export function TypingIndicator({
         </div>
 
         {/* Texting Bouncing Dots + Skeleton */}
-        <div className="rounded-xl bg-surface-1 border border-border p-3.5 space-y-2.5 max-w-sm shadow-sm">
+        <div className="rounded-xl bg-[#140d0a] border border-white/10 p-3.5 space-y-2.5 max-w-sm shadow-sm">
           {/* 3 Bouncing Texting Dots */}
           <div className="flex items-center gap-1.5">
             <span
@@ -87,7 +87,7 @@ export function TypingIndicator({
               style={{ backgroundColor: `${provider.color}77` }}
             />
             <span className="text-xs text-muted-foreground font-medium ml-2">
-              Waiting for tokens...
+              Streaming hardware tokens...
             </span>
           </div>
 

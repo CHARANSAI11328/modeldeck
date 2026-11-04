@@ -105,7 +105,7 @@ export function ChatInput() {
                 onClick={() => insertPromptTag("Analyze this step by step, showing all reasoning and tradeoffs:")}
                 className="btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-2 hover:bg-surface-3 border border-border text-[11px] text-muted-foreground hover:text-foreground font-medium transition-all shrink-0"
               >
-                <BrainCircuit className="h-3 w-3 text-indigo-500" />
+                <BrainCircuit className="h-3 w-3 text-[#ff8a50]" />
                 <span>Deep Reason</span>
               </button>
               <button

@@ -140,7 +140,7 @@ export function ErrorBanner({
           {isModelUnavailable && (
             <div className="rounded-xl bg-black/40 border border-red-500/20 p-3 space-y-2 mt-2">
               <div className="text-xs text-zinc-300 font-medium flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-blue-400" />
+                <Sparkles className="h-3.5 w-3.5 text-[#ff8a50]" />
                 <span>Recommended 1-Click Recovery:</span>
               </div>
 
@@ -152,7 +152,7 @@ export function ErrorBanner({
                     onClick={() =>
                       handleSwitchAndResend(currentProviderId, replacementModel.id)
                     }
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 px-3 py-1.5 text-xs font-semibold text-white transition-all shadow-md"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#ff5722] hover:bg-[#ff6d3d] disabled:opacity-50 px-3 py-1.5 text-xs font-semibold text-white transition-all shadow-md"
                   >
                     <Zap className="h-3.5 w-3.5" />
                     <span>Switch to {replacementModel.name} &amp; Resend</span>
@@ -224,7 +224,7 @@ export function ErrorBanner({
                   onClick={() => {
                     updateSettings({ useProxy: !settings.useProxy });
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-1.5 text-xs font-medium text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#ff5722] hover:bg-[#ff6d3d] px-3 py-1.5 text-xs font-medium text-white transition-colors"
                 >
                   <Zap className="h-3.5 w-3.5" />
                   {settings.useProxy
