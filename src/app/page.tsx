@@ -1,42 +1,47 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
-import { ArrowDownRight, ArrowRight, Check, Command, Copy, LockKeyhole, Menu, MoveRight, Plus, Sparkles, X, Zap } from "lucide-react";
-import { ProviderMark } from "@/components/ui/ProviderMark";
-import type { ProviderId } from "@/lib/types";
+import React from "react";
+import { LandingNavbar } from "@/components/landing/LandingNavbar";
+import { LandingHero } from "@/components/landing/LandingHero";
+import { EnginesSection } from "@/components/landing/EnginesSection";
+import { InteractivePlaygroundSection } from "@/components/landing/InteractivePlaygroundSection";
+import { StudioForgeSection } from "@/components/landing/StudioForgeSection";
+import { SecurityVaultSection } from "@/components/landing/SecurityVaultSection";
+import { FaqSection } from "@/components/landing/FaqSection";
+import { LandingFooter } from "@/components/landing/LandingFooter";
 
-const providers: { id: ProviderId; name: string; note: string; modelId?: string }[] = [
-  { id: "openai", name: "ChatGPT", note: "frontier" }, { id: "gemini", name: "Gemini", note: "multimodal" },
-  { id: "anthropic", name: "Claude", note: "reasoning" }, { id: "groq", name: "Groq", note: "speed" },
-  { id: "deepseek", name: "DeepSeek", note: "open weights" }, { id: "openrouter", name: "OpenRouter", note: "routing" },
-  { id: "custom-openai-compatible", name: "Ollama", note: "local" }, { id: "openrouter", name: "Qwen", note: "open weights", modelId: "qwen3" },
-];
-const navItems = [["Platform", "platform"], ["Models", "models"], ["Compare", "compare"], ["Security", "security"]] as const;
+export default function SinglePageLanding() {
+  return (
+    <div className="min-h-screen bg-[#0c0807] text-[#faf5ef] selection:bg-[#ff5722]/30 selection:text-white">
+      {/* 1. Atmospheric Ambient Noise Texture */}
+      <div className="site-noise" aria-hidden="true" />
 
-function ModelChip({ provider, className = "" }: { provider: (typeof providers)[number]; className?: string }) {
-  return <div className={`model-chip ${className}`}><ProviderMark providerId={provider.id} modelId={provider.modelId} label={provider.name} className="h-5 w-5" /><span>{provider.name}</span><i>{provider.note}</i></div>;
-}
+      {/* 2. Fixed Smooth-Scroll Pill Navbar */}
+      <LandingNavbar />
 
-export default function LandingPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const copyPrompt = async () => { await navigator.clipboard?.writeText("Compare the best model for a production RAG workflow."); setCopied(true); window.setTimeout(() => setCopied(false), 1400); };
-  return <div className="modeldeck-site">
-    <div className="site-noise" aria-hidden="true" />
-    <header className="site-header">
-      <Link href="/" className="brand" aria-label="ModelDeck home"><span className="brand-mark"><span /></span><span>modeldeck<span className="brand-dot">.</span></span></Link>
-      <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary navigation">{navItems.map(([label, target]) => <a key={target} href={`#${target}`} onClick={() => setMenuOpen(false)}>{label}</a>)}<a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a></nav>
-      <div className="header-actions"><Link href="/studio" className="header-link">Studio <ArrowDownRight size={14} /></Link><Link href="/playground" className="header-cta">Open deck <ArrowRight size={15} /></Link><button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X size={19} /> : <Menu size={19} />}</button></div>
-    </header>
-    <main>
-      <section className="hero-section" id="platform"><div className="hero-copy"><p className="eyebrow"><span className="pulse-dot" /> Your models. One command center.</p><h1>AI has options.<br /><em>Make them yours.</em></h1><p className="hero-description">ModelDeck is the place to test, compare, and route every frontier model—without giving up your keys, your context, or your momentum.</p><div className="hero-actions"><Link href="/playground" className="fire-button">Start building <span><ArrowRight size={16} /></span></Link><a href="#models" className="text-button">See the model deck <MoveRight size={17} /></a></div><div className="trust-line"><span><Check size={14} /> Bring your own keys</span><span><Check size={14} /> No usage markup</span><span><Check size={14} /> Local-first vault</span></div></div>
-      <div className="hero-orbit" aria-label="A visual model routing workspace"><div className="orbital-ring ring-one" /><div className="orbital-ring ring-two" /><div className="orbit-node node-a"><ProviderMark providerId="openai" className="h-7 w-7" /></div><div className="orbit-node node-b"><ProviderMark providerId="gemini" className="h-7 w-7" /></div><div className="orbit-node node-c"><ProviderMark providerId="anthropic" className="h-7 w-7" /></div><div className="orbit-node node-d"><ProviderMark providerId="groq" className="h-7 w-7" /></div><div className="hero-console"><div className="console-top"><span>ModelDeck / workspace</span><span className="live-status">LIVE</span></div><div className="console-main"><div className="console-title"><span className="console-spark"><Sparkles size={18} /></span><strong>Which model?</strong></div><p>Compare the best model for a production RAG workflow.</p><div className="console-models"><div><ProviderMark providerId="openai" className="h-4 w-4" /> GPT-5 <b>92</b></div><div><ProviderMark providerId="anthropic" className="h-4 w-4" /> Claude <b>89</b></div><div><ProviderMark providerId="gemini" className="h-4 w-4" /> Gemini <b>87</b></div></div><div className="console-send"><span>Test across 3 models</span><span><Zap size={13} /> Run</span></div></div><div className="console-glow" /></div><div className="orbit-caption"><span className="caption-bar" /> 40+ models on deck</div></div></section>
-      <section className="provider-marquee" id="models"><div className="marquee-label">YOUR STACK, UNCOMPROMISED <span>✦</span></div><div className="provider-row">{providers.map((provider) => <ModelChip key={provider.id} provider={provider} />)}<div className="model-chip more-chip"><Plus size={16} /><span>and more</span></div></div></section>
-      <section className="manifesto-section" id="compare"><div className="section-kicker">01 / THE CONTROL LAYER</div><div className="manifesto-grid"><h2>One prompt.<br />A complete <em>point of view.</em></h2><div className="manifesto-text"><p>Stop playing favourites before the work begins. Put the same prompt in front of every model, watch the trade-offs in real time, and move with conviction.</p><a href="#security" className="underlined-link">Explore the workflow <ArrowRight size={16} /></a></div></div><div className="comparison-stage"><div className="compare-toolbar"><span>RUN / 048</span><span className="toolbar-center">product brief → launch plan</span><span>03 MODELS</span></div><div className="compare-columns"><article className="response-card warm"><div className="response-head"><ProviderMark providerId="anthropic" className="h-5 w-5" /><span>Claude</span><b>01</b></div><p>Maps the user journey into a concise launch narrative with clear framing and tangible decisions.</p><div className="response-meter"><span style={{ width: "82%" }} /></div><small>clarity / 8.2</small></article><article className="response-card focus"><div className="response-head"><ProviderMark providerId="openai" className="h-5 w-5" /><span>GPT-5</span><b>02</b></div><p>Turns the brief into a strategic system: positioning, audience tension, then the execution that proves it.</p><div className="response-meter"><span style={{ width: "94%" }} /></div><small>reasoning / 9.4</small></article><article className="response-card cool"><div className="response-head"><ProviderMark providerId="gemini" className="h-5 w-5" /><span>Gemini</span><b>03</b></div><p>Finds the missing research angles and adds the structured detail a technical team can build from.</p><div className="response-meter"><span style={{ width: "88%" }} /></div><small>coverage / 8.8</small></article></div></div></section>
-      <section className="feature-river" id="security"><div className="river-copy"><div className="section-kicker">02 / YOUR KEYS STAY YOURS</div><h2>Private by<br /><em>default.</em></h2><p>Your API keys are encrypted locally. ModelDeck is a refined workbench between you and the providers you already trust—not another account between you and your work.</p><Link className="outline-button" href="/playground"><LockKeyhole size={16} /> Open your private deck</Link></div><div className="vault-visual"><div className="vault-ring ring-outer" /><div className="vault-ring ring-inner" /><div className="vault-core"><LockKeyhole size={36} /><span>AES-256</span></div><div className="vault-tag tag-one">YOUR KEY<br /><b>never leaves</b></div><div className="vault-tag tag-two">DIRECT<br /><b>provider calls</b></div></div></section>
-      <section className="command-section"><div><div className="section-kicker">03 / LESS SETUP, MORE SIGNAL</div><h2>Leave the tab<br />circus behind.</h2><p>Set a provider once. Build a real opinion in seconds. Save the runs worth coming back to.</p></div><div className="command-window"><div className="command-dots"><i /><i /><i /><span>modeldeck / quick run</span></div><div className="command-content"><Command size={18} /><span>Compare models for: <b>invoice extraction</b></span><button onClick={copyPrompt} aria-label="Copy example prompt">{copied ? <Check size={15} /> : <Copy size={15} />}</button></div><div className="command-result"><span><ProviderMark providerId="groq" className="h-4 w-4" /> Groq / 614 tok/s</span><span><ProviderMark providerId="deepseek" className="h-4 w-4" /> DeepSeek / $0.14</span><span><ProviderMark providerId="openrouter" className="h-4 w-4" /> Route / balanced</span></div></div></section>
-      <section className="closing-section" id="faq"><p className="eyebrow"><span className="pulse-dot" /> Ready when you are</p><h2>Make a better<br /><em>first call.</em></h2><p>Bring your keys. Find your model. Build the thing.</p><Link href="/playground" className="fire-button large">Enter ModelDeck <span><ArrowRight size={17} /></span></Link></section>
-    </main><footer className="site-footer"><div className="brand"><span className="brand-mark"><span /></span><span>modeldeck<span className="brand-dot">.</span></span></div><p>One deck for every frontier model.</p><div><a href="#platform">Top</a><a href="#models">Models</a><a href="#security">Security</a></div></footer>
-  </div>;
+      {/* 3. Main Single-Page Scroll Content */}
+      <main className="relative z-10">
+        {/* #home: The Reference-grade Hero with Concentric AI Orbitals */}
+        <LandingHero />
+
+        {/* #engines: Every Frontier Model Matrix & Filter */}
+        <EnginesSection />
+
+        {/* #playground: In-Page Multi-Model Comparative Playground */}
+        <InteractivePlaygroundSection />
+
+        {/* #studio: In-Page Assistant Studio & Persona Forge */}
+        <StudioForgeSection />
+
+        {/* #security: Zero-Trust BYOK Encryption Vault */}
+        <SecurityVaultSection />
+
+        {/* #faq: Interactive Accordion FAQ */}
+        <FaqSection />
+      </main>
+
+      {/* 4. Warm Obsidian Footer */}
+      <LandingFooter />
+    </div>
+  );
 }
