@@ -1,42 +1,43 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Navbar } from "@/components/layout/Navbar";
-import { ChatContainer } from "@/components/chat/ChatContainer";
-import { ChatInput } from "@/components/chat/ChatInput";
-import { KeyVaultModal } from "@/components/modals/KeyVaultModal";
-import { ParametersDrawer } from "@/components/modals/ParametersDrawer";
-import { ApiKeyDirectoryModal } from "@/components/modals/ApiKeyDirectoryModal";
-import { usePlaygroundStore } from "@/lib/store";
+import React from "react";
+import { LandingNavbar } from "@/components/landing/LandingNavbar";
+import { LandingHero } from "@/components/landing/LandingHero";
+import { LiveTerminalDemo } from "@/components/landing/LiveTerminalDemo";
+import { ProviderStrip } from "@/components/landing/ProviderStrip";
+import { BentoFeatures } from "@/components/landing/BentoFeatures";
+import { BenchmarkMatrix } from "@/components/landing/BenchmarkMatrix";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { StudioSpotlight } from "@/components/landing/StudioSpotlight";
+import { FaqSection } from "@/components/landing/FaqSection";
+import { LandingCta } from "@/components/landing/LandingCta";
+import { LandingFooter } from "@/components/landing/LandingFooter";
 
-export default function Home() {
-  const { refreshKeyStatus } = usePlaygroundStore();
-
-  useEffect(() => {
-    refreshKeyStatus();
-  }, [refreshKeyStatus]);
-
+export default function LandingPage() {
   return (
-    <div className="app-shell flex h-[100dvh] w-full max-w-full overflow-hidden bg-background text-foreground relative selection:bg-blue-500/20 selection:text-foreground">
-      {/* Luminous GPU-accelerated atmospheric background layers */}
+    <div className="min-h-[100dvh] w-full bg-background text-foreground relative selection:bg-blue-500/25 selection:text-foreground overflow-x-hidden">
+      {/* Ambient micro-grid and radial lighting meshes */}
       <div className="ambient-field" aria-hidden="true" />
       <div className="ambient-mesh-glow" aria-hidden="true" />
 
-      {/* Sessions Sidebar */}
-      <Sidebar />
+      {/* Navigation */}
+      <LandingNavbar />
 
-      {/* Main Chat Content Area */}
-      <div className="flex flex-1 flex-col min-w-0 h-full relative z-10 overflow-hidden bg-transparent">
-        <Navbar />
-        <ChatContainer />
-        <ChatInput />
-      </div>
+      {/* Main Page Flow */}
+      <main className="relative z-10">
+        <LandingHero />
+        <LiveTerminalDemo />
+        <ProviderStrip />
+        <BentoFeatures />
+        <BenchmarkMatrix />
+        <HowItWorks />
+        <StudioSpotlight />
+        <FaqSection />
+        <LandingCta />
+      </main>
 
-      {/* Global Modals */}
-      <KeyVaultModal />
-      <ParametersDrawer />
-      <ApiKeyDirectoryModal />
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }
