@@ -152,7 +152,7 @@ export function Sidebar() {
                   }}
                   disabled={sessions.length <= 1}
                   className={`rounded-lg p-1 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors ${
-                    sessions.length <= 1 ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"
+                    sessions.length <= 1 ? "opacity-0 pointer-events-none" : "opacity-60 md:opacity-0 md:group-hover:opacity-100"
                   }`}
                   title="Delete chat session"
                   aria-label="Delete chat session"

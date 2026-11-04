@@ -39,7 +39,7 @@ export default function StudioPage() {
 
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-muted-foreground font-mono text-[11px]">ModelDeck Assistant Engine v2.0</span>
+          <span className="text-muted-foreground font-mono text-[11px] hidden sm:inline">ModelDeck Assistant Engine v2.0</span>
         </div>
       </div>
 

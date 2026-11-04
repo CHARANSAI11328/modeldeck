@@ -18,21 +18,23 @@ import { ReasoningAccordion } from "@/components/chat/ReasoningAccordion";
 
 interface MessageItemProps {
   message: ChatMessage;
-  providerId: ProviderId;
-  modelId: string;
+  providerId?: ProviderId;
+  modelId?: string;
   onRetry?: () => void;
   isStreaming?: boolean;
 }
 
 export function MessageItem({
   message,
-  providerId,
-  modelId,
+  providerId: propProviderId,
+  modelId: propModelId,
   onRetry,
   isStreaming = false,
 }: MessageItemProps) {
   const [copied, setCopied] = useState(false);
   const isAssistant = message.role === "assistant";
+  const providerId = (propProviderId || "openai") as ProviderId;
+  const modelId = propModelId || "gpt-4o";
 
   const provider = getProvider(providerId);
   const model = getModel(providerId, modelId);
@@ -166,12 +168,12 @@ export function MessageItem({
           >
             {copied ? (
               <>
-                <Check className="h-3 w-3 text-emerald-500" />
+                <Check className="h-3.5 w-3.5 text-emerald-500" />
                 <span className="text-emerald-500 font-semibold">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="h-3 w-3" />
+                <Copy className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline font-medium">Copy</span>
               </>
             )}

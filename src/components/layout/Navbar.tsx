@@ -148,7 +148,7 @@ export function Navbar() {
             aria-haspopup="listbox"
             aria-label="Select AI provider and model"
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-            className="btn-tactile flex items-center gap-1.5 sm:gap-2 rounded-xl border border-amber-900/40 bg-[#1c110d] hover:bg-[#281711] hover:border-[#ff5722]/50 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-[#ff8a50] transition-all shadow-sm max-w-[150px] sm:max-w-[320px] truncate focus-visible:ring-2 focus-visible:ring-[#ff5722]"
+            className="btn-tactile flex items-center gap-1.5 sm:gap-2 rounded-xl border border-amber-900/40 bg-[#1c110d] hover:bg-[#281711] hover:border-[#ff5722]/50 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-[#ff8a50] transition-all shadow-sm max-w-[125px] sm:max-w-[320px] min-w-0 truncate focus-visible:ring-2 focus-visible:ring-[#ff5722]"
           >
             <ProviderMark providerId={providerId} modelId={modelId} label={provider.shortLabel} className="h-4 w-4 shrink-0" />
             <span className="font-bold text-foreground shrink-0">{provider.shortLabel}</span>
@@ -382,13 +382,13 @@ export function Navbar() {
         {/* Assistant Studio Trigger */}
         <Link
           href="/studio"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border border-amber-900/40 bg-[#1c110d] px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[#ff8a50] hover:bg-[#281711] hover:border-[#ff5722]/50 transition-all shadow-sm"
+          className="btn-tactile flex items-center gap-1.5 rounded-xl border border-amber-900/40 bg-[#1c110d] px-2 sm:px-3 py-1.5 text-xs font-semibold text-[#ff8a50] hover:bg-[#281711] hover:border-[#ff5722]/50 transition-all shadow-sm"
           title="Create & Embed Personalized AI Chatbot for your website"
           aria-label="Assistant Studio"
         >
           <Bot className="h-3.5 w-3.5 text-[#ff5722] shrink-0" />
           <span className="hidden sm:inline">Assistant Studio</span>
-          <span className="rounded bg-[#ff5722]/15 px-1 py-0.2 text-[9px] font-mono text-[#ff8a50]">
+          <span className="hidden sm:inline rounded bg-[#ff5722]/15 px-1 py-0.2 text-[9px] font-mono text-[#ff8a50]">
             NEW
           </span>
         </Link>
@@ -411,7 +411,7 @@ export function Navbar() {
           <button
             onClick={() => setKeyVaultOpen(true)}
             aria-label={`BYOK Key Vault: ${configuredKeysCount} of 8 keys configured`}
-            className={`btn-tactile flex items-center gap-1.5 rounded-xl border px-2.5 sm:px-3 py-1.5 text-xs font-semibold transition-all shadow-sm ${
+            className={`btn-tactile flex items-center gap-1.5 rounded-xl border px-2 sm:px-3 py-1.5 text-xs font-semibold transition-all shadow-sm ${
               hasKey
                 ? "border-border bg-surface-1 text-foreground hover:bg-surface-2"
                 : "border-amber-500/50 bg-amber-500/15 text-amber-600 dark:text-amber-300 hover:bg-amber-500/25"
@@ -428,7 +428,7 @@ export function Navbar() {
         {/* Parameters & Prompt Trigger */}
         <button
           onClick={() => setSettingsOpen(true)}
-          className="btn-tactile rounded-xl border border-border bg-surface-1 p-2 text-foreground hover:bg-surface-2 transition-colors shadow-sm"
+          className="btn-tactile rounded-xl border border-border bg-surface-1 p-1.5 sm:p-2 text-foreground hover:bg-surface-2 transition-colors shadow-sm"
           title="Model Parameters & System Prompt"
           aria-label="Parameters and system prompt"
         >
@@ -452,7 +452,7 @@ export function Navbar() {
               clearCurrentSession();
             }
           }}
-          className="btn-tactile rounded-xl border border-border bg-surface-1 p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors shadow-sm"
+          className="btn-tactile rounded-xl border border-border bg-surface-1 p-1.5 sm:p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors shadow-sm"
           title="Clear current session messages"
           aria-label="Clear chat session"
         >

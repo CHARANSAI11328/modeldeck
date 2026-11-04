@@ -105,6 +105,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
   // Active Tab
   const [activeTab, setActiveTab] = useState<"customize" | "embed" | "github-pr">("customize");
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
+  const [mobileView, setMobileView] = useState<"configure" | "preview">("configure");
 
   // Live Sandbox Chat State
   const [sandboxMessages, setSandboxMessages] = useState<
@@ -343,66 +344,95 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
   return (
     <div className="flex flex-col h-full w-full bg-[#0c0807] text-[#faf5ef] transition-colors overflow-hidden select-none">
       {/* Studio Header Bar */}
-      <header className="flex h-14 items-center justify-between border-b border-white/10 bg-[#140d0a]/80 px-4 sm:px-6 shrink-0 backdrop-blur-xl text-[#faf5ef] transition-colors z-20">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#ff5722] to-[#ea580c] shadow-md shadow-[#ff5722]/20 text-[#140a06]">
+      <header className="flex h-14 items-center justify-between border-b border-white/10 bg-[#140d0a]/80 px-3 sm:px-6 shrink-0 backdrop-blur-xl text-[#faf5ef] transition-colors z-20">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 pr-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#ff5722] to-[#ea580c] shadow-md shadow-[#ff5722]/20 text-[#140a06] shrink-0">
             <Bot className="h-4.5 w-4.5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-foreground tracking-tight">Assistant Studio</span>
-              <span className="rounded-full bg-[#ff5722]/10 border border-[#ff5722]/25 px-2 py-0.5 text-[10px] font-mono font-medium text-[#ff8a50]">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-bold text-xs sm:text-sm text-foreground tracking-tight truncate">Assistant Studio</span>
+              <span className="hidden sm:inline-block rounded-full bg-[#ff5722]/10 border border-[#ff5722]/25 px-2 py-0.5 text-[10px] font-mono font-medium text-[#ff8a50] shrink-0">
                 AI Agent Generator
               </span>
             </div>
-            <p className="text-[11px] text-muted-foreground font-normal">
+            <p className="text-[11px] text-muted-foreground font-normal hidden md:block truncate">
               Deploy a customized portfolio chatbot in under 60 seconds
             </p>
           </div>
         </div>
 
         {/* Studio Tabs & Actions */}
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-xl border border-white/10 bg-[#140d0a]/80 p-1 text-xs">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Mobile Switcher (< lg screens): Editor vs Preview */}
+          <div className="flex lg:hidden rounded-xl border border-white/10 bg-[#180f0b] p-0.5 text-xs shrink-0">
+            <button
+              onClick={() => setMobileView("configure")}
+              className={`btn-tactile flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg font-semibold text-[11px] transition-all ${
+                mobileView === "configure"
+                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-md shadow-[#ff5722]/20"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Sliders className="h-3 w-3" />
+              <span>Editor</span>
+            </button>
+            <button
+              onClick={() => setMobileView("preview")}
+              className={`btn-tactile flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg font-semibold text-[11px] transition-all ${
+                mobileView === "preview"
+                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-md shadow-[#ff5722]/20"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Smartphone className="h-3 w-3" />
+              <span>Preview</span>
+            </button>
+          </div>
+
+          {/* Desktop/Tablet Tabs */}
+          <div className={`${mobileView === "preview" ? "hidden lg:flex" : "flex"} rounded-xl border border-white/10 bg-[#140d0a]/80 p-0.5 sm:p-1 text-xs shrink-0`}>
             <button
               onClick={() => setActiveTab("customize")}
-              className={`btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              className={`btn-tactile flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-semibold text-[11px] sm:text-xs transition-all ${
                 activeTab === "customize"
                   ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Sliders className="h-3.5 w-3.5" />
+              <Sliders className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
               <span>Configure</span>
             </button>
             <button
               onClick={() => setActiveTab("embed")}
-              className={`btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              className={`btn-tactile flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-semibold text-[11px] sm:text-xs transition-all ${
                 activeTab === "embed"
                   ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Code2 className="h-3.5 w-3.5" />
-              <span>Embed Script</span>
+              <Code2 className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
+              <span className="hidden sm:inline">Embed Script</span>
+              <span className="sm:hidden">Embed</span>
             </button>
             <button
               onClick={() => setActiveTab("github-pr")}
-              className={`btn-tactile flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              className={`btn-tactile flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-semibold text-[11px] sm:text-xs transition-all ${
                 activeTab === "github-pr"
                   ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <GitPullRequest className="h-3.5 w-3.5 text-emerald-500" />
-              <span>1-Click PR</span>
+              <GitPullRequest className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-emerald-500" />
+              <span className="hidden sm:inline">1-Click PR</span>
+              <span className="sm:hidden">PR</span>
             </button>
           </div>
 
           {onClose && (
             <button
               onClick={onClose}
-              className="btn-tactile rounded-xl p-2 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors ml-1"
+              className="btn-tactile rounded-xl p-1.5 sm:p-2 text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors ml-0.5"
               title="Close Studio"
             >
               <X className="h-4 w-4" />
@@ -414,7 +444,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
       {/* Main Studio Body: Split View (Controls Left, Device Sandbox Right) */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left Side: URL Extraction & Configuration Panel */}
-        <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col border-r border-white/10 bg-[#0c0807]/60 overflow-y-auto p-4 sm:p-5 space-y-4">
+        <div className={`w-full lg:w-[480px] xl:w-[520px] ${mobileView === "preview" ? "hidden lg:flex" : "flex"} flex-col border-r border-white/10 bg-[#0c0807]/60 overflow-y-auto p-3 sm:p-5 space-y-4`}>
           {/* Section 1: URL Analyzer & Persona Generator with Double-Bezel */}
           <div className="double-bezel">
             <div className="double-bezel-inner p-4 space-y-3.5">
@@ -938,13 +968,13 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
         </div>
 
         {/* Right Side: Interactive Hardware Device Frame */}
-        <div className="hidden lg:flex flex-1 flex-col bg-[#0c0807]/80 relative overflow-hidden items-center justify-center p-6">
+        <div className={`${mobileView === "preview" ? "flex" : "hidden"} lg:flex flex-1 flex-col bg-[#0c0807]/80 relative overflow-hidden items-center justify-center p-3 sm:p-6`}>
           {/* Device Toggle & Sandbox Header */}
-          <div className="absolute top-4 left-6 right-6 flex items-center justify-between z-10 pointer-events-auto">
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between z-10 pointer-events-auto">
             <div className="flex items-center gap-2 bg-[#140d0a]/80 border border-white/10 rounded-2xl px-3 py-1.5 backdrop-blur-xl shadow-md">
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-[#faf5ef]">Interactive Device Sandbox</span>
-              <span className="text-[10px] text-muted-foreground font-mono">Real-Time Streaming</span>
+              <span className="text-xs font-bold text-[#faf5ef]">Interactive Sandbox</span>
+              <span className="text-[10px] text-muted-foreground font-mono hidden sm:inline">Real-Time Streaming</span>
             </div>
 
             <div className="flex items-center gap-1 bg-[#140d0a]/80 border border-white/10 rounded-2xl p-1 backdrop-blur-xl shadow-md">
@@ -978,8 +1008,8 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
             <div
               className={`transition-all duration-300 flex flex-col rounded-2xl border border-amber-900/40 bg-[#1a100c] shadow-2xl overflow-hidden relative ${
                 previewDevice === "desktop"
-                  ? "w-full max-w-[840px] h-[580px]"
-                  : "w-[360px] h-[640px] rounded-[44px] border-[8px] border-zinc-800 shadow-2xl"
+                  ? "w-full max-w-[840px] h-[520px] sm:h-[580px] max-h-[85vh]"
+                  : "w-full max-w-[360px] h-[560px] sm:h-[640px] rounded-[36px] sm:rounded-[44px] border-[6px] sm:border-[8px] border-zinc-800 shadow-2xl max-h-[88vh]"
               }`}
             >
               {/* Browser Window Titlebar */}
@@ -1031,10 +1061,10 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               {isSandboxChatOpen && (
                 <div
                   className={`absolute bottom-20 z-20 flex flex-col rounded-2xl border border-amber-900/40 bg-[#1a100c] shadow-2xl overflow-hidden transition-all duration-200 ${
-                    assistant.position === "bottom-left" ? "left-5" : "right-5"
+                    assistant.position === "bottom-left" ? "left-3 sm:left-5" : "right-3 sm:right-5"
                   } ${
                     previewDevice === "desktop"
-                      ? "w-[340px] h-[440px]"
+                      ? "w-[min(340px,calc(100%-1.5rem))] h-[440px]"
                       : "inset-x-2 bottom-0 h-[480px] rounded-b-none"
                   }`}
                 >
