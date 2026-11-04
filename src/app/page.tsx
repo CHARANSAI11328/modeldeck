@@ -32,7 +32,43 @@ export default function LandingPage() {
     <main>
       <section className="hero-section" id="platform"><div className="hero-copy"><p className="eyebrow"><span className="pulse-dot" /> Your models. One command center.</p><h1>AI has options.<br /><em>Make them yours.</em></h1><p className="hero-description">ModelDeck is the place to test, compare, and route every frontier model—without giving up your keys, your context, or your momentum.</p><div className="hero-actions"><Link href="/playground" className="fire-button">Start building <span><ArrowRight size={16} /></span></Link><a href="#models" className="text-button">See the model deck <MoveRight size={17} /></a></div><div className="trust-line"><span><Check size={14} /> Bring your own keys</span><span><Check size={14} /> No usage markup</span><span><Check size={14} /> Local-first vault</span></div></div>
       <div className="hero-orbit" aria-label="A visual model routing workspace"><div className="orbital-ring ring-one" /><div className="orbital-ring ring-two" /><div className="orbit-node node-a"><ProviderMark providerId="openai" className="h-7 w-7" /></div><div className="orbit-node node-b"><ProviderMark providerId="gemini" className="h-7 w-7" /></div><div className="orbit-node node-c"><ProviderMark providerId="anthropic" className="h-7 w-7" /></div><div className="orbit-node node-d"><ProviderMark providerId="groq" className="h-7 w-7" /></div><div className="hero-console"><div className="console-top"><span>ModelDeck / workspace</span><span className="live-status">LIVE</span></div><div className="console-main"><div className="console-title"><span className="console-spark"><Sparkles size={18} /></span><strong>Which model?</strong></div><p>Compare the best model for a production RAG workflow.</p><div className="console-models"><div><ProviderMark providerId="openai" className="h-4 w-4" /> GPT-5 <b>92</b></div><div><ProviderMark providerId="anthropic" className="h-4 w-4" /> Claude <b>89</b></div><div><ProviderMark providerId="gemini" className="h-4 w-4" /> Gemini <b>87</b></div></div><div className="console-send"><span>Test across 3 models</span><span><Zap size={13} /> Run</span></div></div><div className="console-glow" /></div><div className="orbit-caption"><span className="caption-bar" /> 40+ models on deck</div></div></section>
-      <section className="provider-marquee" id="models"><div className="marquee-label">YOUR STACK, UNCOMPROMISED <span>✦</span></div><div className="provider-row">{providers.map((provider) => <ModelChip key={provider.id} provider={provider} />)}<div className="model-chip more-chip"><Plus size={16} /><span>and more</span></div></div></section>
+      <section className="provider-marquee" id="models">
+        <div className="marquee-label">YOUR STACK, UNCOMPROMISED <span>✦</span></div>
+        <div className="marquee-viewport">
+          <div className="marquee-track">
+            {/* Set 1 */}
+            <div className="marquee-group">
+              {providers.map((provider, i) => (
+                <ModelChip key={`m1-${provider.id}-${i}`} provider={provider} />
+              ))}
+              <Link href="/playground" className="model-chip more-chip">
+                <Plus size={16} /><span>and more</span>
+              </Link>
+              {providers.map((provider, i) => (
+                <ModelChip key={`m1b-${provider.id}-${i}`} provider={provider} />
+              ))}
+              <Link href="/playground" className="model-chip more-chip">
+                <Plus size={16} /><span>and more</span>
+              </Link>
+            </div>
+            {/* Set 2 (seamless infinite loop duplicate) */}
+            <div className="marquee-group" aria-hidden="true">
+              {providers.map((provider, i) => (
+                <ModelChip key={`m2-${provider.id}-${i}`} provider={provider} />
+              ))}
+              <Link href="/playground" className="model-chip more-chip">
+                <Plus size={16} /><span>and more</span>
+              </Link>
+              {providers.map((provider, i) => (
+                <ModelChip key={`m2b-${provider.id}-${i}`} provider={provider} />
+              ))}
+              <Link href="/playground" className="model-chip more-chip">
+                <Plus size={16} /><span>and more</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="manifesto-section" id="compare"><div className="section-kicker">01 / THE CONTROL LAYER</div><div className="manifesto-grid"><h2>One prompt.<br />A complete <em>point of view.</em></h2><div className="manifesto-text"><p>Stop playing favourites before the work begins. Put the same prompt in front of every model, watch the trade-offs in real time, and move with conviction.</p><a href="#security" className="underlined-link">Explore the workflow <ArrowRight size={16} /></a></div></div><div className="comparison-stage"><div className="compare-toolbar"><span>RUN / 048</span><span className="toolbar-center">product brief → launch plan</span><span>03 MODELS</span></div><div className="compare-columns"><article className="response-card warm"><div className="response-head"><ProviderMark providerId="anthropic" className="h-5 w-5" /><span>Claude</span><b>01</b></div><p>Maps the user journey into a concise launch narrative with clear framing and tangible decisions.</p><div className="response-meter"><span style={{ width: "82%" }} /></div><small>clarity / 8.2</small></article><article className="response-card focus"><div className="response-head"><ProviderMark providerId="openai" className="h-5 w-5" /><span>GPT-5</span><b>02</b></div><p>Turns the brief into a strategic system: positioning, audience tension, then the execution that proves it.</p><div className="response-meter"><span style={{ width: "94%" }} /></div><small>reasoning / 9.4</small></article><article className="response-card cool"><div className="response-head"><ProviderMark providerId="gemini" className="h-5 w-5" /><span>Gemini</span><b>03</b></div><p>Finds the missing research angles and adds the structured detail a technical team can build from.</p><div className="response-meter"><span style={{ width: "88%" }} /></div><small>coverage / 8.8</small></article></div></div></section>
       <section className="feature-river" id="security"><div className="river-copy"><div className="section-kicker">02 / YOUR KEYS STAY YOURS</div><h2>Private by<br /><em>default.</em></h2><p>Your API keys are encrypted locally. ModelDeck is a refined workbench between you and the providers you already trust—not another account between you and your work.</p><Link className="outline-button" href="/playground"><LockKeyhole size={16} /> Open your private deck</Link></div><div className="vault-visual"><div className="vault-ring ring-outer" /><div className="vault-ring ring-inner" /><div className="vault-core"><LockKeyhole size={36} /><span>AES-256</span></div><div className="vault-tag tag-one">YOUR KEY<br /><b>never leaves</b></div><div className="vault-tag tag-two">DIRECT<br /><b>provider calls</b></div></div></section>
       <section className="command-section"><div><div className="section-kicker">03 / LESS SETUP, MORE SIGNAL</div><h2>Leave the tab<br />circus behind.</h2><p>Set a provider once. Build a real opinion in seconds. Save the runs worth coming back to.</p></div><div className="command-window"><div className="command-dots"><i /><i /><i /><span>modeldeck / quick run</span></div><div className="command-content"><Command size={18} /><span>Compare models for: <b>invoice extraction</b></span><button onClick={copyPrompt} aria-label="Copy example prompt">{copied ? <Check size={15} /> : <Copy size={15} />}</button></div><div className="command-result"><span><ProviderMark providerId="groq" className="h-4 w-4" /> Groq / 614 tok/s</span><span><ProviderMark providerId="deepseek" className="h-4 w-4" /> DeepSeek / $0.14</span><span><ProviderMark providerId="openrouter" className="h-4 w-4" /> Route / balanced</span></div></div></section>
