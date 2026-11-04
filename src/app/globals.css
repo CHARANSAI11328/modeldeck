@@ -107,11 +107,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    scroll-behavior: smooth;
-  }
-
-  [id] {
-    scroll-margin-top: 5.5rem;
   }
 
   body {
