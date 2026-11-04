@@ -126,3 +126,4 @@ export function StudioSpotlight() {
     </section>
   );
 }
+

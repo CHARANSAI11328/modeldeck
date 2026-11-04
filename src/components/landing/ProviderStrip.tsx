@@ -38,3 +38,4 @@ export function ProviderStrip() {
     </section>
   );
 }
+
