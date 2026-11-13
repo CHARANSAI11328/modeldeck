@@ -223,17 +223,22 @@ export async function POST(req: NextRequest) {
 
     // 4. Resolve Provider and Key
     const provider = assistantConfig?.provider || "groq";
-    let model = assistantConfig?.model || "openai/gpt-oss-120b";
+    let model = assistantConfig?.model || (provider === "gemini" ? "gemini-3.5-flash" : provider === "openai" ? "gpt-4o-mini" : "openai/gpt-oss-120b");
 
-    // Map legacy or retired Groq models to active high-performance models
-    if (provider === "groq" && (model === "llama-3.3-70b-versatile" || model.includes("gemini") || model.includes("gpt-4"))) {
-      model = "openai/gpt-oss-120b";
+    // Client-supplied key from Authorization header or body
+    const authHeader = req.headers.get("authorization");
+    let clientKey = "";
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      clientKey = authHeader.substring(7).trim();
+    }
+    if (!clientKey && (body as { clientApiKey?: string }).clientApiKey) {
+      clientKey = ((body as { clientApiKey?: string }).clientApiKey || "").trim();
     }
 
-    let apiKey = await getServerKey(provider);
-
-    // Fallback: if selected provider key is missing, try groq, gemini, or openrouter
+    let apiKey = clientKey || (await getServerKey(provider));
     let effectiveProvider = provider;
+
+    // Fallback: if selected provider key is missing, try available keys
     if (!apiKey) {
       const groqKey = await getServerKey("groq");
       const geminiKey = await getServerKey("gemini");
@@ -243,19 +248,19 @@ export async function POST(req: NextRequest) {
       if (groqKey) {
         effectiveProvider = "groq";
         apiKey = groqKey;
-        model = "llama-3.3-70b-versatile";
+        model = assistantConfig?.model || "openai/gpt-oss-120b";
       } else if (geminiKey) {
         effectiveProvider = "gemini";
         apiKey = geminiKey;
-        model = "gemini-2.5-flash";
+        model = assistantConfig?.model || "gemini-3.5-flash";
       } else if (openaiKey) {
         effectiveProvider = "openai";
         apiKey = openaiKey;
-        model = "gpt-4o-mini";
+        model = assistantConfig?.model || "gpt-4o-mini";
       } else if (openrouterKey) {
         effectiveProvider = "openrouter";
         apiKey = openrouterKey;
-        model = "meta-llama/llama-3.3-70b-instruct";
+        model = assistantConfig?.model || "openrouter/auto";
       }
     }
 
@@ -263,9 +268,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "No API key configured on this ModelDeck server for " +
-            provider +
-            ". Please configure GROQ_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY in the Key Vault or server environment.",
+            `No API key configured for ${provider}. Please enter your ${provider.toUpperCase()} key in the BYOK Vault or server environment.`,
         },
         { status: 503, headers: corsHeaders }
       );

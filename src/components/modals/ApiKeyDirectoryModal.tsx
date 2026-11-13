@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { X, ExternalLink, KeyRound, Sparkles, ShieldCheck, ArrowRight, Search } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
+import { useDialogFocus } from "@/components/ui/useDialogFocus";
 import { PROVIDER_LIST } from "@/lib/providers";
 import { ProviderId } from "@/lib/types";
 import { ProviderMark } from "@/components/ui/ProviderMark";
@@ -73,6 +74,7 @@ export function ApiKeyDirectoryModal() {
     setKeyVaultOpen,
     keyStatusMap,
   } = usePlaygroundStore();
+  const dialogRef = useDialogFocus(isApiDirectoryOpen);
 
   const [search, setSearch] = useState("");
 
@@ -98,6 +100,7 @@ export function ApiKeyDirectoryModal() {
   return (
     <div
       role="dialog"
+      ref={dialogRef}
       aria-modal="true"
       aria-labelledby="api-directory-title"
       onClick={(e) => {

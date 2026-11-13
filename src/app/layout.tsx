@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./premium.css";
 import { ServiceWorkerCleaner } from "@/components/layout/ServiceWorkerCleaner";
 
 export const dynamic = "force-dynamic";

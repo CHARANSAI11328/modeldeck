@@ -23,6 +23,7 @@ import { vault } from "@/lib/vault";
 import { getAdapterForProvider } from "@/lib/adapters";
 import { syncModelsForProvider } from "@/lib/modelSync";
 import { ProviderMark } from "@/components/ui/ProviderMark";
+import { useDialogFocus } from "@/components/ui/useDialogFocus";
 
 export function KeyVaultModal() {
   const {
@@ -33,6 +34,7 @@ export function KeyVaultModal() {
     settings,
     setProviderAndModel,
   } = usePlaygroundStore();
+  const dialogRef = useDialogFocus(isKeyVaultOpen);
 
   const [keysInput, setKeysInput] = useState<Record<string, string>>({});
   const [showMaskMap, setShowMaskMap] = useState<Record<string, boolean>>({});
@@ -254,6 +256,7 @@ export function KeyVaultModal() {
   return (
     <div
       role="dialog"
+      ref={dialogRef}
       aria-modal="true"
       aria-labelledby="vault-modal-title"
       onClick={(e) => {

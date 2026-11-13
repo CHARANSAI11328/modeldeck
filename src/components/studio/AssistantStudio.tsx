@@ -23,24 +23,62 @@ import {
   ArrowRight,
   Shield,
   Zap,
+  KeyRound,
+  ShieldCheck,
+  Cpu,
+  Layers,
+  Lock,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { AssistantConfig, ScrapedSiteData } from "@/lib/assistantTypes";
 import { ProviderId } from "@/lib/types";
 import { usePlaygroundStore } from "@/lib/store";
+import { PROVIDERS, getProvider } from "@/lib/providers";
+import { ProviderMark } from "@/components/ui/ProviderMark";
+import { vault } from "@/lib/vault";
 
 const PRESET_COLORS = [
-  "#3b82f6", // Electric Blue
-  "#8b5cf6", // Violet
-  "#10b981", // Emerald
-  "#f59e0b", // Amber
-  "#f43f5e", // Rose
-  "#06b6d4", // Cyan
-  "#6366f1", // Indigo
-  "#14b8a6", // Teal
+  { name: "Ember Flame", hex: "#ef9a71" },
+  { name: "Electric Blue", hex: "#3b82f6" },
+  { name: "Cyber Violet", hex: "#8b5cf6" },
+  { name: "Emerald Matrix", hex: "#10b981" },
+  { name: "Luminous Amber", hex: "#f59e0b" },
+  { name: "Rose Crimson", hex: "#f43f5e" },
+  { name: "Cyan Aurora", hex: "#06b6d4" },
+  { name: "Teal Mineral", hex: "#14b8a6" },
+  { name: "Indigo Night", hex: "#6366f1" },
+  { name: "Obsidian Slate", hex: "#64748b" },
 ];
 
-const PRESET_AVATARS = ["🤖", "👨‍💻", "👩‍💻", "🚀", "⚡", "🧠", "💼", "🎓", "✨", "🔥"];
+const PRESET_AVATARS = [
+  { emoji: "🤖", label: "Robot" },
+  { emoji: "🧠", label: "Neural" },
+  { emoji: "⚡", label: "Turbo" },
+  { emoji: "🚀", label: "Launch" },
+  { emoji: "💼", label: "Pro" },
+  { emoji: "🎓", label: "Scholar" },
+  { emoji: "✨", label: "Spark" },
+  { emoji: "🔥", label: "Ember" },
+  { emoji: "👨‍💻", label: "Coder" },
+  { emoji: "👩‍💻", label: "Dev" },
+  { emoji: "🛡️", label: "Shield" },
+  { emoji: "🌐", label: "Web" },
+];
+
+const SUPPORTED_STUDIO_PROVIDERS: {
+  id: ProviderId;
+  name: string;
+  badge: string;
+  speed: string;
+  defaultModel: string;
+}[] = [
+  { id: "groq", name: "Groq LPU", badge: "600+ tok/s", speed: "Ultra-Fast", defaultModel: "openai/gpt-oss-120b" },
+  { id: "gemini", name: "Google Gemini", badge: "1M Context", speed: "Multimodal", defaultModel: "gemini-3.5-flash" },
+  { id: "openai", name: "OpenAI", badge: "GPT-4o mini", speed: "Frontier", defaultModel: "gpt-4o-mini" },
+  { id: "anthropic", name: "Claude", badge: "Claude 3.5", speed: "Reasoning", defaultModel: "claude-3-5-haiku-latest" },
+  { id: "deepseek", name: "DeepSeek", badge: "V3 / R1", speed: "Open Weights", defaultModel: "deepseek-chat" },
+  { id: "openrouter", name: "OpenRouter", badge: "100+ Models", speed: "Routing", defaultModel: "openrouter/auto" },
+];
 
 function renderSandboxMarkdown(raw: string): string {
   if (!raw) return "";
@@ -54,12 +92,12 @@ function renderSandboxMarkdown(raw: string): string {
     return `<div class="my-1.5 rounded-lg bg-black/60 p-2.5 font-mono text-[11px] text-zinc-300 border border-zinc-700/60 overflow-x-auto"><span class="text-[9px] uppercase tracking-wider text-muted-foreground block mb-1 font-semibold">${lang || "code"}</span><pre><code>${code.trim()}</code></pre></div>`;
   });
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="rounded bg-black/40 px-1 py-0.5 font-mono text-[11px] text-[#ff8a50] border border-border/60">$1</code>');
+  html = html.replace(/`([^`]+)`/g, '<code class="rounded bg-black/40 px-1 py-0.5 font-mono text-[11px] text-[#efb18d] border border-border/60">$1</code>');
   // Bold & Italic
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
   // Markdown links
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#ff5722] hover:underline font-semibold">$1 ↗</a>');
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#ef9a71] hover:underline font-semibold">$1 ↗</a>');
   // Bullet lists
   html = html.replace(/^\s*[-*]\s+(.*)$/gm, '<li class="ml-3 list-disc">$1</li>');
   // Line breaks
@@ -68,7 +106,13 @@ function renderSandboxMarkdown(raw: string): string {
 }
 
 export function AssistantStudio({ onClose }: { onClose?: () => void }) {
-  const { keyStatusMap } = usePlaygroundStore();
+  const { keyStatusMap, setKeyVaultOpen } = usePlaygroundStore();
+
+  // Appearance & Security Interactive States
+  const [customHexInput, setCustomHexInput] = useState("#3b82f6");
+  const [customAvatarInput, setCustomAvatarInput] = useState("");
+  const [newDomainInput, setNewDomainInput] = useState("");
+  const [showCustomModelInput, setShowCustomModelInput] = useState(false);
 
   // Scraper State
   const [urlInput, setUrlInput] = useState("https://github.com");
@@ -147,6 +191,53 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [sandboxMessages, isSandboxStreaming]);
 
+  // Derived detected domain from URL input or websiteUrl
+  const detectedDomain = (() => {
+    try {
+      const url = assistant.websiteUrl || urlInput;
+      if (!url) return "";
+      const parsed = new URL(url.startsWith("http") ? url : `https://${url}`);
+      return parsed.hostname;
+    } catch {
+      return "";
+    }
+  })();
+
+  const handleAddDomain = (domainToAdd?: string) => {
+    const raw = (domainToAdd || newDomainInput).trim().toLowerCase();
+    if (!raw) return;
+    const clean = raw.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    if (!clean) return;
+
+    if (!assistant.allowedDomains.includes(clean)) {
+      setAssistant((prev) => {
+        const updated = prev.allowedDomains.filter((d) => d !== "*");
+        return {
+          ...prev,
+          allowedDomains: [...updated, clean],
+        };
+      });
+    }
+    setNewDomainInput("");
+  };
+
+  const handleRemoveDomain = (domainToRemove: string) => {
+    setAssistant((prev) => {
+      const filtered = prev.allowedDomains.filter((d) => d !== domainToRemove);
+      return {
+        ...prev,
+        allowedDomains: filtered.length > 0 ? filtered : ["*"],
+      };
+    });
+  };
+
+  const handleSetAllowAll = () => {
+    setAssistant((prev) => ({
+      ...prev,
+      allowedDomains: ["*"],
+    }));
+  };
+
   // Handler: Scrape & Synthesize
   const handleScrape = async (overrideUrl?: string) => {
     const targetUrl = (overrideUrl || urlInput).trim();
@@ -207,12 +298,17 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
     setIsSandboxStreaming(true);
 
     try {
+      const clientKey = vault.getRawKey(assistant.provider) || "";
       const res = await fetch("/api/assistant/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(clientKey ? { Authorization: `Bearer ${clientKey}` } : {}),
+        },
         body: JSON.stringify({
           messages: newMessages,
           assistantConfig: assistant,
+          clientApiKey: clientKey,
           hostOrigin: window.location.origin,
           pageContext: {
             url: assistant.websiteUrl || "https://my-portfolio.dev",
@@ -342,22 +438,22 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#0c0807] text-[#faf5ef] transition-colors overflow-hidden select-none">
+    <div className="deck-studio-editor flex flex-col h-full w-full bg-[#100e0d] text-[#faf5ef] transition-colors overflow-hidden select-none">
       {/* Studio Header Bar */}
-      <header className="flex h-14 items-center justify-between border-b border-white/10 bg-[#140d0a]/80 px-3 sm:px-6 shrink-0 backdrop-blur-xl text-[#faf5ef] transition-colors z-20">
+      <header className="flex h-14 items-center justify-between border-b border-white/10 bg-[#191614]/80 px-3 sm:px-6 shrink-0 backdrop-blur-xl text-[#faf5ef] transition-colors z-20">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 pr-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#ff5722] to-[#ea580c] shadow-md shadow-[#ff5722]/20 text-[#140a06] shrink-0">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#ef9a71] to-[#d88960] shadow-md shadow-[#ef9a71]/20 text-[#140a06] shrink-0">
             <Bot className="h-4.5 w-4.5" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="font-bold text-xs sm:text-sm text-foreground tracking-tight truncate">Assistant Studio</span>
-              <span className="hidden sm:inline-block rounded-full bg-[#ff5722]/10 border border-[#ff5722]/25 px-2 py-0.5 text-[10px] font-mono font-medium text-[#ff8a50] shrink-0">
+              <span className="hidden sm:inline-block rounded-full bg-[#ef9a71]/10 border border-[#ef9a71]/25 px-2 py-0.5 text-[10px] font-mono font-medium text-[#efb18d] shrink-0">
                 AI Agent Generator
               </span>
             </div>
             <p className="text-[11px] text-muted-foreground font-normal hidden md:block truncate">
-              Deploy a customized portfolio chatbot in under 60 seconds
+              Shape your assistant, try a conversation, and make it yours.
             </p>
           </div>
         </div>
@@ -370,7 +466,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               onClick={() => setMobileView("configure")}
               className={`btn-tactile flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg font-semibold text-[11px] transition-all ${
                 mobileView === "configure"
-                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-md shadow-[#ff5722]/20"
+                  ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-md shadow-[#ef9a71]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -381,7 +477,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               onClick={() => setMobileView("preview")}
               className={`btn-tactile flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg font-semibold text-[11px] transition-all ${
                 mobileView === "preview"
-                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-md shadow-[#ff5722]/20"
+                  ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-md shadow-[#ef9a71]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -391,12 +487,12 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
           </div>
 
           {/* Desktop/Tablet Tabs */}
-          <div className={`${mobileView === "preview" ? "hidden lg:flex" : "flex"} rounded-xl border border-white/10 bg-[#140d0a]/80 p-0.5 sm:p-1 text-xs shrink-0`}>
+          <div className={`${mobileView === "preview" ? "hidden lg:flex" : "flex"} rounded-xl border border-white/10 bg-[#191614]/80 p-0.5 sm:p-1 text-xs shrink-0`}>
             <button
               onClick={() => setActiveTab("customize")}
               className={`btn-tactile flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-semibold text-[11px] sm:text-xs transition-all ${
                 activeTab === "customize"
-                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
+                  ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-lg shadow-[#ef9a71]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -407,7 +503,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               onClick={() => setActiveTab("embed")}
               className={`btn-tactile flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-semibold text-[11px] sm:text-xs transition-all ${
                 activeTab === "embed"
-                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
+                  ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-lg shadow-[#ef9a71]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -419,7 +515,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               onClick={() => setActiveTab("github-pr")}
               className={`btn-tactile flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-semibold text-[11px] sm:text-xs transition-all ${
                 activeTab === "github-pr"
-                  ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
+                  ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-lg shadow-[#ef9a71]/20"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -444,20 +540,20 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
       {/* Main Studio Body: Split View (Controls Left, Device Sandbox Right) */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left Side: URL Extraction & Configuration Panel */}
-        <div className={`w-full lg:w-[480px] xl:w-[520px] ${mobileView === "preview" ? "hidden lg:flex" : "flex"} flex-col border-r border-white/10 bg-[#0c0807]/60 overflow-y-auto p-3 sm:p-5 space-y-4`}>
+        <div className={`w-full lg:w-[480px] xl:w-[520px] ${mobileView === "preview" ? "hidden lg:flex" : "flex"} flex-col border-r border-white/10 bg-[#100e0d]/60 overflow-y-auto p-3 sm:p-5 space-y-4`}>
           {/* Section 1: URL Analyzer & Persona Generator with Double-Bezel */}
           <div className="double-bezel">
             <div className="double-bezel-inner p-4 space-y-3.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ff5722]/10 text-[#ff8a50] border border-[#ff5722]/20">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ef9a71]/10 text-[#efb18d] border border-[#ef9a71]/20">
                     <Globe className="h-3.5 w-3.5" />
                   </div>
                   <span className="font-bold text-xs uppercase tracking-wider text-foreground">
-                    Target Website / Portfolio
+                    Your website
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground font-mono">Auto-Synthesis</span>
+                <span className="text-[10px] text-muted-foreground font-mono">KNOWLEDGE SOURCE</span>
               </div>
 
               <div className="flex gap-2">
@@ -466,19 +562,19 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://yourportfolio.dev or GitHub..."
-                  className="flex-1 rounded-xl border border-white/10 bg-[#180f0b] text-[#faf5ef] px-3.5 py-2 text-xs placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ff5722] transition-colors"
+                  className="flex-1 rounded-xl border border-white/10 bg-[#180f0b] text-[#faf5ef] px-3.5 py-2 text-xs placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ef9a71] transition-colors"
                 />
                 <button
                   onClick={() => handleScrape()}
                   disabled={isScraping || !urlInput.trim()}
-                  className="btn-tactile flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] px-3.5 py-2 text-xs font-bold shadow-lg shadow-[#ff5722]/25 hover:scale-[1.01] transition-all disabled:opacity-50 shrink-0"
+                  className="btn-tactile flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#ef9a71] to-[#d88960] text-[#140a06] px-3.5 py-2 text-xs font-bold shadow-lg shadow-[#ef9a71]/25 hover:scale-[1.01] transition-all disabled:opacity-50 shrink-0"
                 >
                   {isScraping ? (
                     <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                   ) : (
                     <Sparkles className="h-3.5 w-3.5 text-amber-300" />
                   )}
-                  <span>{isScraping ? "Analyzing..." : "Synthesize AI"}</span>
+                  <span>{isScraping ? "Analyzing..." : "Import website"}</span>
                 </button>
               </div>
 
@@ -490,7 +586,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     setUrlInput("https://leerob.io");
                     handleScrape("https://leerob.io");
                   }}
-                  className="hover:text-[#ff8a50] underline decoration-muted-foreground/40 underline-offset-2"
+                  className="hover:text-[#efb18d] underline decoration-muted-foreground/40 underline-offset-2"
                 >
                   leerob.io
                 </button>
@@ -500,7 +596,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     setUrlInput("https://delba.dev");
                     handleScrape("https://delba.dev");
                   }}
-                  className="hover:text-[#ff8a50] underline decoration-muted-foreground/40 underline-offset-2"
+                  className="hover:text-[#efb18d] underline decoration-muted-foreground/40 underline-offset-2"
                 >
                   delba.dev
                 </button>
@@ -510,7 +606,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                     setUrlInput("https://rauchg.com");
                     handleScrape("https://rauchg.com");
                   }}
-                  className="hover:text-[#ff8a50] underline decoration-muted-foreground/40 underline-offset-2"
+                  className="hover:text-[#efb18d] underline decoration-muted-foreground/40 underline-offset-2"
                 >
                   rauchg.com
                 </button>
@@ -554,7 +650,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               <div className="double-bezel">
                 <div className="double-bezel-inner p-4 space-y-3">
                   <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
-                    <Bot className="h-3.5 w-3.5 text-[#ff5722]" />
+                    <Bot className="h-3.5 w-3.5 text-[#ef9a71]" />
                     <span>Persona &amp; Greeting</span>
                   </div>
 
@@ -565,7 +661,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         type="text"
                         value={assistant.name}
                         onChange={(e) => setAssistant({ ...assistant, name: e.target.value })}
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
+                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ef9a71] transition-colors"
                       />
                     </div>
                     <div className="space-y-1">
@@ -574,7 +670,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         type="text"
                         value={assistant.title}
                         onChange={(e) => setAssistant({ ...assistant, title: e.target.value })}
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
+                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ef9a71] transition-colors"
                       />
                     </div>
                   </div>
@@ -585,7 +681,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       rows={2}
                       value={assistant.greeting}
                       onChange={(e) => setAssistant({ ...assistant, greeting: e.target.value })}
-                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs focus:outline-none focus:border-[#ff5722] resize-none transition-colors"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs focus:outline-none focus:border-[#ef9a71] resize-none transition-colors"
                     />
                   </div>
 
@@ -597,7 +693,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       rows={4}
                       value={assistant.persona}
                       onChange={(e) => setAssistant({ ...assistant, persona: e.target.value })}
-                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs font-mono focus:outline-none focus:border-[#ff5722] resize-y transition-colors"
+                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground p-2.5 text-xs font-mono focus:outline-none focus:border-[#ef9a71] resize-y transition-colors"
                     />
                   </div>
                 </div>
@@ -624,7 +720,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                             updated[idx] = e.target.value;
                             setAssistant({ ...assistant, suggestedQuestions: updated });
                           }}
-                          className="flex-1 rounded-xl border border-border bg-surface-2 text-foreground px-2.5 py-1 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
+                          className="flex-1 rounded-xl border border-border bg-surface-2 text-foreground px-2.5 py-1 text-xs focus:outline-none focus:border-[#ef9a71] transition-colors"
                         />
                         <button
                           onClick={() => {
@@ -649,7 +745,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                             ],
                           })
                         }
-                        className="btn-tactile text-[11px] text-[#ff5722] hover:text-[#ff8a50] font-semibold pt-1 flex items-center gap-1"
+                        className="btn-tactile text-[11px] text-[#ef9a71] hover:text-[#efb18d] font-semibold pt-1 flex items-center gap-1"
                       >
                         + Add Question Chip
                       </button>
@@ -658,151 +754,480 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                 </div>
               </div>
 
-              {/* Appearance & Color */}
+              {/* BRANDING & APPEARANCE */}
               <div className="double-bezel">
-                <div className="double-bezel-inner p-4 space-y-3">
-                  <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
-                    <Palette className="h-3.5 w-3.5 text-[#ff7043]" />
-                    <span>Branding &amp; Appearance</span>
-                  </div>
-
-                  {/* Avatar Picker */}
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-medium text-muted-foreground">Avatar Icon</label>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {PRESET_AVATARS.map((av) => (
-                        <button
-                          key={av}
-                          onClick={() => setAssistant({ ...assistant, avatar: av })}
-                          className={`btn-tactile h-8 w-8 rounded-xl flex items-center justify-center text-base transition-all ${
-                            assistant.avatar === av
-                              ? "bg-[#ff5722] scale-110 shadow-md ring-2 ring-[#ff8a50] text-[#140a06]"
-                              : "bg-surface-2 border border-border hover:bg-surface-3"
-                          }`}
-                        >
-                          {av}
-                        </button>
-                      ))}
+                <div className="double-bezel-inner p-4 sm:p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
+                      <Palette className="h-4 w-4 text-[#ff7043]" />
+                      <span>Branding &amp; Appearance</span>
                     </div>
+                    <span className="text-[10px] font-mono text-muted-foreground">
+                      Live Preview Synced
+                    </span>
                   </div>
 
-                  {/* Brand Color Picker */}
-                  <div className="space-y-1.5 pt-1">
-                    <label className="text-[11px] font-medium text-muted-foreground">Theme Color</label>
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      {PRESET_COLORS.map((c) => (
-                        <button
-                          key={c}
-                          onClick={() => setAssistant({ ...assistant, brandColor: c })}
-                          style={{ backgroundColor: c }}
-                          className={`btn-tactile h-7 w-7 rounded-full transition-transform ${
-                            assistant.brandColor === c
-                              ? "scale-125 ring-2 ring-white ring-offset-2 ring-offset-background shadow-lg"
-                              : "opacity-80 hover:opacity-100 hover:scale-110"
-                          }`}
+                  {/* Avatar & Emblem Selector */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <Bot className="h-3.5 w-3.5 text-[#efb18d]" />
+                        <span>Avatar Emblem &amp; Persona</span>
+                      </label>
+                      <span className="text-[10px] font-mono text-muted-foreground">
+                        Selected: <b className="text-foreground">{assistant.avatar}</b>
+                      </span>
+                    </div>
+
+                    {/* Presets Grid */}
+                    <div className="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+                      {PRESET_AVATARS.map((av) => {
+                        const isSelected = assistant.avatar === av.emoji;
+                        return (
+                          <button
+                            key={av.emoji}
+                            type="button"
+                            onClick={() => setAssistant({ ...assistant, avatar: av.emoji })}
+                            title={av.label}
+                            className={`btn-tactile h-9 rounded-xl flex items-center justify-center text-lg transition-all ${
+                              isSelected
+                                ? "bg-[#ef9a71] text-[#140a06] scale-105 shadow-md shadow-[#ef9a71]/30 ring-2 ring-[#efb18d]"
+                                : "bg-surface-2 border border-border/80 hover:bg-surface-3 hover:border-white/20 text-foreground"
+                            }`}
+                          >
+                            <span>{av.emoji}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Custom Emoji / Initials input */}
+                    <div className="pt-1 flex items-center gap-2">
+                      <div className="flex-1 relative">
+                        <input
+                          type="text"
+                          maxLength={3}
+                          value={customAvatarInput}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setCustomAvatarInput(val);
+                            if (val.trim()) {
+                              setAssistant({ ...assistant, avatar: val.trim() });
+                            }
+                          }}
+                          placeholder="Type custom emoji or initials (e.g. 👾, AC, 🚀)..."
+                          className="w-full rounded-xl border border-white/10 bg-[#160d09] px-3 py-1.5 text-xs text-[#faf5ef] placeholder:text-[#8c7b72] focus:outline-none focus:border-[#ef9a71] font-mono transition-colors"
                         />
-                      ))}
-                      <input
-                        type="color"
-                        value={assistant.brandColor}
-                        onChange={(e) => setAssistant({ ...assistant, brandColor: e.target.value })}
-                        className="h-7 w-7 rounded-full cursor-pointer bg-transparent border-0"
-                      />
+                      </div>
+                      <div
+                        className="h-8 w-8 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 shadow-sm border border-white/20 transition-all"
+                        style={{ backgroundColor: assistant.brandColor, color: "#ffffff" }}
+                      >
+                        {assistant.avatar}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Position */}
-                  <div className="grid grid-cols-2 gap-2 pt-2">
-                    <button
-                      onClick={() => setAssistant({ ...assistant, position: "bottom-right" })}
-                      className={`btn-tactile rounded-xl border p-2 text-xs font-semibold text-center transition-all ${
-                        assistant.position === "bottom-right"
-                          ? "border-[#ff5722] bg-[#ff5722]/15 text-[#ff8a50] shadow-sm"
-                          : "border-border bg-surface-2 text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Bottom Right (Default)
-                    </button>
-                    <button
-                      onClick={() => setAssistant({ ...assistant, position: "bottom-left" })}
-                      className={`btn-tactile rounded-xl border p-2 text-xs font-semibold text-center transition-all ${
-                        assistant.position === "bottom-left"
-                          ? "border-[#ff5722] bg-[#ff5722]/15 text-[#ff8a50] shadow-sm"
-                          : "border-border bg-surface-2 text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Bottom Left
-                    </button>
+                  {/* Theme Accent Color */}
+                  <div className="space-y-2 pt-1 border-t border-border/60">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                        <span>Theme Accent Color</span>
+                      </label>
+                      <span className="text-[10px] font-mono text-muted-foreground uppercase">
+                        {assistant.brandColor}
+                      </span>
+                    </div>
+
+                    {/* Curated Swatches Grid */}
+                    <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                      {PRESET_COLORS.map((c) => {
+                        const isSelected = assistant.brandColor.toLowerCase() === c.hex.toLowerCase();
+                        return (
+                          <button
+                            key={c.hex}
+                            type="button"
+                            onClick={() => {
+                              setAssistant({ ...assistant, brandColor: c.hex });
+                              setCustomHexInput(c.hex);
+                            }}
+                            title={c.name}
+                            className={`btn-tactile h-8 rounded-xl flex items-center justify-center transition-all relative ${
+                              isSelected
+                                ? "ring-2 ring-white ring-offset-2 ring-offset-[#120a07] scale-110 shadow-lg"
+                                : "opacity-85 hover:opacity-100 hover:scale-105"
+                            }`}
+                            style={{ backgroundColor: c.hex }}
+                          >
+                            {isSelected && <Check className="h-3.5 w-3.5 text-white drop-shadow" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Custom Hex Code Bar with Native Swatch Trigger */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <div className="flex-1 flex items-center rounded-xl border border-white/10 bg-[#160d09] px-3 py-1.5 focus-within:border-[#ef9a71] transition-colors">
+                        <span className="text-muted-foreground font-mono text-xs mr-1 font-bold">#</span>
+                        <input
+                          type="text"
+                          maxLength={7}
+                          value={customHexInput.replace("#", "")}
+                          onChange={(e) => {
+                            const val = `#${e.target.value.replace("#", "")}`;
+                            setCustomHexInput(val);
+                            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                              setAssistant({ ...assistant, brandColor: val });
+                            }
+                          }}
+                          placeholder="e.g. ff5722"
+                          className="w-full bg-transparent text-xs text-[#faf5ef] placeholder:text-[#8c7b72] font-mono focus:outline-none"
+                        />
+                      </div>
+
+                      {/* Native Color Wheel Swatch */}
+                      <label
+                        className="btn-tactile h-8 px-3 rounded-xl border border-white/10 flex items-center gap-1.5 cursor-pointer text-xs font-mono font-medium hover:bg-surface-3 transition-colors"
+                        style={{ backgroundColor: `${assistant.brandColor}20`, color: assistant.brandColor }}
+                        title="Open Custom Color Picker"
+                      >
+                        <span
+                          className="h-3.5 w-3.5 rounded-full shadow-sm ring-1 ring-white/30"
+                          style={{ backgroundColor: assistant.brandColor }}
+                        />
+                        <span className="text-[11px] font-semibold">Custom</span>
+                        <input
+                          type="color"
+                          value={assistant.brandColor}
+                          onChange={(e) => {
+                            setAssistant({ ...assistant, brandColor: e.target.value });
+                            setCustomHexInput(e.target.value);
+                          }}
+                          className="sr-only"
+                        />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Widget Orientation & Position */}
+                  <div className="space-y-2 pt-1 border-t border-border/60">
+                    <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <Sliders className="h-3.5 w-3.5 text-[#efb18d]" />
+                      <span>Widget Screen Positioning</span>
+                    </label>
+
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setAssistant({ ...assistant, position: "bottom-right" })}
+                        className={`btn-tactile flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
+                          assistant.position === "bottom-right"
+                            ? "border-[#ef9a71] bg-[#ef9a71]/15 text-[#efb18d] shadow-sm shadow-[#ef9a71]/10"
+                            : "border-border/80 bg-surface-2 text-muted-foreground hover:text-foreground hover:bg-surface-3"
+                        }`}
+                      >
+                        <div className="w-16 h-10 rounded-md border border-white/20 bg-black/40 mb-2 relative">
+                          <span className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-full bg-[#ef9a71] shadow-[0_0_6px_#ef9a71]" />
+                        </div>
+                        <span className="font-bold text-xs">Bottom Right (Default)</span>
+                        <span className="text-[10px] text-muted-foreground font-mono mt-0.5">Most common pattern</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setAssistant({ ...assistant, position: "bottom-left" })}
+                        className={`btn-tactile flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
+                          assistant.position === "bottom-left"
+                            ? "border-[#ef9a71] bg-[#ef9a71]/15 text-[#efb18d] shadow-sm shadow-[#ef9a71]/10"
+                            : "border-border/80 bg-surface-2 text-muted-foreground hover:text-foreground hover:bg-surface-3"
+                        }`}
+                      >
+                        <div className="w-16 h-10 rounded-md border border-white/20 bg-black/40 mb-2 relative">
+                          <span className="absolute bottom-1 left-1 h-2.5 w-2.5 rounded-full bg-[#ef9a71] shadow-[0_0_6px_#ef9a71]" />
+                        </div>
+                        <span className="font-bold text-xs">Bottom Left</span>
+                        <span className="text-[10px] text-muted-foreground font-mono mt-0.5">Avoids right-side CTAs</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Provider & Model Selection */}
+              {/* AI PROVIDER & CORS SECURITY */}
               <div className="double-bezel">
-                <div className="double-bezel-inner p-4 space-y-3">
-                  <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
-                    <Zap className="h-3.5 w-3.5 text-amber-500" />
-                    <span>AI Provider &amp; CORS Security</span>
+                <div className="double-bezel-inner p-4 sm:p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-foreground">
+                      <Zap className="h-4 w-4 text-amber-500" />
+                      <span>AI Provider &amp; CORS Security</span>
+                    </div>
+                    <span className="rounded bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[9px] font-mono text-emerald-400 font-semibold flex items-center gap-1">
+                      <ShieldCheck className="h-3 w-3" />
+                      <span>Edge Proxy Protected</span>
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-medium text-muted-foreground">LLM Provider</label>
-                      <select
-                        value={assistant.provider}
-                        onChange={(e) =>
-                          setAssistant({
-                            ...assistant,
-                            provider: e.target.value as ProviderId,
-                            model:
-                              e.target.value === "gemini"
-                                ? "gemini-2.5-flash"
-                                : e.target.value === "openai"
-                                ? "gpt-4o-mini"
-                                : "openai/gpt-oss-120b",
-                          })
-                        }
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff5722] transition-colors"
-                      >
-                        <option value="groq">Groq (Ultra-Fast ⚡)</option>
-                        <option value="gemini">Google Gemini (Flash 3.5)</option>
-                        <option value="openai">OpenAI (GPT-4o mini)</option>
-                        <option value="anthropic">Anthropic (Claude 3.5 Haiku)</option>
-                        <option value="deepseek">DeepSeek (V3 / R1)</option>
-                        <option value="openrouter">OpenRouter</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-medium text-muted-foreground">Model Identifier</label>
-                      <input
-                        type="text"
-                        value={assistant.model}
-                        onChange={(e) => setAssistant({ ...assistant, model: e.target.value })}
-                        className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-[#ff5722] transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1 pt-1">
+                  {/* Provider Selection Cards */}
+                  <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
-                        <Shield className="h-3 w-3 text-emerald-500" />
-                        <span>Domain Whitelist</span>
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <Cpu className="h-3.5 w-3.5 text-[#ef9a71]" />
+                        <span>Select Intelligence Provider</span>
                       </label>
-                      <span className="text-[10px] text-muted-foreground font-mono">* allows all</span>
+                      <button
+                        type="button"
+                        onClick={() => setKeyVaultOpen(true, assistant.provider)}
+                        className="btn-tactile text-[11px] text-[#efb18d] hover:text-[#ff7043] font-semibold flex items-center gap-1"
+                      >
+                        <KeyRound className="h-3 w-3 text-amber-500" />
+                        <span>BYOK Key Vault ↗</span>
+                      </button>
                     </div>
-                    <input
-                      type="text"
-                      value={assistant.allowedDomains.join(", ")}
-                      onChange={(e) =>
-                        setAssistant({
-                          ...assistant,
-                          allowedDomains: e.target.value.split(",").map((d) => d.trim()).filter(Boolean),
-                        })
-                      }
-                      placeholder="myportfolio.dev, localhost, *"
-                      className="w-full rounded-xl border border-border bg-surface-2 text-foreground px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-[#ff5722] transition-colors"
-                    />
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {SUPPORTED_STUDIO_PROVIDERS.map((prov) => {
+                        const isSelected = assistant.provider === prov.id;
+                        const hasKey = keyStatusMap[prov.id];
+
+                        return (
+                          <button
+                            key={prov.id}
+                            type="button"
+                            onClick={() => {
+                              setAssistant({
+                                ...assistant,
+                                provider: prov.id,
+                                model: prov.defaultModel,
+                              });
+                            }}
+                            className={`btn-tactile flex flex-col p-2.5 rounded-xl border text-left transition-all ${
+                              isSelected
+                                ? "bg-[#ef9a71]/15 border-[#ef9a71] text-[#faf5ef] shadow-md shadow-[#ef9a71]/15"
+                                : "bg-surface-2/80 border-border/80 hover:bg-surface-3 hover:border-white/20 text-muted-foreground"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between w-full mb-1">
+                              <div className="flex items-center gap-1.5">
+                                <ProviderMark providerId={prov.id} className="h-4 w-4 shrink-0" />
+                                <span className={`text-xs font-bold ${isSelected ? "text-foreground" : "text-zinc-200"}`}>
+                                  {prov.name}
+                                </span>
+                              </div>
+                              {hasKey ? (
+                                <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]" title="Key Ready" />
+                              ) : (
+                                <span className="h-2 w-2 rounded-full bg-amber-500/80" title="No Key in Vault" />
+                              )}
+                            </div>
+
+                            <span className="text-[10px] text-muted-foreground font-mono leading-tight">
+                              {prov.badge} &bull; {prov.speed}
+                            </span>
+
+                            <div className="mt-1.5 pt-1.5 border-t border-white/5 flex items-center justify-between text-[9px] font-mono">
+                              {hasKey ? (
+                                <span className="text-emerald-400 font-semibold flex items-center gap-0.5">
+                                  <Check className="h-2.5 w-2.5" /> Key Ready
+                                </span>
+                              ) : (
+                                <span className="text-amber-400 font-medium">Key Needed</span>
+                              )}
+                              {isSelected && <span className="text-[#ef9a71] font-black">ACTIVE</span>}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Precise Model Picker */}
+                  <div className="space-y-2 pt-1 border-t border-border/60">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <Layers className="h-3.5 w-3.5 text-amber-500" />
+                        <span>Precise Model Selection</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowCustomModelInput(!showCustomModelInput)}
+                        className="btn-tactile text-[10px] text-[#efb18d] hover:underline"
+                      >
+                        {showCustomModelInput ? "Hide Custom Model" : "Custom Model ID ↗"}
+                      </button>
+                    </div>
+
+                    {/* Verified Models Selection List */}
+                    <div className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
+                      {PROVIDERS[assistant.provider]?.models.map((m) => {
+                        const isSelected = assistant.model === m.id;
+                        return (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => setAssistant({ ...assistant, model: m.id })}
+                            className={`btn-tactile w-full flex items-start justify-between p-2.5 rounded-xl border text-left transition-all ${
+                              isSelected
+                                ? "bg-[#ef9a71]/15 border-[#ef9a71] shadow-sm text-foreground"
+                                : "bg-surface-2 border-border/70 hover:bg-surface-3 text-muted-foreground"
+                            }`}
+                          >
+                            <div className="space-y-1 min-w-0 pr-2">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={`text-xs font-bold ${isSelected ? "text-[#efb18d]" : "text-foreground"}`}>
+                                  {m.name}
+                                </span>
+                                <span className="text-[10px] font-mono text-zinc-400 bg-black/40 px-1.5 py-0.2 rounded border border-white/5">
+                                  {m.id}
+                                </span>
+                                {m.recommended && (
+                                  <span className="rounded bg-[#ef9a71]/20 border border-[#ef9a71]/40 px-1.5 py-0.2 text-[9px] font-mono font-bold text-[#efb18d]">
+                                    RECOMMENDED
+                                  </span>
+                                )}
+                                {m.isReasoning && (
+                                  <span className="rounded bg-purple-500/15 border border-purple-500/30 px-1.5 py-0.2 text-[9px] font-mono text-purple-400">
+                                    REASONING 🧠
+                                  </span>
+                                )}
+                                {m.category === "fast" && (
+                                  <span className="rounded bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.2 text-[9px] font-mono text-amber-300">
+                                    FAST ⚡
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-muted-foreground line-clamp-1">
+                                {m.description}
+                              </p>
+                            </div>
+
+                            <div className="shrink-0 flex items-center gap-1.5 pt-0.5">
+                              <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">
+                                {m.contextWindow}
+                              </span>
+                              {isSelected && <Check className="h-4 w-4 text-[#ef9a71]" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Custom Model Input Toggle */}
+                    {showCustomModelInput && (
+                      <div className="p-2.5 rounded-xl border border-white/10 bg-[#160d09] space-y-1.5 animate-in fade-in duration-150">
+                        <label className="text-[11px] font-mono text-[#efb18d] block">
+                          Enter Custom Model ID:
+                        </label>
+                        <input
+                          type="text"
+                          value={assistant.model}
+                          onChange={(e) => setAssistant({ ...assistant, model: e.target.value })}
+                          placeholder="e.g. meta-llama/llama-3.3-70b-instruct or custom-model"
+                          className="w-full rounded-lg border border-white/10 bg-black/50 px-3 py-1.5 text-xs font-mono text-foreground focus:outline-none focus:border-[#ef9a71]"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* CORS & Domain Whitelist Management */}
+                  <div className="space-y-2.5 pt-1 border-t border-border/60">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <Shield className="h-3.5 w-3.5 text-emerald-500" />
+                        <span>Domain Whitelist &amp; Origin Security</span>
+                      </label>
+                      <span className="text-[10px] font-mono text-muted-foreground">
+                        {assistant.allowedDomains.includes("*") ? "All domains allowed" : `${assistant.allowedDomains.length} domains active`}
+                      </span>
+                    </div>
+
+                    {/* Active Domain Chips */}
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      {assistant.allowedDomains.map((dom) => (
+                        <span
+                          key={dom}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#20130e] border border-amber-900/60 text-xs font-mono text-[#efb18d] shadow-sm"
+                        >
+                          <Globe className="h-3 w-3 text-muted-foreground" />
+                          <span>{dom === "*" ? "* (Allow All - Dev/Preview)" : dom}</span>
+                          {assistant.allowedDomains.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveDomain(dom)}
+                              className="ml-1 text-muted-foreground hover:text-red-400 p-0.5"
+                              title={`Remove ${dom}`}
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Quick Presets Buttons */}
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                      <span className="text-muted-foreground text-[10px] font-mono">Quick Presets:</span>
+                      <button
+                        type="button"
+                        onClick={handleSetAllowAll}
+                        className={`btn-tactile px-2 py-0.5 rounded-md border text-[10px] font-mono transition-colors ${
+                          assistant.allowedDomains.includes("*")
+                            ? "bg-[#ef9a71] text-[#140a06] font-bold border-[#ef9a71]"
+                            : "bg-surface-2 border-border text-foreground hover:bg-surface-3"
+                        }`}
+                      >
+                        🌐 Allow All (*)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleAddDomain("localhost")}
+                        className="btn-tactile px-2 py-0.5 rounded-md border border-border bg-surface-2 hover:bg-surface-3 text-[10px] font-mono text-foreground transition-colors"
+                      >
+                        🏠 + localhost
+                      </button>
+                      {detectedDomain && !assistant.allowedDomains.includes(detectedDomain) && (
+                        <button
+                          type="button"
+                          onClick={() => handleAddDomain(detectedDomain)}
+                          className="btn-tactile px-2 py-0.5 rounded-md border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-[10px] font-mono font-semibold transition-colors"
+                        >
+                          🔗 + {detectedDomain}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Add Custom Domain Form */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <div className="flex-1 relative">
+                        <input
+                          type="text"
+                          value={newDomainInput}
+                          onChange={(e) => setNewDomainInput(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && handleAddDomain()}
+                          placeholder="Add domain (e.g. alex-portfolio.dev, portfolio.vercel.app)..."
+                          className="w-full rounded-xl border border-white/10 bg-[#160d09] px-3 py-1.5 text-xs text-foreground placeholder:text-[#8c7b72] font-mono focus:outline-none focus:border-[#ef9a71] transition-colors"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAddDomain()}
+                        disabled={!newDomainInput.trim()}
+                        className="btn-tactile px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#ef9a71] to-[#d88960] text-[#140a06] text-xs font-bold disabled:opacity-40 transition-all shadow-sm"
+                      >
+                        + Add
+                      </button>
+                    </div>
+
+                    {/* Security Guarantees Callout */}
+                    <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-950/15 text-[11px] text-emerald-300 space-y-1 leading-relaxed">
+                      <div className="font-bold flex items-center gap-1.5 text-emerald-400">
+                        <ShieldCheck className="h-3.5 w-3.5" />
+                        <span>Stateless Edge Proxy &amp; CORS Isolation</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground leading-normal">
+                        Your assistant embed calls route through Next.js Stateless Edge Proxy with zero API key exposure. Rate-limited to 30 requests/minute per visitor IP to prevent abuse.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -816,14 +1241,14 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                 <div className="double-bezel-inner p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Code2 className="h-4 w-4 text-[#ff5722]" />
+                      <Code2 className="h-4 w-4 text-[#ef9a71]" />
                       <span className="font-bold text-xs uppercase tracking-wider text-foreground">
                         1-Line Embed Code
                       </span>
                     </div>
                     <button
                       onClick={copySnippet}
-                      className="btn-tactile flex items-center gap-1 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] px-3 py-1 text-xs font-bold shadow-lg shadow-[#ff5722]/25 hover:scale-[1.01] transition-all"
+                      className="btn-tactile flex items-center gap-1 rounded-xl bg-gradient-to-r from-[#ef9a71] to-[#d88960] text-[#140a06] px-3 py-1 text-xs font-bold shadow-lg shadow-[#ef9a71]/25 hover:scale-[1.01] transition-all"
                     >
                       {copiedSnippet ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                       <span>{copiedSnippet ? "Copied!" : "Copy Script"}</span>
@@ -831,7 +1256,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                   </div>
 
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Paste this snippet before the closing <code className="text-[#ff5722] font-mono font-semibold">&lt;/body&gt;</code> tag of any web project. Zero npm dependencies, fully isolated Shadow DOM.
+                    Paste this snippet before the closing <code className="text-[#ef9a71] font-mono font-semibold">&lt;/body&gt;</code> tag of any web project. Zero npm dependencies, fully isolated Shadow DOM.
                   </p>
 
                   {/* Framework Selector Tabs */}
@@ -842,7 +1267,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         onClick={() => setFrameworkTab(fw)}
                         className={`btn-tactile px-2.5 py-1 rounded-lg capitalize font-semibold transition-colors ${
                           frameworkTab === fw
-                            ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
+                            ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-lg shadow-[#ef9a71]/20"
                             : "bg-surface-2 text-muted-foreground hover:text-foreground"
                         }`}
                       >
@@ -907,7 +1332,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                         href="https://github.com/settings/tokens/new?scopes=repo&description=ModelDeck+Assistant+Integration"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[10px] text-[#ff5722] hover:underline flex items-center gap-0.5"
+                        className="text-[10px] text-[#ef9a71] hover:underline flex items-center gap-0.5"
                       >
                         <span>Create Token (repo scope) ↗</span>
                       </a>
@@ -924,7 +1349,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                   <button
                     onClick={handleCreatePr}
                     disabled={isCreatingPr || !githubToken.trim() || !repoUrl.trim()}
-                    className="btn-tactile flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5722] to-[#ea580c] text-[#140a06] py-2.5 px-4 text-xs font-bold shadow-lg shadow-[#ff5722]/25 hover:scale-[1.01] transition-all disabled:opacity-50"
+                    className="btn-tactile flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#ef9a71] to-[#d88960] text-[#140a06] py-2.5 px-4 text-xs font-bold shadow-lg shadow-[#ef9a71]/25 hover:scale-[1.01] transition-all disabled:opacity-50"
                   >
                     {isCreatingPr ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
@@ -968,21 +1393,21 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
         </div>
 
         {/* Right Side: Interactive Hardware Device Frame */}
-        <div className={`${mobileView === "preview" ? "flex" : "hidden"} lg:flex flex-1 flex-col bg-[#0c0807]/80 relative overflow-hidden items-center justify-center p-3 sm:p-6`}>
+        <div className={`${mobileView === "preview" ? "flex" : "hidden"} lg:flex flex-1 flex-col bg-[#100e0d]/80 relative overflow-hidden items-center justify-center p-3 sm:p-6`}>
           {/* Device Toggle & Sandbox Header */}
           <div className="absolute top-3 sm:top-4 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between z-10 pointer-events-auto">
-            <div className="flex items-center gap-2 bg-[#140d0a]/80 border border-white/10 rounded-2xl px-3 py-1.5 backdrop-blur-xl shadow-md">
+            <div className="flex items-center gap-2 bg-[#191614]/80 border border-white/10 rounded-2xl px-3 py-1.5 backdrop-blur-xl shadow-md">
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-bold text-[#faf5ef]">Interactive Sandbox</span>
               <span className="text-[10px] text-muted-foreground font-mono hidden sm:inline">Real-Time Streaming</span>
             </div>
 
-            <div className="flex items-center gap-1 bg-[#140d0a]/80 border border-white/10 rounded-2xl p-1 backdrop-blur-xl shadow-md">
+            <div className="flex items-center gap-1 bg-[#191614]/80 border border-white/10 rounded-2xl p-1 backdrop-blur-xl shadow-md">
               <button
                 onClick={() => setPreviewDevice("desktop")}
                 className={`btn-tactile p-1.5 rounded-lg transition-colors ${
                   previewDevice === "desktop"
-                    ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
+                    ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-lg shadow-[#ef9a71]/20"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Desktop View"
@@ -993,7 +1418,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                 onClick={() => setPreviewDevice("mobile")}
                 className={`btn-tactile p-1.5 rounded-lg transition-colors ${
                   previewDevice === "mobile"
-                    ? "bg-[#ff5722] text-[#140a06] font-bold shadow-lg shadow-[#ff5722]/20"
+                    ? "bg-[#ef9a71] text-[#140a06] font-bold shadow-lg shadow-[#ef9a71]/20"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Mobile View"
@@ -1015,8 +1440,8 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
               {/* Browser Window Titlebar */}
               <div className="flex h-10 items-center justify-between border-b border-amber-900/40 bg-[#160e0a] px-3.5 shrink-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-[#ff5722]/80" />
-                  <span className="h-3 w-3 rounded-full bg-[#ff8a50]/80" />
+                  <span className="h-3 w-3 rounded-full bg-[#ef9a71]/80" />
+                  <span className="h-3 w-3 rounded-full bg-[#efb18d]/80" />
                   <span className="h-3 w-3 rounded-full bg-amber-300/80" />
                 </div>
 
@@ -1144,7 +1569,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                           <button
                             key={i}
                             onClick={() => handleSandboxSend(chip)}
-                            className="btn-tactile rounded-xl border border-white/10 bg-[#180f0b] hover:bg-[#281711] px-2.5 py-1 text-[11px] text-[#ff8a50] font-medium transition-colors text-left"
+                            className="btn-tactile rounded-xl border border-white/10 bg-[#180f0b] hover:bg-[#281711] px-2.5 py-1 text-[11px] text-[#efb18d] font-medium transition-colors text-left"
                           >
                             {chip}
                           </button>
@@ -1154,9 +1579,9 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
 
                     {isSandboxStreaming && (
                       <div className="flex items-center gap-1.5 text-muted-foreground text-xs py-1">
-                        <span className="h-2 w-2 rounded-full bg-[#ff5722] animate-bounce" />
-                        <span className="h-2 w-2 rounded-full bg-[#ff5722] animate-bounce [animation-delay:0.2s]" />
-                        <span className="h-2 w-2 rounded-full bg-[#ff5722] animate-bounce [animation-delay:0.4s]" />
+                        <span className="h-2 w-2 rounded-full bg-[#ef9a71] animate-bounce" />
+                        <span className="h-2 w-2 rounded-full bg-[#ef9a71] animate-bounce [animation-delay:0.2s]" />
+                        <span className="h-2 w-2 rounded-full bg-[#ef9a71] animate-bounce [animation-delay:0.4s]" />
                       </div>
                     )}
                     <div ref={chatBottomRef} />
@@ -1170,7 +1595,7 @@ Keep responses clear, concise, and helpful with clean markdown formatting.`,
                       onChange={(e) => setSandboxInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSandboxSend()}
                       placeholder="Ask a question..."
-                      className="flex-1 rounded-xl border border-white/10 bg-[#180f0b] px-3 py-1.5 text-xs text-[#faf5ef] placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ff5722] transition-colors"
+                      className="flex-1 rounded-xl border border-white/10 bg-[#180f0b] px-3 py-1.5 text-xs text-[#faf5ef] placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ef9a71] transition-colors"
                     />
                     <button
                       onClick={() => handleSandboxSend()}

@@ -1,0 +1,122 @@
+[
+  {
+    "label": "Home loads",
+    "pass": true
+  },
+  {
+    "label": "Interactive home preview",
+    "pass": true
+  },
+  {
+    "label": "FAQ expands",
+    "pass": true
+  },
+  {
+    "label": "Home fits 768px",
+    "pass": true
+  },
+  {
+    "label": "Home fits 390px",
+    "pass": true
+  },
+  {
+    "label": "Home fits 375px",
+    "pass": true
+  },
+  {
+    "label": "Home fits 320px",
+    "pass": true
+  },
+  {
+    "label": "Mobile menu opens",
+    "pass": true
+  },
+  {
+    "label": "Mobile navigation closes",
+    "pass": true
+  },
+  {
+    "label": "Composer starts disabled",
+    "pass": true
+  },
+  {
+    "label": "Suggestion creates editable draft",
+    "pass": true
+  },
+  {
+    "label": "Missing key opens vault",
+    "pass": true
+  },
+  {
+    "label": "Missing key preserves draft",
+    "pass": true
+  },
+  {
+    "label": "Vault restores keyboard focus",
+    "pass": true
+  },
+  {
+    "label": "New conversation has fresh draft",
+    "pass": true
+  },
+  {
+    "label": "Switch restores draft",
+    "pass": true
+  },
+  {
+    "label": "Model picker opens",
+    "pass": true
+  },
+  {
+    "label": "Settings opens",
+    "pass": true
+  },
+  {
+    "label": "Model search filters results",
+    "pass": true
+  },
+  {
+    "label": "Model selection updates composer",
+    "pass": true
+  },
+  {
+    "label": "Streaming exposes stop control",
+    "pass": true
+  },
+  {
+    "label": "Streamed response renders",
+    "pass": true
+  },
+  {
+    "label": "Completed response supports retry",
+    "pass": true
+  },
+  {
+    "label": "Chat fits 768px",
+    "pass": true
+  },
+  {
+    "label": "Chat fits 390px",
+    "pass": true
+  },
+  {
+    "label": "Chat fits 375px",
+    "pass": true
+  },
+  {
+    "label": "Chat fits 320px",
+    "pass": true
+  },
+  {
+    "label": "Mobile history drawer opens",
+    "pass": true
+  },
+  {
+    "label": "Stop ends generation",
+    "pass": true
+  },
+  {
+    "label": "Studio fits phone",
+    "pass": true
+  }
+]

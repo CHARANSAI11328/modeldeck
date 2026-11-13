@@ -25,11 +25,12 @@ export function ChatContainer() {
   const currentSession = sessions.find((s) => s.id === currentSessionId);
 
   const messages = currentSession?.messages || [];
-  const providerId = currentSession?.providerId || "openai";
-  const modelId = currentSession?.modelId || "gpt-4.1";
+  const providerId = currentSession?.providerId || "groq";
+  const modelId = currentSession?.modelId || "openai/gpt-oss-120b";
 
   // Auto-scroll to bottom on streaming content or new messages
   useEffect(() => {
+    if (messages.length === 0 && !isStreaming) return;
     messagesEndRef.current?.scrollIntoView({ behavior: isStreaming ? "auto" : "smooth" });
   }, [messages.length, streamingContent, streamingReasoning, isStreaming]);
 
@@ -49,7 +50,7 @@ export function ChatContainer() {
       : null;
 
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 sm:px-4 py-4 sm:py-6 scroll-smooth">
+    <div className="deck-chat-scroll flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 sm:px-4 py-4 sm:py-6 scroll-smooth" aria-label="Conversation">
       <div className="mx-auto max-w-3xl space-y-4">
         {/* Error Banner if error is active */}
         {error && (

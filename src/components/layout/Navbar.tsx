@@ -72,6 +72,7 @@ export function Navbar() {
   const configuredKeysCount = Object.entries(keyStatusMap).filter(
     ([k, v]) => v && k !== "custom-openai-compatible"
   ).length;
+  const providerKeyCount = getAllProviders().filter(p => p.id !== "custom-openai-compatible").length;
 
   // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
@@ -127,7 +128,7 @@ export function Navbar() {
   }, [searchQuery, selectedCategory, syncedVersion]);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-amber-950/40 bg-[#0f0907]/90 px-3 sm:px-5 backdrop-blur-xl text-[#faf5ef] transition-colors shadow-sm">
+    <header className="deck-chat-navbar sticky top-0 z-30 flex h-14 w-full shrink-0 items-center justify-between text-foreground">
       {/* Left side: Hamburger toggle + Model selector */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
@@ -143,9 +144,8 @@ export function Navbar() {
         <div className="relative min-w-0" ref={selectorRef}>
           <button
             data-model-trigger
-            role="combobox"
             aria-expanded={isModelSelectorOpen}
-            aria-haspopup="listbox"
+            aria-haspopup="dialog"
             aria-label="Select AI provider and model"
             onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
             className="btn-tactile flex items-center gap-1.5 sm:gap-2 rounded-xl border border-amber-900/40 bg-[#1c110d] hover:bg-[#281711] hover:border-[#ff5722]/50 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-[#ff8a50] transition-all shadow-sm max-w-[125px] sm:max-w-[320px] min-w-0 truncate focus-visible:ring-2 focus-visible:ring-[#ff5722]"
@@ -161,7 +161,7 @@ export function Navbar() {
 
           {/* Model Selector Popover Menu */}
           {isModelSelectorOpen && (
-            <div className="fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto top-16 sm:top-auto sm:mt-2 w-auto sm:w-[440px] double-bezel z-50 animate-in fade-in zoom-in-95 duration-150">
+            <div role="dialog" aria-label="Choose a model" className="fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto top-16 sm:top-auto sm:mt-2 w-auto sm:w-[440px] double-bezel z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="double-bezel-inner max-h-[80vh] flex flex-col overflow-hidden text-foreground">
                 {/* Header & Search */}
                 <div className="p-3.5 border-b border-border space-y-2.5 bg-surface-2/70">
@@ -182,6 +182,7 @@ export function Navbar() {
                       </button>
                       <button
                         onClick={() => setIsModelSelectorOpen(false)}
+                        aria-label="Close model picker"
                         className="text-muted-foreground hover:text-foreground sm:hidden p-1"
                       >
                         <X className="h-4 w-4" />
@@ -197,12 +198,14 @@ export function Navbar() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search 40+ models (e.g. R1, Claude, Flash, Groq)..."
+                      aria-label="Search models"
                       className="w-full rounded-xl border border-white/10 bg-[#180f0b] pl-9 pr-3 py-2 text-xs text-[#faf5ef] placeholder:text-[#b8a79b] focus:outline-none focus:border-[#ff5722] transition-colors"
                       autoFocus
                     />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery("")}
+                        aria-label="Clear model search"
                         className="absolute right-2.5 top-2 text-muted-foreground hover:text-foreground"
                       >
                         <X className="h-3.5 w-3.5" />
@@ -214,9 +217,9 @@ export function Navbar() {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 text-[11px]">
                     {[
                       { id: "all", label: "All" },
-                      { id: "reasoning", label: "Reasoning 🧠" },
-                      { id: "coding", label: "Coding 💻" },
-                      { id: "fast", label: "Fast ⚡" },
+                      { id: "reasoning", label: "Reasoning" },
+                      { id: "coding", label: "Coding" },
+                      { id: "fast", label: "Fast" },
                       { id: "openai", label: "OpenAI" },
                       { id: "anthropic", label: "Claude" },
                       { id: "gemini", label: "Gemini" },
@@ -229,6 +232,7 @@ export function Navbar() {
                     ].map((tab) => (
                       <button
                         key={tab.id}
+                        aria-pressed={selectedCategory === tab.id}
                         onClick={() => setSelectedCategory(tab.id)}
                         className={`btn-tactile px-2.5 py-1 rounded-lg shrink-0 transition-colors ${
                           selectedCategory === tab.id
@@ -349,6 +353,27 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Center: Executive Product Suite Switcher */}
+      <nav aria-label="Workspaces" className="hidden md:flex items-center p-1 rounded-xl bg-[#140c09] border border-amber-900/50 shadow-inner">
+        <div
+          className="flex items-center gap-1.5 px-3.5 py-1 rounded-lg text-xs font-bold bg-[#ff5722] text-[#1a0a04] shadow-sm select-none"
+        >
+          <Zap className="h-3.5 w-3.5 fill-current" />
+          <span>Playground</span>
+        </div>
+        <Link
+          href="/studio"
+          className="btn-tactile group flex items-center gap-1.5 px-3.5 py-1 rounded-lg text-xs font-semibold text-[#ff8a50] hover:text-[#faf5ef] hover:bg-white/5 transition-all"
+          title="Open Assistant Studio - Flagship AI Agent Builder"
+        >
+          <Bot className="h-3.5 w-3.5 text-[#ff5722] group-hover:scale-110 transition-transform" />
+          <span>Assistant Studio</span>
+          <span className="rounded bg-[#ff5722]/20 border border-[#ff5722]/40 px-1 py-0.2 text-[9px] font-mono text-[#ff8a50]">
+            FLAGSHIP
+          </span>
+        </Link>
+      </nav>
+
       {/* Right side controls */}
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {/* Proxy Active Indicator */}
@@ -379,17 +404,17 @@ export function Navbar() {
           </Tooltip>
         )}
 
-        {/* Assistant Studio Trigger */}
+        {/* Assistant Studio Trigger on mobile/tablet */}
         <Link
           href="/studio"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border border-amber-900/40 bg-[#1c110d] px-2 sm:px-3 py-1.5 text-xs font-semibold text-[#ff8a50] hover:bg-[#281711] hover:border-[#ff5722]/50 transition-all shadow-sm"
+          className="btn-tactile flex md:hidden items-center gap-1.5 rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-500/15 to-[#24130d] px-2.5 py-1.5 text-xs font-bold text-[#faf5ef] hover:border-[#ff5722] hover:bg-[#2c1710] transition-all shadow-md shadow-[#ff5722]/15"
           title="Create & Embed Personalized AI Chatbot for your website"
           aria-label="Assistant Studio"
         >
           <Bot className="h-3.5 w-3.5 text-[#ff5722] shrink-0" />
-          <span className="hidden sm:inline">Assistant Studio</span>
-          <span className="hidden sm:inline rounded bg-[#ff5722]/15 px-1 py-0.2 text-[9px] font-mono text-[#ff8a50]">
-            NEW
+          <span className="font-bold">Studio</span>
+          <span className="rounded bg-[#ff5722] text-[#1a0a04] px-1 py-0.2 text-[8px] font-mono font-black">
+            ✦
           </span>
         </Link>
 
@@ -403,14 +428,14 @@ export function Navbar() {
                 <span>BYOK Vault</span>
               </div>
               <p className="text-[11px] text-muted-foreground leading-normal">
-                {configuredKeysCount} of 8 provider keys configured. Keys are encrypted with AES-GCM-256 in local storage.
+                {configuredKeysCount} of {providerKeyCount} provider keys configured.
               </p>
             </div>
           }
         >
           <button
             onClick={() => setKeyVaultOpen(true)}
-            aria-label={`BYOK Key Vault: ${configuredKeysCount} of 8 keys configured`}
+            aria-label={`BYOK Key Vault: ${configuredKeysCount} of ${providerKeyCount} keys configured`}
             className={`btn-tactile flex items-center gap-1.5 rounded-xl border px-2 sm:px-3 py-1.5 text-xs font-semibold transition-all shadow-sm ${
               hasKey
                 ? "border-border bg-surface-1 text-foreground hover:bg-surface-2"
@@ -420,7 +445,7 @@ export function Navbar() {
             <KeyRound className="h-3.5 w-3.5 text-amber-500 shrink-0" />
             <span className="hidden sm:inline">Keys</span>
             <span className="rounded-md bg-surface-2 border border-border px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-foreground">
-              {configuredKeysCount}/8
+              {configuredKeysCount}/{providerKeyCount}
             </span>
           </button>
         </Tooltip>

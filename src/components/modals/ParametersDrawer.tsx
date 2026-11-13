@@ -3,9 +3,11 @@
 import React, { useEffect } from "react";
 import { X, Sliders, Zap, Server, MessageSquareCode, ShieldCheck } from "lucide-react";
 import { usePlaygroundStore } from "@/lib/store";
+import { useDialogFocus } from "@/components/ui/useDialogFocus";
 
 export function ParametersDrawer() {
   const { isSettingsOpen, setSettingsOpen, settings, updateSettings } = usePlaygroundStore();
+  const dialogRef = useDialogFocus(isSettingsOpen);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -22,6 +24,7 @@ export function ParametersDrawer() {
   return (
     <div
       role="dialog"
+      ref={dialogRef}
       aria-modal="true"
       aria-labelledby="parameters-drawer-title"
       onClick={(e) => {

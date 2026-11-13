@@ -1,78 +1,513 @@
 "use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowDownRight, ArrowRight, Check, Command, Copy, LockKeyhole, Menu, MoveRight, Plus, Sparkles, X, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { DeckIcon, DeckLogo } from "@/components/ui/DeckIcon";
 import { ProviderMark } from "@/components/ui/ProviderMark";
 import type { ProviderId } from "@/lib/types";
 
-const providers: { id: ProviderId; name: string; note: string; modelId?: string }[] = [
-  { id: "openai", name: "ChatGPT", note: "frontier" }, { id: "gemini", name: "Gemini", note: "multimodal" },
-  { id: "anthropic", name: "Claude", note: "reasoning" }, { id: "groq", name: "Groq", note: "speed" },
-  { id: "deepseek", name: "DeepSeek", note: "open weights" }, { id: "openrouter", name: "OpenRouter", note: "routing" },
-  { id: "custom-openai-compatible", name: "Ollama", note: "local" }, { id: "openrouter", name: "Qwen", note: "open weights", modelId: "qwen3" },
+const providers: { id: ProviderId; name: string }[] = [
+  { id: "openai", name: "OpenAI" },
+  { id: "anthropic", name: "Anthropic" },
+  { id: "gemini", name: "Google Gemini" },
+  { id: "deepseek", name: "DeepSeek" },
+  { id: "groq", name: "Groq" },
+  { id: "openrouter", name: "OpenRouter" },
 ];
-const navItems = [["Platform", "platform"], ["Models", "models"], ["Compare", "compare"], ["Security", "security"]] as const;
-
-function ModelChip({ provider, className = "" }: { provider: (typeof providers)[number]; className?: string }) {
-  return <div className={`model-chip ${className}`}><ProviderMark providerId={provider.id} modelId={provider.modelId} label={provider.name} className="h-5 w-5" /><span>{provider.name}</span><i>{provider.note}</i></div>;
+const previews = [
+  {
+    label: "Explore an idea",
+    prompt: "Help me turn an idea into something real.",
+    title: "Let’s give your idea a little structure.",
+    body: "Start with the person you’re helping. What is the one thing you could make easier for them?",
+    steps: [
+      "Define the problem in one sentence",
+      "Sketch the smallest useful version",
+      "Choose one thing to test this week",
+    ],
+  },
+  {
+    label: "Write better code",
+    prompt: "How should I approach a new API?",
+    title: "Build around a clear contract.",
+    body: "A small, predictable interface is easier to test and maintain. Start with the behavior your client needs.",
+    steps: [
+      "Describe the request and response",
+      "Validate inputs at the boundary",
+      "Test success and failure cases",
+    ],
+  },
+  {
+    label: "Find the right words",
+    prompt: "Help me write a thoughtful project update.",
+    title: "Keep it clear, useful, and human.",
+    body: "Give your reader the context they need, then make the next step easy to understand.",
+    steps: [
+      "Lead with what changed",
+      "Explain why it matters",
+      "Close with the next step",
+    ],
+  },
+];
+function CTA({
+  href,
+  children,
+  secondary = false,
+}: {
+  href: string;
+  children: React.ReactNode;
+  secondary?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`deck-cta ${secondary ? "deck-cta-secondary" : ""}`}
+    >
+      {children}
+      <span className="cta-island">
+        <DeckIcon name="arrow" />
+      </span>
+    </Link>
+  );
 }
-
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const copyPrompt = async () => { await navigator.clipboard?.writeText("Compare the best model for a production RAG workflow."); setCopied(true); window.setTimeout(() => setCopied(false), 1400); };
-  return <div className="modeldeck-site">
-    <div className="site-noise" aria-hidden="true" />
-    <header className="site-header">
-      <Link href="/" className="brand" aria-label="ModelDeck home"><span className="brand-mark"><span /></span><span>modeldeck<span className="brand-dot">.</span></span></Link>
-      <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary navigation">{navItems.map(([label, target]) => <a key={target} href={`#${target}`} onClick={() => setMenuOpen(false)}>{label}</a>)}<a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a></nav>
-      <div className="header-actions"><Link href="/studio" className="header-link">Studio <ArrowDownRight size={14} /></Link><Link href="/playground" className="header-cta">Open deck <ArrowRight size={15} /></Link><button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X size={19} /> : <Menu size={19} />}</button></div>
-    </header>
-    <main>
-      <section className="hero-section" id="platform"><div className="hero-copy"><p className="eyebrow"><span className="pulse-dot" /> Your models. One command center.</p><h1>AI has options.<br /><em>Make them yours.</em></h1><p className="hero-description">ModelDeck is the place to test, compare, and route every frontier model—without giving up your keys, your context, or your momentum.</p><div className="hero-actions"><Link href="/playground" className="fire-button">Start building <span><ArrowRight size={16} /></span></Link><a href="#models" className="text-button">See the model deck <MoveRight size={17} /></a></div><div className="trust-line"><span><Check size={14} /> Bring your own keys</span><span><Check size={14} /> No usage markup</span><span><Check size={14} /> Local-first vault</span></div></div>
-      <div className="hero-orbit" aria-label="A visual model routing workspace"><div className="orbital-ring ring-one" /><div className="orbital-ring ring-two" /><div className="orbit-node node-a"><ProviderMark providerId="openai" className="h-7 w-7" /></div><div className="orbit-node node-b"><ProviderMark providerId="gemini" className="h-7 w-7" /></div><div className="orbit-node node-c"><ProviderMark providerId="anthropic" className="h-7 w-7" /></div><div className="orbit-node node-d"><ProviderMark providerId="groq" className="h-7 w-7" /></div><div className="hero-console"><div className="console-top"><span>ModelDeck / workspace</span><span className="live-status">LIVE</span></div><div className="console-main"><div className="console-title"><span className="console-spark"><Sparkles size={18} /></span><strong>Which model?</strong></div><p>Compare the best model for a production RAG workflow.</p><div className="console-models"><div><ProviderMark providerId="openai" className="h-4 w-4" /> GPT-5 <b>92</b></div><div><ProviderMark providerId="anthropic" className="h-4 w-4" /> Claude <b>89</b></div><div><ProviderMark providerId="gemini" className="h-4 w-4" /> Gemini <b>87</b></div></div><div className="console-send"><span>Test across 3 models</span><span><Zap size={13} /> Run</span></div></div><div className="console-glow" /></div><div className="orbit-caption"><span className="caption-bar" /> 40+ models on deck</div></div></section>
-      <section className="provider-marquee" id="models">
-        <div className="marquee-label">YOUR STACK, UNCOMPROMISED <span>✦</span></div>
-        <div className="marquee-viewport">
-          <div className="marquee-track">
-            {/* Set 1 */}
-            <div className="marquee-group">
-              {providers.map((provider, i) => (
-                <ModelChip key={`m1-${provider.id}-${i}`} provider={provider} />
-              ))}
-              <Link href="/playground" className="model-chip more-chip">
-                <Plus size={16} /><span>and more</span>
-              </Link>
-              {providers.map((provider, i) => (
-                <ModelChip key={`m1b-${provider.id}-${i}`} provider={provider} />
-              ))}
-              <Link href="/playground" className="model-chip more-chip">
-                <Plus size={16} /><span>and more</span>
-              </Link>
+  const [preview, setPreview] = useState(0);
+  const root = useRef<HTMLDivElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        }),
+      { threshold: 0.08 },
+    );
+    root.current
+      ?.querySelectorAll("[data-reveal]")
+      .forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const before = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+      if (e.key === "Tab") {
+        const links =
+          root.current?.querySelectorAll<HTMLAnchorElement>(
+            ".deck-mobile-nav a",
+          );
+        const last = links?.[links.length - 1];
+        if (e.shiftKey && document.activeElement === menuButton.current) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          menuButton.current?.focus();
+        }
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => {
+      document.body.style.overflow = before;
+      window.removeEventListener("keydown", close);
+    };
+  }, [menuOpen]);
+  const demo = previews[preview];
+  return (
+    <div className="deck-home" ref={root}>
+      <a className="deck-skip" href="#main">
+        Skip to content
+      </a>
+      <div className="deck-grain" aria-hidden="true" />
+      <header className="deck-nav">
+        <Link href="/" className="deck-brand">
+          <DeckLogo />
+          modeldeck<span>.</span>
+        </Link>
+        <nav aria-label="Main navigation" className="deck-nav-links">
+          <a href="#workspace">Workspace</a>
+          <a href="#models">Models</a>
+          <a href="#studio">Assistant Studio</a>
+        </nav>
+        <div className="deck-nav-actions">
+          <CTA href="/playground">Open playground</CTA>
+          <button
+            ref={menuButton}
+            className={`deck-menu-toggle ${menuOpen ? "is-open" : ""}`}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span />
+            <span />
+          </button>
+        </div>
+      </header>
+      {menuOpen && (
+        <nav
+          id="mobile-navigation"
+          className="deck-mobile-nav"
+          aria-label="Mobile navigation"
+        >
+          {[
+            ["Workspace", "#workspace"],
+            ["Models", "#models"],
+            ["Assistant Studio", "#studio"],
+            ["Open playground", "/playground"],
+          ].map(([label, href], i) => (
+            <Link
+              style={{ animationDelay: `${i * 70}ms` }}
+              key={href}
+              href={href}
+              onClick={() => setMenuOpen(false)}
+            >
+              {label}
+              <DeckIcon name="arrow" />
+            </Link>
+          ))}
+        </nav>
+      )}
+      <main id="main">
+        <section className="deck-hero deck-wrap">
+          <div className="deck-hero-copy" data-reveal>
+            <span className="deck-eyebrow">
+              <span className="deck-dot" /> YOUR MODELS. YOUR SPACE.
+            </span>
+            <h1>
+              A little more
+              <br />
+              possibility.
+              <br />
+              <span>A lot less friction.</span>
+            </h1>
+            <p>
+              Your favorite AI models, together in one thoughtful workspace.
+              Bring your keys, follow your curiosity, and make something worth
+              making.
+            </p>
+            <div className="deck-actions">
+              <CTA href="/playground">Start a conversation</CTA>
+              <a href="#workspace" className="deck-text-link">
+                Take a closer look <DeckIcon name="arrow" />
+              </a>
             </div>
-            {/* Set 2 (seamless infinite loop duplicate) */}
-            <div className="marquee-group" aria-hidden="true">
-              {providers.map((provider, i) => (
-                <ModelChip key={`m2-${provider.id}-${i}`} provider={provider} />
-              ))}
-              <Link href="/playground" className="model-chip more-chip">
-                <Plus size={16} /><span>and more</span>
-              </Link>
-              {providers.map((provider, i) => (
-                <ModelChip key={`m2b-${provider.id}-${i}`} provider={provider} />
-              ))}
-              <Link href="/playground" className="model-chip more-chip">
-                <Plus size={16} /><span>and more</span>
-              </Link>
+            <div className="deck-hero-note">
+              <DeckIcon name="key" />
+              <span>Your API keys. Your choice of model.</span>
             </div>
           </div>
+          <div className="deck-preview-area" data-reveal>
+            <div className="deck-preview-orbit" aria-hidden="true" />
+            <div className="deck-bezel deck-preview">
+              <div className="deck-core">
+                <div className="deck-preview-top">
+                  <span>
+                    <DeckLogo /> Playground
+                  </span>
+                  <span className="deck-example">INTERACTIVE PREVIEW</span>
+                </div>
+                <div className="deck-preview-model">
+                  <ProviderMark providerId="anthropic" className="h-5 w-5" />
+                  <span>
+                    Claude <small>Creative thinking partner</small>
+                  </span>
+                  <span className="deck-model-dot" />
+                </div>
+                <div className="deck-preview-chat" key={preview}>
+                  <div className="deck-demo-user">{demo.prompt}</div>
+                  <div className="deck-demo-reply">
+                    <span className="deck-mini-label">
+                      MODELDECK / EXAMPLE RESPONSE
+                    </span>
+                    <h3>{demo.title}</h3>
+                    <p>{demo.body}</p>
+                    <ol>
+                      {demo.steps.map((step) => (
+                        <li key={step}>
+                          <DeckIcon name="check" />
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+                <div className="deck-preview-tabs" aria-label="Try an example">
+                  {previews.map((item, i) => (
+                    <button
+                      key={item.label}
+                      aria-pressed={preview === i}
+                      onClick={() => setPreview(i)}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <Link href="/playground" className="deck-demo-compose">
+                  <span>Where will your next idea take you?</span>
+                  <span className="cta-island">
+                    <DeckIcon name="up" />
+                  </span>
+                </Link>
+              </div>
+            </div>
+            <div className="deck-preview-caption">
+              <span className="deck-dot" /> One workspace. A world of
+              perspectives.
+            </div>
+          </div>
+        </section>
+        <section className="deck-providers deck-wrap" id="models" data-reveal>
+          <p>GOOD COMPANY FOR YOUR NEXT BIG IDEA</p>
+          <div>
+            {providers.map((provider) => (
+              <span key={provider.id}>
+                <ProviderMark providerId={provider.id} className="h-6 w-6" />
+                {provider.name}
+              </span>
+            ))}
+          </div>
+          <span className="deck-provider-footnote">
+            And more, including your local models.
+          </span>
+        </section>
+        <section className="deck-section deck-wrap" id="workspace">
+          <div className="deck-section-heading" data-reveal>
+            <div>
+              <span className="deck-eyebrow">01 / ROOM TO THINK</span>
+              <h2>
+                Less in your way.
+                <br />
+                <span>More at your fingertips.</span>
+              </h2>
+            </div>
+            <p>
+              From your first question to your next breakthrough. The essentials
+              are right where you need them.
+            </p>
+          </div>
+          <div className="deck-feature-grid">
+            <article className="deck-bezel deck-feature-large" data-reveal>
+              <div className="deck-core deck-feature">
+                <span className="deck-feature-icon">
+                  <DeckIcon name="layers" />
+                </span>
+                <h3>
+                  A fresh perspective,
+                  <br />
+                  one switch away.
+                </h3>
+                <p>
+                  Explore different models without learning a new interface.
+                  Search by provider or find a model for coding, reasoning, and
+                  quick answers.
+                </p>
+                <div className="deck-model-list">
+                  {providers.slice(0, 3).map((p, i) => (
+                    <Link href="/playground" key={p.id}>
+                      <ProviderMark providerId={p.id} className="h-6 w-6" />
+                      <span>
+                        {p.name}
+                        <small>
+                          {
+                            [
+                              "Explore, write, and build",
+                              "Think through the details",
+                              "Connect the bigger picture",
+                            ][i]
+                          }
+                        </small>
+                      </span>
+                      <DeckIcon name="arrow" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </article>
+            <article className="deck-bezel" data-reveal>
+              <div className="deck-core deck-feature">
+                <span className="deck-feature-icon sage">
+                  <DeckIcon name="key" />
+                </span>
+                <h3>
+                  Bring your own keys.
+                  <br />
+                  Keep your own rhythm.
+                </h3>
+                <p>
+                  Connect the providers you use in one key vault. Switch models
+                  when you need a different point of view.
+                </p>
+                <div className="deck-key-visual">
+                  <DeckIcon name="shield" />
+                  <span>•••• &nbsp; •••• &nbsp; •••• &nbsp; ••••</span>
+                  <DeckIcon name="check" />
+                </div>
+              </div>
+            </article>
+            <article className="deck-bezel" data-reveal>
+              <div className="deck-core deck-feature">
+                <span className="deck-feature-icon lavender">
+                  <DeckIcon name="chat" />
+                </span>
+                <h3>Stay in the flow.</h3>
+                <p>
+                  Organized conversations, readable responses, adjustable model
+                  settings, and Markdown exports. Your thinking, with room to
+                  grow.
+                </p>
+                <div className="deck-mini-stats">
+                  <span>
+                    Stream<small>Answers as they arrive</small>
+                  </span>
+                  <span>
+                    Fine-tune<small>Make each model yours</small>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+        <section className="deck-section deck-studio deck-wrap" id="studio">
+          <div data-reveal>
+            <span className="deck-eyebrow">02 / SOMETHING OF YOUR OWN</span>
+            <h2>
+              Your work.
+              <br />
+              Your voice.
+              <br />
+              <span>Your AI assistant.</span>
+            </h2>
+            <p>
+              Turn your website and project knowledge into an assistant people
+              can talk to. Shape its personality, preview the conversation, and
+              add it to your site.
+            </p>
+            <CTA href="/studio" secondary>
+              Explore Assistant Studio
+            </CTA>
+          </div>
+          <div className="deck-bezel deck-studio-demo" data-reveal>
+            <div className="deck-core">
+              <div className="deck-studio-demo-head">
+                <span className="deck-feature-icon">
+                  <DeckIcon name="spark" />
+                </span>
+                <div>
+                  Your assistant
+                  <small>A welcoming extension of your website</small>
+                </div>
+                <span className="deck-example">PREVIEW</span>
+              </div>
+              <div className="deck-studio-greeting">
+                <DeckIcon name="spark" />
+                <h3>
+                  A good conversation
+                  <br />
+                  starts with a hello.
+                </h3>
+                <p>
+                  Hi there. I can help you explore the work,
+                  <br />
+                  the ideas, and the person behind them.
+                </p>
+                <Link href="/studio">
+                  What have you been working on?
+                  <DeckIcon name="arrow" />
+                </Link>
+                <Link href="/studio">
+                  Tell me about your experience
+                  <DeckIcon name="arrow" />
+                </Link>
+              </div>
+              <div className="deck-studio-demo-foot">
+                <span className="deck-dot" /> Made yours in Assistant Studio
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="deck-section deck-wrap deck-start" data-reveal>
+          <span className="deck-eyebrow">A SIMPLE START</span>
+          <h2>From curious to creating.</h2>
+          <div className="deck-steps">
+            {[
+              [
+                "01",
+                "Choose a model",
+                "Find a familiar favorite or try a fresh perspective.",
+              ],
+              [
+                "02",
+                "Connect your key",
+                "Add your provider’s API key in the key vault.",
+              ],
+              [
+                "03",
+                "Make it a conversation",
+                "Ask, explore, refine. Pick up where you left off.",
+              ],
+            ].map(([n, title, text]) => (
+              <div key={n}>
+                <span>{n}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            ))}
+          </div>
+          <CTA href="/playground">Find your next idea</CTA>
+        </section>
+        <section className="deck-faq deck-wrap" data-reveal>
+          <h2>A few things to know.</h2>
+          <div>
+            {[
+              [
+                "Do I need an API key?",
+                "Yes. Connect your own key for a supported provider. Local OpenAI-compatible models can also be configured in the playground settings.",
+              ],
+              [
+                "Can I switch between models?",
+                "Yes. Use the model selector in the playground to search providers and models, or filter for coding, reasoning, and speed.",
+              ],
+              [
+                "Is Assistant Studio part of ModelDeck?",
+                "Yes. Build a website assistant from your content, customize its appearance, and prepare an embed or a GitHub pull request.",
+              ],
+              [
+                "Who handles model usage charges?",
+                "Your model provider handles API usage and billing on your account. ModelDeck uses the credentials you connect.",
+              ],
+            ].map(([q, a]) => (
+              <details key={q}>
+                <summary>
+                  {q}
+                  <DeckIcon name="plus" />
+                </summary>
+                <p>{a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      </main>
+      <footer className="deck-footer deck-wrap">
+        <Link href="/" className="deck-brand">
+          <DeckLogo />
+          modeldeck<span>.</span>
+        </Link>
+        <span>A little space for your next big idea.</span>
+        <div>
+          <Link href="/playground">Playground</Link>
+          <Link href="/studio">Assistant Studio</Link>
+          <a href="#main">Back to top ↑</a>
         </div>
-      </section>
-      <section className="manifesto-section" id="compare"><div className="section-kicker">01 / THE CONTROL LAYER</div><div className="manifesto-grid"><h2>One prompt.<br />A complete <em>point of view.</em></h2><div className="manifesto-text"><p>Stop playing favourites before the work begins. Put the same prompt in front of every model, watch the trade-offs in real time, and move with conviction.</p><a href="#security" className="underlined-link">Explore the workflow <ArrowRight size={16} /></a></div></div><div className="comparison-stage"><div className="compare-toolbar"><span>RUN / 048</span><span className="toolbar-center">product brief → launch plan</span><span>03 MODELS</span></div><div className="compare-columns"><article className="response-card warm"><div className="response-head"><ProviderMark providerId="anthropic" className="h-5 w-5" /><span>Claude</span><b>01</b></div><p>Maps the user journey into a concise launch narrative with clear framing and tangible decisions.</p><div className="response-meter"><span style={{ width: "82%" }} /></div><small>clarity / 8.2</small></article><article className="response-card focus"><div className="response-head"><ProviderMark providerId="openai" className="h-5 w-5" /><span>GPT-5</span><b>02</b></div><p>Turns the brief into a strategic system: positioning, audience tension, then the execution that proves it.</p><div className="response-meter"><span style={{ width: "94%" }} /></div><small>reasoning / 9.4</small></article><article className="response-card cool"><div className="response-head"><ProviderMark providerId="gemini" className="h-5 w-5" /><span>Gemini</span><b>03</b></div><p>Finds the missing research angles and adds the structured detail a technical team can build from.</p><div className="response-meter"><span style={{ width: "88%" }} /></div><small>coverage / 8.8</small></article></div></div></section>
-      <section className="feature-river" id="security"><div className="river-copy"><div className="section-kicker">02 / YOUR KEYS STAY YOURS</div><h2>Private by<br /><em>default.</em></h2><p>Your API keys are encrypted locally. ModelDeck is a refined workbench between you and the providers you already trust—not another account between you and your work.</p><Link className="outline-button" href="/playground"><LockKeyhole size={16} /> Open your private deck</Link></div><div className="vault-visual"><div className="vault-ring ring-outer" /><div className="vault-ring ring-inner" /><div className="vault-core"><LockKeyhole size={36} /><span>AES-256</span></div><div className="vault-tag tag-one">YOUR KEY<br /><b>never leaves</b></div><div className="vault-tag tag-two">DIRECT<br /><b>provider calls</b></div></div></section>
-      <section className="command-section"><div><div className="section-kicker">03 / LESS SETUP, MORE SIGNAL</div><h2>Leave the tab<br />circus behind.</h2><p>Set a provider once. Build a real opinion in seconds. Save the runs worth coming back to.</p></div><div className="command-window"><div className="command-dots"><i /><i /><i /><span>modeldeck / quick run</span></div><div className="command-content"><Command size={18} /><span>Compare models for: <b>invoice extraction</b></span><button onClick={copyPrompt} aria-label="Copy example prompt">{copied ? <Check size={15} /> : <Copy size={15} />}</button></div><div className="command-result"><span><ProviderMark providerId="groq" className="h-4 w-4" /> Groq / 614 tok/s</span><span><ProviderMark providerId="deepseek" className="h-4 w-4" /> DeepSeek / $0.14</span><span><ProviderMark providerId="openrouter" className="h-4 w-4" /> Route / balanced</span></div></div></section>
-      <section className="closing-section" id="faq"><p className="eyebrow"><span className="pulse-dot" /> Ready when you are</p><h2>Make a better<br /><em>first call.</em></h2><p>Bring your keys. Find your model. Build the thing.</p><Link href="/playground" className="fire-button large">Enter ModelDeck <span><ArrowRight size={17} /></span></Link></section>
-    </main><footer className="site-footer"><div className="brand"><span className="brand-mark"><span /></span><span>modeldeck<span className="brand-dot">.</span></span></div><p>One deck for every frontier model.</p><div><a href="#platform">Top</a><a href="#models">Models</a><a href="#security">Security</a></div></footer>
-  </div>;
+      </footer>
+    </div>
+  );
 }

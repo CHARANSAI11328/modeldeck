@@ -54,7 +54,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist)", "Inter", "system-ui", "sans-serif"],
+        sans: ["var(--font-geist)", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
       borderRadius: {
